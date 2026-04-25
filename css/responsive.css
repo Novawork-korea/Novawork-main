@@ -1,0 +1,504 @@
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover,
+  .nav-link:hover,
+  .footer-nav a:hover {
+    transform: translate3d(0, -1px, 0);
+  }
+
+  .info-card:hover,
+  .service-card:hover,
+  .portfolio-card:hover,
+  .process-card:hover,
+  .lead-card:hover,
+  .value-card:hover,
+  .method-card:hover,
+  .scope-card:hover,
+  .package-card:hover,
+  .deliverable-card:hover,
+  .faq-item:hover,
+  .home-feature-card:hover,
+  .showcase-card:hover,
+  .image-card:hover,
+  .home-wide-visual:hover {
+    border-color: rgba(37, 99, 235, 0.18);
+    box-shadow: var(--shadow-md);
+    transform: translate3d(0, -8px, 0);
+  }
+
+  .check-grid label:hover,
+  .radio-group label:hover,
+  .consent-item:hover,
+  .quick-contact a:hover {
+    border-color: rgba(37, 99, 235, 0.22);
+    box-shadow: var(--shadow-xs);
+  }
+}
+
+@media (max-width: 1200px) {
+  .page-hero-grid,
+  .form-shell,
+  .cta-band {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: clamp(16px, 3svh, 34px) 0;
+  }
+
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
+    gap: clamp(22px, 3.6vw, 44px);
+  }
+
+  .hero-title {
+    max-width: 12.5ch;
+    font-size: clamp(2.45rem, 5vw, 4.65rem);
+  }
+
+  .hero-desc {
+    max-width: 590px;
+    line-height: 1.64;
+  }
+
+  .hero-buttons {
+    margin-top: clamp(18px, 2.5svh, 24px);
+  }
+
+  .hero-visual {
+    min-height: clamp(220px, 42svh, 430px);
+  }
+
+  .page-hero-visual {
+    max-width: 760px;
+  }
+
+  .trust-strip,
+  .showcase-grid,
+  .process-list,
+  .value-grid,
+  .method-grid,
+  .deliverable-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --header-height: 76px;
+  }
+
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(240px, 0.78fr);
+    gap: clamp(18px, 3vw, 34px);
+  }
+
+  .hero-title {
+    font-size: clamp(2.3rem, 4.7vw, 3.8rem);
+  }
+
+  .hero-desc {
+    margin-top: 14px;
+    font-size: 0.98rem;
+    line-height: 1.56;
+  }
+
+  .hero-buttons {
+    margin-top: 18px;
+  }
+
+  .hero-note {
+    margin-top: 10px;
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  .hero-visual {
+    min-height: clamp(190px, 36svh, 340px);
+  }
+
+  .about-grid,
+  .service-list,
+  .portfolio-grid,
+  .package-grid,
+  .home-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .split-section,
+  .home-split-grid,
+  .split-section-reverse,
+  .home-split-grid.reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .split-section-reverse > :first-child,
+  .home-split-grid.reverse > :first-child {
+    order: 0;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-nav {
+    justify-content: flex-start;
+  }
+
+  .footer-bottom,
+  .form-submit-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 769px) {
+  .hero {
+    padding: 12px 0;
+  }
+
+  .hero-badge {
+    min-height: 30px;
+    margin-bottom: 10px;
+    font-size: 0.82rem;
+  }
+
+  .hero-title {
+    font-size: clamp(2.2rem, 4.45vw, 4.1rem);
+    line-height: 1;
+  }
+
+  .hero-desc {
+    margin-top: 12px;
+    line-height: 1.48;
+  }
+
+  .hero-buttons {
+    margin-top: 14px;
+  }
+
+  .hero-note {
+    margin-top: 8px;
+    line-height: 1.38;
+  }
+
+  .hero-visual {
+    min-height: clamp(170px, 34svh, 340px);
+  }
+}
+
+@media (max-width: 820px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(12px, 2.4svh, 18px);
+  }
+
+  .hero-visual {
+    max-width: 560px;
+    width: min(100%, 560px);
+    min-height: clamp(120px, 20svh, 180px);
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 72px;
+  }
+
+  html {
+    font-size: 16.5px;
+  }
+
+  body {
+    line-height: 1.74;
+  }
+
+  .container {
+    width: min(var(--container-width), calc(100% - 32px));
+  }
+
+  .nav,
+  .header-cta {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo img {
+    height: 32px;
+  }
+
+  .hero {
+    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100svh - var(--header-height));
+    padding: 14px 0 18px;
+  }
+
+  .page-hero {
+    padding: calc(var(--header-height) + 36px) 0 44px;
+  }
+
+  .hero-grid,
+  .page-hero-grid,
+  .form-shell,
+  .split-section,
+  .home-split-grid {
+    gap: 24px;
+  }
+
+  .hero-grid {
+    gap: clamp(12px, 2.2svh, 18px);
+  }
+
+  .hero-badge {
+    min-height: 30px;
+    margin-bottom: 10px;
+    font-size: 0.82rem;
+  }
+
+  .hero-title {
+    max-width: none;
+    font-size: clamp(2rem, 7.8vw, 2.72rem);
+    line-height: 1.04;
+  }
+
+  .section-title {
+    font-size: clamp(1.95rem, 8vw, 2.65rem);
+  }
+
+  .hero-desc,
+  .section-desc {
+    font-size: 1rem;
+  }
+
+  .hero-desc {
+    margin-top: 12px;
+    line-height: 1.52;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .hero-note {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    line-height: 1.42;
+  }
+
+  .hero-visual {
+    min-height: clamp(92px, 16svh, 142px);
+  }
+
+  .btn,
+  .btn-small {
+    width: 100%;
+  }
+
+  .about-grid,
+  .service-list,
+  .portfolio-grid,
+  .process-list,
+  .value-grid,
+  .method-grid,
+  .scope-grid,
+  .package-grid,
+  .deliverable-grid,
+  .example-detail-grid,
+  .home-feature-grid,
+  .showcase-grid,
+  .check-grid,
+  .form-grid,
+  .radio-group,
+  .trust-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .info-card,
+  .service-card,
+  .process-card,
+  .contact-panel,
+  .form-section,
+  .portfolio-content,
+  .lead-card,
+  .value-card,
+  .method-card,
+  .scope-card,
+  .package-card,
+  .deliverable-card,
+  .privacy-card,
+  .contact-box {
+    padding: 24px;
+  }
+
+  .home-feature-card {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .page-hero-visual {
+    min-height: 220px;
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .page-hero-visual img,
+  .image-card img,
+  .home-wide-visual img {
+    min-height: 220px;
+  }
+
+  .portfolio-thumb {
+    min-height: 180px;
+    padding: 20px;
+  }
+
+  .footer {
+    padding: 32px 0;
+  }
+
+  .footer-business {
+    display: grid;
+    gap: 6px;
+  }
+
+  .footer-business li::after {
+    display: none;
+  }
+
+  .mobile-menu-panel {
+    padding: 16px;
+  }
+
+  .page-hero-points,
+  .form-utility {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .page-hero-points span,
+  .form-utility span,
+  .hero-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-heading,
+  .business-mini-list li,
+  .example-meta li {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-band {
+    text-align: left;
+  }
+
+  .faq-item summary {
+    min-height: 64px;
+    padding: 0 22px;
+    font-size: 1rem;
+  }
+
+  .faq-item p {
+    padding: 0 22px 22px;
+  }
+}
+
+@media (max-width: 560px) {
+  .section-head {
+    margin-bottom: 32px;
+  }
+
+  .hero {
+    padding: 12px 0 16px;
+  }
+
+  .hero-badge {
+    min-height: 28px;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+  }
+
+  .hero-title {
+    font-size: clamp(1.9rem, 8.6vw, 2.42rem);
+  }
+
+  .hero-desc {
+    font-size: 0.94rem;
+  }
+
+  .hero-visual {
+    min-height: clamp(80px, 14svh, 126px);
+  }
+
+  .section-title {
+    font-size: 1.92rem;
+  }
+
+  .hero-card,
+  .metric-card,
+  .home-feature-card,
+  .showcase-body {
+    padding: 20px;
+  }
+
+  .check-grid label,
+  .radio-group label,
+  .consent-item {
+    padding: 12px 14px;
+  }
+
+  .cta-points {
+    display: grid;
+  }
+}
+
+@media (max-width: 420px) {
+  .logo img,
+  .footer-logo img {
+    height: 28px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.78rem, 8.8vw, 2.18rem);
+  }
+}
+
+@media (max-width: 768px) and (max-height: 720px) {
+  .hero-note {
+    display: none;
+  }
+
+  .hero-visual {
+    min-height: clamp(72px, 12svh, 108px);
+  }
+}
+
+@media (hover: none) {
+  .btn:hover,
+  .nav-link:hover,
+  .info-card:hover,
+  .service-card:hover,
+  .portfolio-card:hover,
+  .process-card:hover,
+  .lead-card:hover,
+  .value-card:hover,
+  .method-card:hover,
+  .scope-card:hover,
+  .package-card:hover,
+  .deliverable-card:hover,
+  .faq-item:hover,
+  .home-feature-card:hover,
+  .showcase-card:hover,
+  .image-card:hover,
+  .home-wide-visual:hover {
+    transform: none;
+  }
+}
