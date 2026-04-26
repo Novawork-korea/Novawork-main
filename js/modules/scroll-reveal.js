@@ -2,6 +2,16 @@
   var hasRun = false;
   var activeItems = [];
   var observer = null;
+  var REVEAL_TRANSITION_MS = 780;
+
+  /*
+   * PC에서 Windows/브라우저의 "동작 줄이기" 설정이 켜져 있으면
+   * matchMedia("(prefers-reduced-motion: reduce)")가 true가 됩니다.
+   * 기존 코드는 이 경우 init을 return 해서 PC에서 스크롤 리빌이 아예 등록되지 않았습니다.
+   * NOVAWORK 사이트에서는 PC/모바일 모두 동일하게 리빌 효과가 보이도록 false로 둡니다.
+   * 접근성 정책상 모션을 완전히 끄고 싶으면 true로 바꾸면 됩니다.
+   */
+  var RESPECT_REDUCED_MOTION = false;
 
   var GROUPS = [
     { selector: ".hero-content, .page-hero .section-head", direction: "left", step: 0 },
@@ -19,7 +29,7 @@
     var path = (window.location.pathname || "").toLowerCase();
 
     return Boolean(
-      body && body.classList.contains("contact-static-page") ||
+      (body && body.classList.contains("contact-static-page")) ||
       path.indexOf("contact.html") !== -1
     );
   }
@@ -43,6 +53,7 @@
 
     element.dataset.revealRegistered = "true";
     element.dataset.reveal = direction;
+    element.dataset.revealDelay = String(delay);
     element.style.setProperty("--reveal-delay", delay + "ms");
     element.classList.add("reveal");
     items.push(element);
@@ -77,16 +88,51 @@
     );
   }
 
+  function getRevealDelay(element) {
+    var delay = Number(element && element.dataset ? element.dataset.revealDelay : 0);
+    return Number.isFinite(delay) ? delay : 0;
+  }
+
+  function releaseRevealLock(element) {
+    var delay = getRevealDelay(element);
+
+    window.setTimeout(function () {
+      if (!element) {
+        return;
+      }
+
+      element.classList.remove("is-revealing");
+      element.classList.add("reveal-complete");
+    }, delay + REVEAL_TRANSITION_MS + 120);
+  }
+
   function revealElement(element) {
     if (!element || element.classList.contains("is-visible")) {
       return;
     }
 
-    element.classList.add("is-visible");
+    /*
+     * PC 전용 hover transform(.info-card:hover 등)이 reveal transform을 덮어쓰지 않도록
+     * 애니메이션 중에는 is-revealing으로 transform을 잠깁니다.
+     * 애니메이션 종료 후에는 잠금을 풀어 기존 hover 인터랙션이 다시 동작합니다.
+     */
+    element.classList.add("is-visible", "is-revealing");
+    releaseRevealLock(element);
 
     if (observer) {
       observer.unobserve(element);
     }
+  }
+
+  function revealAllImmediately() {
+    activeItems.forEach(function (element) {
+      if (!element) {
+        return;
+      }
+
+      element.classList.add("is-visible", "reveal-complete");
+      element.classList.remove("is-revealing");
+    });
   }
 
   function revealVisibleItems() {
@@ -136,20 +182,11 @@
   }
 
   function initScrollReveal() {
-    if (hasRun) {
+    if (hasRun || !document.body || isContactPage()) {
       return;
     }
 
     hasRun = true;
-
-    if (!document.body || isContactPage()) {
-      return;
-    }
-
-    if (prefersReducedMotion()) {
-      return;
-    }
-
     activeItems = collectRevealItems();
 
     if (!activeItems.length) {
@@ -157,6 +194,12 @@
     }
 
     document.body.classList.add("scroll-reveal-ready");
+
+    if (RESPECT_REDUCED_MOTION && prefersReducedMotion()) {
+      revealAllImmediately();
+      return;
+    }
+
     observeItems();
 
     var throttledReveal = throttleFrame(revealVisibleItems);

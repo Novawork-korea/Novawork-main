@@ -886,3 +886,36 @@ input[type="radio"] {
     will-change: auto;
   }
 }
+
+/* PC hover transform이 scroll reveal transform을 덮어쓰는 문제 보정 */
+body.scroll-reveal-ready .reveal:not(.is-visible),
+body.scroll-reveal-ready .reveal.is-revealing {
+  transition:
+    opacity 0.78s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.78s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition-delay: var(--reveal-delay, 0ms) !important;
+  will-change: opacity, transform;
+}
+
+body.scroll-reveal-ready .reveal:not(.is-visible) {
+  opacity: 0 !important;
+  transform: translate3d(0, 34px, 0) !important;
+}
+
+body.scroll-reveal-ready .reveal[data-reveal="left"]:not(.is-visible) {
+  transform: translate3d(-42px, 0, 0) !important;
+}
+
+body.scroll-reveal-ready .reveal[data-reveal="right"]:not(.is-visible) {
+  transform: translate3d(42px, 0, 0) !important;
+}
+
+body.scroll-reveal-ready .reveal[data-reveal="up"]:not(.is-visible),
+body.scroll-reveal-ready .reveal[data-reveal="bottom"]:not(.is-visible) {
+  transform: translate3d(0, 38px, 0) !important;
+}
+
+body.scroll-reveal-ready .reveal.is-visible.is-revealing {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
