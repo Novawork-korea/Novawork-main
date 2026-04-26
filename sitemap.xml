@@ -3,25 +3,27 @@
   <url>
     <loc>https://novawork.kr/</loc>
     <lastmod>2026-04-25</lastmod>
+       <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/about.html</loc>
     <lastmod>2026-04-25</lastmod>
+       <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/services.html</loc>
     <lastmod>2026-04-25</lastmod>
+       <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/portfolio.html</loc>
     <lastmod>2026-04-25</lastmod>
+       <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/contact.html</loc>
     <lastmod>2026-04-25</lastmod>
+       <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://novawork.kr/privacy.html</loc>
-    <lastmod>2026-04-25</lastmod>
-  </url>
 </urlset>
