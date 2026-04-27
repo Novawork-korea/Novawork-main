@@ -6,7 +6,7 @@
   <title>제작 예시 | 홈페이지 · 랜딩페이지 샘플 | NOVAWORK</title>
   <meta name="description" content="실제 납품 사례 공개 전, 제작 가능한 홈페이지와 랜딩페이지 구성 예시를 확인할 수 있습니다." />
   <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#050505" />
   <link rel="canonical" href="https://novawork.kr/portfolio.html" />
   <link rel="icon" href="./assets/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="./assets/favicon-180.png" />
@@ -52,6 +52,7 @@
   <link rel="stylesheet" href="./css/components.css" />
   <link rel="stylesheet" href="./css/pages-content.css" />
   <link rel="stylesheet" href="./css/responsive.css" />
+  <link rel="stylesheet" href="./css/monochrome.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">본문 바로가기</a>
@@ -67,12 +68,12 @@
             <li><a class="nav-link" href="about.html">회사소개</a></li>
             <li><a class="nav-link" href="services.html">서비스</a></li>
             <li><a class="nav-link" href="portfolio.html">제작 예시</a></li>
-            <li><a class="nav-link" href="contact.html">문의</a></li>
+            <li><a class="nav-link" href="faq.html">FAQ</a></li>
           </ul>
         </nav>
 
         <div class="header-actions">
-          <a href="contact.html" class="btn btn-small btn-secondary header-cta">무료 1차 상담</a>
+          <a href="contact.html" class="btn btn-small btn-secondary header-cta">접수하기</a>
 
           <button
             class="menu-toggle"
@@ -96,10 +97,10 @@
           <li><a href="about.html">회사소개</a></li>
           <li><a href="services.html">서비스</a></li>
           <li><a href="portfolio.html">제작 예시</a></li>
-          <li><a href="contact.html">문의</a></li>
+          <li><a href="faq.html">FAQ</a></li>
         </ul>
 
-        <a href="contact.html" class="btn btn-primary mobile-menu-cta">견적 문의하기</a>
+        <a href="contact.html" class="btn btn-primary mobile-menu-cta">접수하기</a>
       </div>
     </div>
   </header>
@@ -161,6 +162,7 @@
               <p>광고 유입 이후 짧은 흐름 안에서 핵심 메시지와 행동 유도를 정리합니다.</p>
               <ul class="example-meta"><li><strong>대상</strong><span>이벤트, 모집, 상담 전환 캠페인</span></li><li><strong>구성</strong><span>문제 제기 · 혜택 · 증거 · 신청 CTA</span></li><li><strong>기간</strong><span>단일 페이지 기준 빠른 제작 협의</span></li></ul>
               <div class="chip-list"><span class="chip">광고 연결</span><span class="chip">전환 중심</span><span class="chip">짧은 구조</span></div>
+
             </div>
           </article>
 
@@ -198,11 +200,57 @@
       </div>
     </section>
 
+    <section class="section portfolio-upload-section" aria-labelledby="portfolio-upload-title">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-label">REAL PORTFOLIO</p>
+          <h2 id="portfolio-upload-title" class="section-title">포트폴리오
+          </h2>
+        </div>
+
+        <!-- 실제 포트폴리오 이미지 교체 영역: img src와 제목/설명만 바꾸면 됩니다. -->
+        <div class="portfolio-upload-grid">
+          <article class="portfolio-upload-card">
+            <figure class="portfolio-upload-media">
+              <img src="./assets/example-img.svg" alt="포트폴리오 임시 이미지 1" loading="lazy" />
+            </figure>
+            <div class="portfolio-upload-body">
+              <span class="example-label">PORTFOLIO 01</span>
+              <h3>프로젝트명 입력 영역</h3>
+              <p>실제 작업 이미지, 업종, 작업 범위, 핵심 포인트를 이곳에 넣어두면 됩니다.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-upload-card">
+            <figure class="portfolio-upload-media">
+              <img src="./assets/example-img.svg" alt="포트폴리오 임시 이미지 2" loading="lazy" />
+            </figure>
+            <div class="portfolio-upload-body">
+              <span class="example-label">PORTFOLIO 02</span>
+              <h3>프로젝트명 입력 영역</h3>
+              <p>홈페이지, 랜딩페이지, 리뉴얼 등 실제 결과물을 구분해서 등록할 수 있습니다.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-upload-card">
+            <figure class="portfolio-upload-media">
+              <img src="./assets/example-img.svg" alt="포트폴리오 임시 이미지 3" loading="lazy" />
+            </figure>
+            <div class="portfolio-upload-body">
+              <span class="example-label">PORTFOLIO 03</span>
+              <h3>프로젝트명 입력 영역</h3>
+              <p>추가 사례가 생기면 같은 카드 구조를 복사해서 계속 확장할 수 있습니다.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
 
     <section class="section section-compact sample-summary-section">
       <div class="container">
         <div class="section-head">
-          <p class="section-label">DEMO GUIDE</p>
+          <p class="section-label">SAMPLE GUIDE</p>
           <h2 class="section-title">샘플은 실제 제작 방향을 설명하기 위한 기준입니다</h2>
           <p class="section-desc">상담 시에는 아래 기준을 바탕으로 필요한 페이지와 기능만 남기고, 불필요한 요소는 줄여 예산과 일정에 맞춥니다.</p>
         </div>
@@ -239,7 +287,7 @@
             <h2 class="section-title">필요한 프로젝트 유형을 알려주십시오</h2>
             <p class="section-desc">기업 홈페이지, 랜딩페이지, 유지관리형 사이트, 리뉴얼 등 어떤 방향이 필요한지 남겨주시면 범위를 정리해 드립니다.</p>
           </div>
-          <a href="contact.html" class="btn btn-primary">견적 문의하기</a>
+          <a href="contact.html" class="btn btn-primary">프로젝트 접수하기</a>
         </div>
       </div>
     </section>
@@ -266,14 +314,15 @@
           <a href="about.html">회사소개</a>
           <a href="services.html">서비스</a>
           <a href="portfolio.html">제작 예시</a>
-          <a href="contact.html">문의</a>
+          <a href="faq.html">FAQ</a>
+          <a href="contact.html">접수하기</a>
           <a href="privacy.html">개인정보처리방침</a>
         </nav>
       </div>
 
       <div class="footer-bottom">
         <p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
-        <p class="footer-note">문의는 <a href="contact.html">문의 페이지</a> 또는 <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내 확인합니다.</p>
+        <p class="footer-note">접수는 <a href="contact.html">접수 페이지</a> 또는 <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내 확인합니다.</p>
       </div>
     </div>
   </footer>

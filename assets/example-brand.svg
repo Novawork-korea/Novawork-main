@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="브랜드 페이지 예시 이미지">
   <rect width="360" height="200" rx="22" fill="#ffffff" opacity="0.92"/>
-  <circle cx="304" cy="42" r="44" fill="#16a34a" opacity="0.28"/>
-  <rect x="34" y="34" width="88" height="12" rx="6" fill="#16a34a" opacity="0.72"/>
-  <rect x="34" y="70" width="174" height="18" rx="9" fill="#0f172a" opacity="0.88"/>
-  <rect x="34" y="106" width="246" height="10" rx="5" fill="#cbd5e1"/>
-  <rect x="34" y="130" width="198" height="10" rx="5" fill="#e2e8f0"/>
-  <rect x="34" y="160" width="84" height="26" rx="13" fill="#16a34a" opacity="0.84"/>
+  <circle cx="304" cy="42" r="44" fill="#7f7f7f" opacity="0.28"/>
+  <rect x="34" y="34" width="88" height="12" rx="6" fill="#7f7f7f" opacity="0.72"/>
+  <rect x="34" y="70" width="174" height="18" rx="9" fill="#171717" opacity="0.88"/>
+  <rect x="34" y="106" width="246" height="10" rx="5" fill="#d4d4d4"/>
+  <rect x="34" y="130" width="198" height="10" rx="5" fill="#e7e7e7"/>
+  <rect x="34" y="160" width="84" height="26" rx="13" fill="#7f7f7f" opacity="0.84"/>
 </svg>

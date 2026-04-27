@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+  <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#171717"/><stop offset="1" stop-color="#606060"/></linearGradient></defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <circle cx="1040" cy="90" r="220" fill="#60a5fa" opacity="0.24"/>
-  <circle cx="120" cy="560" r="260" fill="#93c5fd" opacity="0.18"/>
+  <circle cx="1040" cy="90" r="220" fill="#9c9c9c" opacity="0.24"/>
+  <circle cx="120" cy="560" r="260" fill="#bebebe" opacity="0.18"/>
   <rect x="84" y="78" width="1032" height="474" rx="42" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)"/>
   <text x="126" y="214" fill="#ffffff" font-family="NanumSquareRound, Noto Sans CJK KR, Noto Sans KR, sans-serif" font-size="72" font-weight="400">NOVAWORK</text>
-  <text x="126" y="306" fill="#e0f2fe" font-family="NanumSquareRound, Noto Sans CJK KR, Noto Sans KR, sans-serif" font-size="42" font-weight="400">웹사이트 제작 · 랜딩페이지 · 유지관리</text>
-  <text x="126" y="384" fill="#cbd5e1" font-family="NanumSquareRound, Noto Sans CJK KR, Noto Sans KR, sans-serif" font-size="30">고객이 이해하기 쉬운 흐름과 문의 동선을 정리합니다.</text>
+  <text x="126" y="306" fill="#efefef" font-family="NanumSquareRound, Noto Sans CJK KR, Noto Sans KR, sans-serif" font-size="42" font-weight="400">웹사이트 제작 · 랜딩페이지 · 유지관리</text>
+  <text x="126" y="384" fill="#d4d4d4" font-family="NanumSquareRound, Noto Sans CJK KR, Noto Sans KR, sans-serif" font-size="30">고객이 이해하기 쉬운 흐름과 문의 동선을 정리합니다.</text>
 </svg>

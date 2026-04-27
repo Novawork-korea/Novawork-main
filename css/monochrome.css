@@ -1,0 +1,548 @@
+/* NOVAWORK monochrome concept overrides: black background, gray borders, white content/text */
+body {
+  color: var(--color-text);
+  background: var(--gradient-surface);
+}
+
+::selection {
+  color: #050505;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.header {
+  border-bottom-color: rgba(82, 82, 82, 0.72);
+  background-color: rgba(3, 3, 3, 0.88);
+}
+
+.header.is-scrolled {
+  border-color: rgba(115, 115, 115, 0.66);
+  background-color: rgba(3, 3, 3, 0.96);
+  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.46);
+}
+
+.nav-link {
+  color: var(--color-text-muted);
+}
+
+.nav-link:hover,
+.nav-link[aria-current="page"] {
+  color: var(--color-white);
+  background-color: #171717;
+}
+
+.menu-toggle {
+  border-color: var(--color-border-strong);
+  background-color: #101010;
+  box-shadow: none;
+}
+
+.menu-toggle span {
+  background-color: var(--color-white);
+}
+
+.mobile-menu {
+  border-top-color: var(--color-border);
+  background-color: rgba(5, 5, 5, 0.98);
+}
+
+.mobile-menu-list a {
+  color: var(--color-white);
+  border-color: var(--color-border);
+  background-color: #101010;
+}
+
+.mobile-menu-list a[aria-current="page"] {
+  color: var(--color-white);
+  border-color: #737373;
+  background-color: #1a1a1a;
+}
+
+.footer {
+  border-top-color: var(--color-border);
+  background-color: #050505;
+}
+
+.footer-business,
+.footer-text,
+.footer-bottom,
+.footer-nav a,
+.footer-note {
+  color: var(--color-text-muted);
+}
+
+.footer-business li:not(:last-child)::after,
+.footer-bottom {
+  border-color: var(--color-border);
+}
+
+.footer-business li:not(:last-child)::after {
+  background-color: var(--color-border);
+}
+
+.footer-business a,
+.footer-note a,
+.business-mini-list a,
+.link-underline,
+.service-link {
+  color: var(--color-white);
+}
+
+.footer-nav a {
+  border-color: var(--color-border);
+  background-color: transparent;
+}
+
+.footer-nav a:hover,
+.footer-nav a[aria-current="page"] {
+  color: var(--color-white);
+  border-color: #737373;
+  background-color: #171717;
+}
+
+.page-hero,
+.hero {
+  background:
+    radial-gradient(circle at 86% 16%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 34%),
+    radial-gradient(circle at 16% 84%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 32%),
+    linear-gradient(180deg, #050505 0%, #0a0a0a 100%);
+}
+
+.page-hero::before,
+.hero::before,
+.hero-visual::before {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+.process,
+.services,
+.home-flow,
+.home-packages,
+.faq-section,
+.contact,
+.home-showcase,
+.sample-summary-section {
+  background-color: #080808;
+}
+
+.section-label,
+.hero-badge,
+.package-label,
+.scope-label,
+.value-label,
+.example-label,
+.process-number,
+.deliverable-card span,
+.method-card span,
+.service-number,
+.showcase-body span,
+.home-feature-card span,
+.criteria-card span,
+.form-step {
+  color: var(--color-white);
+  border: 1px solid var(--color-border-strong);
+  background-color: #171717;
+}
+
+.section-desc,
+.hero-desc,
+.hero-note,
+.info-card p,
+.service-card p,
+.process-card p,
+.contact-panel p,
+.portfolio-content p,
+.value-card p,
+.method-card p,
+.scope-card p,
+.package-card p,
+.deliverable-card p,
+.privacy-card p,
+.home-feature-card p,
+.showcase-body p,
+.quote-criteria-head p,
+.criteria-card p,
+.notice-box p,
+.form-text,
+.field-help,
+.form-submit-note,
+.example-meta li,
+.privacy-card li,
+.privacy-list li,
+.home-feature-list span,
+.trust-item span,
+.package-price span {
+  color: var(--color-text-soft);
+}
+
+.btn-primary {
+  color: #050505;
+  border-color: var(--color-white);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  color: #050505;
+  border-color: #e5e5e5;
+  background: #e5e5e5;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  color: var(--color-white);
+  border-color: var(--color-border-strong);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.btn-secondary:hover {
+  color: var(--color-white);
+  border-color: #8a8a8a;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.card,
+.info-card,
+.service-card,
+.portfolio-card,
+.process-card,
+.contact-panel,
+.lead-card,
+.value-card,
+.method-card,
+.scope-card,
+.package-card,
+.deliverable-card,
+.privacy-card,
+.faq-item,
+.home-feature-card,
+.showcase-card,
+.image-card,
+.home-wide-visual,
+.contact-box,
+.trust-item,
+.form-section,
+.criteria-card,
+.quote-criteria,
+.notice-box,
+.privacy-table-wrap {
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: rgba(17, 17, 17, 0.94);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-hero-visual,
+.image-card,
+.home-wide-visual,
+.service-card-media,
+.home-feature-card figure,
+.showcase-media,
+.portfolio-thumb {
+  border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, #151515 0%, #0b0b0b 100%);
+}
+
+.page-hero-visual img,
+.service-card-media img,
+.home-feature-card figure img,
+.showcase-media img,
+.portfolio-thumb img,
+.image-card img,
+.home-wide-visual img {
+  filter: grayscale(1) contrast(1.08) brightness(0.92);
+}
+
+.hero-visual {
+  filter: grayscale(1) contrast(1.12) brightness(0.94);
+}
+
+.portfolio-thumb span {
+  color: var(--color-white);
+  border: 1px solid var(--color-border-strong);
+  background-color: rgba(0, 0, 0, 0.72);
+}
+
+.thumb-corporate,
+.thumb-maintenance,
+.thumb-brand,
+.thumb-consulting,
+.thumb-landing,
+.thumb-renewal {
+  background: linear-gradient(135deg, #151515 0%, #070707 100%);
+}
+
+.chip,
+.page-hero-points span,
+.form-utility span,
+.package-guide,
+.quick-contact a,
+.quick-contact span,
+.cta-points li {
+  color: var(--color-white);
+  border-color: var(--color-border-strong);
+  background-color: #171717;
+}
+
+.example-meta,
+.footer-bottom,
+.privacy-table th,
+.privacy-table td {
+  border-color: var(--color-border);
+}
+
+.service-card li,
+.package-list li,
+.deliverable-list li,
+.visual-check-list li,
+.home-feature-list li,
+.business-mini-list li,
+.example-meta strong,
+.business-mini-list strong,
+.package-price,
+.privacy-card h2,
+.privacy-card h3,
+.criteria-card h4,
+.notice-box strong,
+.trust-item strong,
+.field-label,
+.form-title,
+.scope-title,
+.value-title,
+.package-title,
+.faq-item summary {
+  color: var(--color-white);
+}
+
+.service-card li::before,
+.package-list li::before,
+.deliverable-list li::before,
+.visual-check-list li::before,
+.home-feature-list li::before,
+.privacy-card li::before,
+.privacy-list li::before,
+.contact-facts li::before {
+  background-color: var(--color-white);
+}
+
+.lead-card,
+.contact-box,
+.contact-panel-primary {
+  border-color: #343434;
+  background: linear-gradient(135deg, #090909 0%, #171717 100%);
+  color: var(--color-white);
+}
+
+.lead-card .section-label,
+.contact-box .section-label {
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.lead-card .section-desc,
+.lead-card p,
+.lead-card li,
+.contact-box .section-desc,
+.contact-panel-primary p,
+.contact-panel-primary .contact-facts li,
+.quick-contact span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.contact-box .btn-primary {
+  color: #050505;
+  background: var(--color-white);
+}
+
+input,
+textarea,
+select {
+  color: var(--color-white);
+  border-color: var(--color-border-strong);
+  background-color: #0b0b0b;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #737373;
+}
+
+input:hover,
+textarea:hover,
+select:hover,
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #8a8a8a;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--color-white);
+}
+
+.check-grid label,
+.radio-group label,
+.consent-item,
+.consent-section {
+  color: var(--color-text-soft);
+  border-color: var(--color-border);
+  background-color: #101010;
+}
+
+.check-grid label.is-checked,
+.radio-group label.is-checked,
+.consent-item.is-checked,
+.check-grid label:has(input:checked),
+.radio-group label:has(input:checked),
+.consent-item:has(input:checked) {
+  color: var(--color-white);
+  border-color: #8a8a8a;
+  background-color: #1a1a1a;
+}
+
+.field-required,
+.consent-text em,
+.form-status.is-error,
+.field-error {
+  color: #f5f5f5;
+}
+
+.form-status.is-success {
+  color: #f5f5f5;
+}
+
+.is-invalid {
+  border-color: #d4d4d4;
+  background-color: #151515;
+}
+
+.privacy-table {
+  color: var(--color-text-soft);
+}
+
+.privacy-table thead th,
+.privacy-table tbody th {
+  color: var(--color-white);
+  background-color: #151515;
+}
+
+.faq-category {
+  margin-top: 42px;
+}
+
+.faq-category:first-child {
+  margin-top: 0;
+}
+
+.faq-category-title {
+  margin-bottom: 16px;
+  color: var(--color-white);
+  font-size: 1.34rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.faq-answer {
+  padding: 0 28px 26px;
+}
+
+.faq-answer p {
+  padding: 0;
+}
+
+.faq-answer ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.faq-answer li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--color-text-soft);
+  font-size: 0.96rem;
+  line-height: 1.78;
+}
+
+.faq-answer li::before {
+  content: "";
+  position: absolute;
+  top: 0.78em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .info-card:hover,
+  .service-card:hover,
+  .portfolio-card:hover,
+  .process-card:hover,
+  .lead-card:hover,
+  .value-card:hover,
+  .method-card:hover,
+  .scope-card:hover,
+  .package-card:hover,
+  .deliverable-card:hover,
+  .faq-item:hover,
+  .home-feature-card:hover,
+  .showcase-card:hover,
+  .image-card:hover,
+  .home-wide-visual:hover {
+    border-color: #737373;
+    box-shadow: var(--shadow-md);
+  }
+
+  .check-grid label:hover,
+  .radio-group label:hover,
+  .consent-item:hover,
+  .quick-contact a:hover {
+    border-color: #737373;
+  }
+}
+
+@media (max-width: 768px) {
+  .faq-answer {
+    padding: 0 22px 22px;
+  }
+}
+
+.skip-link {
+  color: #050505;
+  background-color: var(--color-white);
+}
+
+.package-card.featured {
+  border-color: #737373;
+  box-shadow: 0 28px 72px rgba(255, 255, 255, 0.08);
+}
+
+.logo img,
+.footer-logo img {
+  filter: none !important;
+}
+
+/* Contact page mobile: show the inquiry form immediately */
+@media (max-width: 768px) {
+  body.contact-static-page .page-hero,
+  body.contact-static-page .contact-side,
+  body.contact-static-page .form-utility {
+    display: none;
+  }
+
+  body.contact-static-page main > .section {
+    padding-top: 24px;
+  }
+
+  body.contact-static-page .form-shell {
+    display: block;
+  }
+
+  body.contact-static-page .contact-form,
+  body.contact-static-page .inquiry-form {
+    gap: 16px;
+  }
+}
