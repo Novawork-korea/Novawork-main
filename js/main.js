@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
     window.initHeaderScroll();
   }
 
+  if (typeof window.initLogoScrollHero === "function") {
+    window.initLogoScrollHero();
+  }
+
   if (typeof window.initMobileMenu === "function") {
     window.initMobileMenu();
   }

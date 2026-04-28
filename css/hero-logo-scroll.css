@@ -1,0 +1,436 @@
+/* NOVAWORK home hero: SVG scroll logo assembly
+   Scoped to .nw-logo-scroll so it does not affect the rest of the site. */
+
+.nw-logo-scroll {
+  --nw-bg: #050506;
+  --nw-white: #ffffff;
+  --nw-muted: rgba(255, 255, 255, 0.68);
+  --nw-lockup-width: clamp(360px, 34.5vw, 820px);
+  --nw-hero-fit-scale: 1;
+  --nw-lockup-y: clamp(12px, 2vh, 24px);
+
+  position: relative;
+  height: 300vh;
+  overflow: visible;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.07), transparent 24%),
+    radial-gradient(circle at 82% 70%, rgba(255, 255, 255, 0.06), transparent 26%),
+    linear-gradient(180deg, #030304 0%, #090a0f 48%, #030304 100%);
+}
+
+.nw-logo-scroll,
+.nw-logo-scroll * {
+  box-sizing: border-box;
+}
+
+.nw-logo-scroll::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.105;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 58px 58px;
+}
+
+.nw-logo-scroll::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.08), transparent 32%);
+  opacity: 0.65;
+}
+
+.nw-sticky-stage {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 2;
+  height: calc(100vh - var(--header-height));
+  height: calc(100svh - var(--header-height));
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 56px);
+  overflow: hidden;
+  contain: paint;
+}
+
+.nw-stage-copy {
+  position: absolute;
+  top: clamp(24px, 4.2vw, 56px);
+  left: clamp(22px, 6vw, 76px);
+  z-index: 4;
+  max-width: 520px;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.nw-eyebrow {
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.nw-stage-copy h1 {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: clamp(26px, 3.4vw, 52px);
+  font-weight: 760;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.nw-logo-lockup {
+  position: relative;
+  z-index: 3;
+  width: var(--nw-lockup-width);
+  max-width: calc(100vw - 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translate3d(0, var(--nw-lockup-y), 0) scale(var(--nw-hero-fit-scale));
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.nw-logo-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(62vw, calc(var(--nw-lockup-width) * 1.05), 640px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -54%) scale(0.92);
+  border-radius: 50%;
+  opacity: 0.2;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.14), transparent 58%);
+  will-change: opacity, transform;
+}
+
+.nw-logo-svg {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color: #fff;
+}
+
+.nw-logo-piece {
+  fill: currentColor;
+  opacity: 0;
+  will-change: opacity;
+  backface-visibility: hidden;
+}
+
+.nw-brand-copy {
+  position: relative;
+  z-index: 3;
+  width: min(92vw, 720px);
+  margin: clamp(18px, 2.8vw, 30px) auto 0;
+  color: rgba(255, 255, 255, 0.78);
+  text-align: center;
+  font-size: clamp(14px, 1.4vw, 18px);
+  line-height: 1.7;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transform: translateY(18px);
+  will-change: opacity, transform;
+}
+
+.nw-hero-actions {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: clamp(18px, 2.5vw, 26px);
+  opacity: 0;
+  transform: translateY(18px);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.nw-hero-actions.is-visible {
+  pointer-events: auto;
+}
+
+.nw-hero-actions .btn {
+  min-width: 168px;
+}
+
+.nw-scroll-hint {
+  position: absolute;
+  right: clamp(22px, 5vw, 72px);
+  bottom: clamp(28px, 5vw, 60px);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.54);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.nw-scroll-hint__mouse {
+  position: relative;
+  width: 28px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+}
+
+.nw-scroll-hint__mouse::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: 3px;
+  height: 7px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.64);
+  animation: nwWheel 1.4s ease-in-out infinite;
+}
+
+@keyframes nwWheel {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+}
+
+.nw-progress {
+  position: absolute;
+  left: clamp(22px, 5vw, 72px);
+  bottom: clamp(28px, 5vw, 60px);
+  z-index: 4;
+  width: min(270px, 52vw);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.13);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.nw-progress__bar {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: rgba(255, 255, 255, 0.88);
+  will-change: transform;
+}
+
+.nw-progress__text {
+  position: absolute;
+  top: -28px;
+  left: 0;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+@media (max-width: 780px) {
+  .nw-stage-copy {
+    top: 22px;
+    left: 20px;
+    right: 20px;
+    max-width: 360px;
+  }
+
+  .nw-stage-copy h1 {
+    font-size: clamp(24px, 8vw, 38px);
+  }
+
+  .nw-logo-scroll {
+    --nw-lockup-width: min(94vw, 620px);
+    --nw-lockup-y: 3vh;
+  }
+
+  .nw-logo-lockup {
+    max-width: calc(100vw - 28px);
+  }
+
+  .nw-brand-copy {
+    width: min(88vw, 520px);
+    font-size: 14px;
+  }
+
+  .nw-hero-actions {
+    width: min(92vw, 520px);
+  }
+
+  .nw-hero-actions .btn {
+    min-width: min(100%, 164px);
+  }
+
+  .nw-scroll-hint {
+    display: none;
+  }
+
+  .nw-progress {
+    left: 20px;
+    right: 20px;
+    width: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .nw-logo-scroll {
+    height: 270vh;
+  }
+
+  .nw-sticky-stage {
+    padding: 20px 16px 28px;
+  }
+
+  .nw-stage-copy h1 {
+    max-width: 12ch;
+  }
+
+  .nw-logo-scroll {
+    --nw-lockup-width: min(94vw, 520px);
+    --nw-lockup-y: 1vh;
+  }
+
+  .nw-logo-lockup {
+    max-width: calc(100vw - 24px);
+  }
+
+  .nw-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nw-hero-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-height: 720px) {
+  .nw-stage-copy h1 {
+    max-width: 360px;
+    font-size: clamp(22px, 4vw, 36px);
+  }
+}
+
+
+@media (max-height: 680px) {
+  .nw-sticky-stage {
+    padding-top: 16px;
+    padding-bottom: 18px;
+  }
+
+  .nw-stage-copy {
+    top: 16px;
+  }
+
+  .nw-eyebrow {
+    margin-bottom: 9px;
+    font-size: 10px;
+  }
+
+  .nw-stage-copy h1 {
+    font-size: clamp(20px, 3.2vw, 32px);
+    line-height: 1.06;
+  }
+
+  .nw-brand-copy {
+    margin-top: clamp(10px, 1.8vw, 16px);
+    font-size: clamp(12px, 1.6vw, 15px);
+    line-height: 1.5;
+  }
+
+  .nw-hero-actions {
+    gap: 8px;
+    margin-top: clamp(10px, 1.7vw, 16px);
+  }
+
+  .nw-hero-actions .btn {
+    min-height: 44px;
+    padding-inline: 18px;
+    font-size: 0.9rem;
+  }
+
+  .nw-progress {
+    bottom: 16px;
+  }
+}
+
+@media (max-width: 560px) and (max-height: 760px) {
+  .nw-stage-copy {
+    top: 14px;
+  }
+
+  .nw-stage-copy h1 {
+    max-width: 14ch;
+    font-size: clamp(19px, 6.4vw, 30px);
+  }
+
+  .nw-brand-copy {
+    width: min(90vw, 480px);
+  }
+
+  .nw-hero-actions .btn {
+    min-height: 42px;
+  }
+
+  .nw-progress {
+    bottom: 12px;
+  }
+}
+
+
+@media (min-width: 781px) and (max-height: 760px) {
+  .nw-scroll-hint {
+    bottom: 24px;
+  }
+
+  .nw-progress {
+    bottom: 24px;
+    width: min(230px, 42vw);
+  }
+}
+
+@media (max-height: 640px) {
+  .nw-scroll-hint,
+  .nw-progress {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-scroll-hint__mouse::before {
+    animation: none;
+  }
+}

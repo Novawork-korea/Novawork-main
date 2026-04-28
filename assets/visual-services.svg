@@ -5,9 +5,9 @@
     <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#171717" flood-opacity="0.10"/></filter>
   </defs>
 
-  <rect width="720" height="520" rx="34" fill="url(#bg)"/>
+  <rect width="720" height="520" rx="34" fill="#ffffff"/>
   <circle cx="590" cy="420" r="120" fill="#e8e8e8" opacity="0.74"/>
-  <g filter="url(#soft)">
+  <g>
     <rect x="86" y="96" width="170" height="300" rx="28" fill="#ffffff" stroke="#e8e8e8"/>
     <rect x="110" y="132" width="82" height="16" rx="8" fill="#606060" opacity="0.72"/>
     <rect x="110" y="174" width="112" height="20" rx="10" fill="#171717" opacity="0.9"/>

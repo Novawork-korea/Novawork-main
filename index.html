@@ -57,6 +57,7 @@
   <link rel="stylesheet" href="./css/pages-home.css" />
   <link rel="stylesheet" href="./css/responsive.css" />
   <link rel="stylesheet" href="./css/monochrome.css" />
+  <link rel="stylesheet" href="./css/hero-logo-scroll.css" />
 </head>
 <body class="home">
   <a class="skip-link" href="#main">본문 바로가기</a>
@@ -110,29 +111,261 @@
   </header>
 
   <main id="main">
-    <section class="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <div class="hero-content">
-            <p class="hero-badge">깔끔하게, 문의가 보이게</p>
-            <h1 class="hero-title">사업을 소개하고 문의로 이어지는 웹사이트</h1>
-            <p class="hero-desc">
-              NOVAWORK는 복잡한 표현보다 고객이 이해하기 쉬운 흐름을 먼저 정리합니다.
-              첫 화면에서 핵심 서비스가 보이고, 필요한 순간에 바로 문의할 수 있는 웹사이트를 만듭니다.
-            </p>
-
-            <div class="hero-buttons">
-              <a href="contact.html" class="btn btn-primary">접수하기</a>
-              <a href="portfolio.html" class="btn btn-secondary">제작 예시 보기</a>
+    <section class="nw-logo-scroll" aria-label="NOVAWORK 로고 스크롤 조립 애니메이션">
+          <div class="nw-sticky-stage">
+            <div class="nw-stage-copy">
+              <p class="nw-eyebrow">NOVAWORK</p>
+              <h1>브랜드의 첫 인상을 설계하고 문의로 연결합니다</h1>
             </div>
 
-            <p class="hero-note">신규 제작 · 리뉴얼 · 랜딩페이지 · 유지관리 상담 가능 · 24시간 내 1차 답변</p>
-          </div>
+            <div class="nw-logo-lockup">
+              <div class="nw-logo-aura" aria-hidden="true"></div>
 
-          <div class="hero-visual" aria-hidden="true"></div>
-        </div>
-      </div>
-    </section>
+              <svg
+                class="nw-logo-svg"
+                viewBox="285 305 730 610"
+                role="img"
+                aria-labelledby="nwLogoTitle nwLogoDesc"
+              >
+                <title id="nwLogoTitle">NOVAWORK Logo</title>
+                <desc id="nwLogoDesc">
+                  스크롤에 따라 여러 SVG 조각이 중앙으로 모이며 완성되는 NOVAWORK 로고입니다.
+                </desc>
+
+                <g class="nw-symbol" fill="currentColor">
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="left-solid-slab"
+                    data-start="0"
+                    data-end="0.70"
+                    data-x="-820"
+                    data-y="-420"
+                    data-r="-18"
+                    data-s="0.78"
+                    d="M315 326 L450 721 L491 600 L398 326 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="center-top-bar"
+                    data-start="0.08"
+                    data-end="0.52"
+                    data-x="-120"
+                    data-y="-620"
+                    data-r="9"
+                    data-s="0.92"
+                    d="M599 327 L691 328 L684 337 L606 336 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="center-left-diagonal"
+                    data-start="0.12"
+                    data-end="0.58"
+                    data-x="-720"
+                    data-y="420"
+                    data-r="15"
+                    data-s="0.86"
+                    d="M599 327 L448 752 L462 743 L606 336 Z M448 752 L531 752 L525 741 L462 743 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="center-inner-diagonal"
+                    data-start="0.18"
+                    data-end="0.64"
+                    data-x="260"
+                    data-y="640"
+                    data-r="-16"
+                    data-s="0.88"
+                    d="M531 752 L643 445 L644 415 L525 741 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="center-inner-return"
+                    data-start="0.23"
+                    data-end="0.68"
+                    data-x="80"
+                    data-y="680"
+                    data-r="12"
+                    data-s="0.9"
+                    d="M643 445 L746 751 L753 742 L644 415 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="center-right-diagonal"
+                    data-start="0.16"
+                    data-end="0.62"
+                    data-x="520"
+                    data-y="-460"
+                    data-r="-13"
+                    data-s="0.88"
+                    d="M691 328 L786 611 L785 641 L684 337 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="right-inner-diagonal"
+                    data-start="0.28"
+                    data-end="0.74"
+                    data-x="760"
+                    data-y="280"
+                    data-r="18"
+                    data-s="0.84"
+                    d="M786 611 L887 327 L894 337 L785 641 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="right-top-bar"
+                    data-start="0.32"
+                    data-end="0.76"
+                    data-x="640"
+                    data-y="-620"
+                    data-r="10"
+                    data-s="0.94"
+                    d="M887 327 L979 327 L965 337 L894 337 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-symbol-piece"
+                    data-piece="right-outer-diagonal"
+                    data-start="0.36"
+                    data-end="0.82"
+                    data-x="860"
+                    data-y="-260"
+                    data-r="-16"
+                    data-s="0.86"
+                    d="M979 327 L822 752 L815 743 L965 337 Z M822 752 L746 751 L753 742 L815 743 Z"
+                  />
+                </g>
+
+                <g class="nw-wordmark" fill="currentColor">
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-n"
+                    data-start="0.70"
+                    data-end="0.84"
+                    data-x="-220"
+                    data-y="140"
+                    data-r="-8"
+                    data-s="0.92"
+                    d="M325 827 L325 881 L333 881 L334 842 L365 881 L372 881 L372 827 L364 828 L363 866 L335 831 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-o-1"
+                    data-start="0.72"
+                    data-end="0.86"
+                    data-x="-180"
+                    data-y="170"
+                    data-r="7"
+                    data-s="0.91"
+                    fill-rule="evenodd"
+                    d="M434 826 L425 828 L414 836 L409 846 L408 856 L412 869 L419 877 L431 882 L440 882 L450 879 L460 869 L463 862 L463 847 L452 831 Z M432 833 L445 835 L452 841 L455 847 L455 861 L452 867 L441 875 L431 875 L423 871 L416 858 L419 842 L425 836 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-v"
+                    data-start="0.74"
+                    data-end="0.88"
+                    data-x="-120"
+                    data-y="180"
+                    data-r="-7"
+                    data-s="0.92"
+                    d="M493 827 L514 881 L521 881 L542 827 L534 828 L518 868 L501 827 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-a"
+                    data-start="0.76"
+                    data-end="0.90"
+                    data-x="-50"
+                    data-y="190"
+                    data-r="6"
+                    data-s="0.92"
+                    fill-rule="evenodd"
+                    d="M592 827 L569 881 L577 881 L583 867 L606 867 L612 881 L620 881 L599 828 Z M595 838 L604 859 L603 861 L587 861 L586 860 L586 858 L592 845 L593 840 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-w"
+                    data-start="0.78"
+                    data-end="0.92"
+                    data-x="50"
+                    data-y="190"
+                    data-r="-5"
+                    data-s="0.92"
+                    d="M647 827 L664 881 L672 880 L684 841 L697 881 L705 880 L721 827 L713 827 L701 867 L688 827 L680 828 L668 867 L656 828 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-o-2"
+                    data-start="0.80"
+                    data-end="0.94"
+                    data-x="120"
+                    data-y="170"
+                    data-r="7"
+                    data-s="0.91"
+                    fill-rule="evenodd"
+                    d="M770 827 L761 831 L753 840 L750 848 L751 864 L757 874 L766 880 L787 881 L795 877 L802 869 L805 861 L805 847 L801 838 L792 830 L779 826 Z M774 833 L787 835 L793 840 L797 848 L797 860 L794 867 L789 872 L782 875 L772 875 L766 872 L758 860 L760 843 L767 836 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-r"
+                    data-start="0.82"
+                    data-end="0.96"
+                    data-x="180"
+                    data-y="150"
+                    data-r="-6"
+                    data-s="0.92"
+                    fill-rule="evenodd"
+                    d="M839 827 L839 881 L847 881 L848 859 L856 859 L870 881 L879 881 L865 859 L875 851 L875 835 L862 827 Z M847 834 L848 833 L860 833 L865 835 L869 840 L868 848 L865 851 L860 853 L848 852 L847 851 Z"
+                  />
+
+                  <path
+                    class="nw-logo-piece nw-letter"
+                    data-piece="letter-k"
+                    data-start="0.84"
+                    data-end="0.98"
+                    data-x="230"
+                    data-y="130"
+                    data-r="8"
+                    data-s="0.92"
+                    d="M911 827 L911 881 L918 881 L919 855 L942 881 L952 881 L928 854 L951 827 L942 827 L920 851 L918 827 Z"
+                  />
+                </g>
+              </svg>
+
+              <p class="nw-brand-copy">
+                웹사이트 제작 · 랜딩페이지 · 유지관리까지, 사업에 필요한 온라인 접점을 명확하게 만듭니다.
+              </p>
+
+              <div class="nw-hero-actions" aria-label="주요 상담 동선">
+                <a href="contact.html" class="btn btn-primary">프로젝트 접수하기</a>
+                <a href="portfolio.html" class="btn btn-secondary">제작 예시 보기</a>
+              </div>
+            </div>
+
+            <div class="nw-scroll-hint" aria-hidden="true">
+              <span class="nw-scroll-hint__mouse"></span>
+              <span>Scroll</span>
+            </div>
+
+            <div class="nw-progress" aria-hidden="true">
+              <span class="nw-progress__text">00%</span>
+              <span class="nw-progress__bar"></span>
+            </div>
+          </div>
+        </section>
 
     <section id="about" class="section about">
       <div class="container">
@@ -534,6 +767,7 @@
   <script src="./js/modules/mobile-menu.js"></script>
   <script src="./js/modules/inquiry-form.js"></script>
   <script src="./js/modules/scroll-reveal.js"></script>
+  <script src="./js/modules/logo-scroll-hero.js"></script>
   <script src="./js/main.js"></script>
 </body>
 </html>
