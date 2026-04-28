@@ -53,7 +53,7 @@
   top: var(--header-height);
   z-index: 2;
   height: calc(100vh - var(--header-height));
-  height: calc(100svh - var(--header-height));
+  height: calc(90vh - var(--header-height));
   min-height: 0;
   display: grid;
   place-items: center;
@@ -94,12 +94,13 @@
 .nw-logo-lockup {
   position: relative;
   z-index: 3;
-  width: var(--nw-lockup-width);
+  width: min(calc(100vw - 32px), max(var(--nw-lockup-width), 720px));
   max-width: calc(100vw - 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   transform: translate3d(0, var(--nw-lockup-y), 0) scale(var(--nw-hero-fit-scale));
   transform-origin: center center;
   will-change: transform;
@@ -123,8 +124,10 @@
   position: relative;
   z-index: 2;
   display: block;
-  width: 100%;
+  width: var(--nw-lockup-width);
+  max-width: 100%;
   height: auto;
+  margin: 0 auto;
   overflow: visible;
   color: #fff;
 }
@@ -132,17 +135,23 @@
 .nw-logo-piece {
   fill: currentColor;
   opacity: 0;
-  will-change: opacity;
+  will-change: transform, opacity;
   backface-visibility: hidden;
 }
 
 .nw-brand-copy {
   position: relative;
   z-index: 3;
-  width: min(92vw, 720px);
+  display: block;
+  align-self: center;
+  width: min(720px, 100%);
+  max-width: 100%;
   margin: clamp(18px, 2.8vw, 30px) auto 0;
   color: rgba(255, 255, 255, 0.78);
   text-align: center;
+  text-wrap: balance;
+  word-break: keep-all;
+  overflow-wrap: normal;
   font-size: clamp(14px, 1.4vw, 18px);
   line-height: 1.7;
   letter-spacing: -0.02em;
@@ -283,6 +292,9 @@
 
   .nw-brand-copy {
     width: min(88vw, 520px);
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
     font-size: 14px;
   }
 
@@ -432,5 +444,34 @@
 @media (prefers-reduced-motion: reduce) {
   .nw-scroll-hint__mouse::before {
     animation: none;
+  }
+}
+
+
+@media (min-width: 781px) and (max-width: 1280px) {
+  .nw-logo-lockup {
+    width: min(calc(100vw - 32px), max(var(--nw-lockup-width), 680px));
+  }
+
+  .nw-brand-copy {
+    width: min(680px, 100%);
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+}
+
+@media (min-width: 781px) and (max-height: 760px) {
+  .nw-logo-lockup {
+    width: min(calc(100vw - 32px), max(var(--nw-lockup-width), 660px));
+  }
+
+  .nw-brand-copy {
+    width: min(660px, 100%);
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
   }
 }

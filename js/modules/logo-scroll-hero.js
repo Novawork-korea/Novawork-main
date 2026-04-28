@@ -33,10 +33,16 @@
     var progressWrap = document.querySelector(".nw-progress");
     var nextSection = section.nextElementSibling;
     var actionsAreActive = false;
-    var isTicking = false;
+    var animationFrameId = 0;
     var forceRender = false;
-    var lastAssemblyProgress = -1;
-    var lastRawProgress = -1;
+    var targetAssemblyProgress = 0;
+    var targetRawProgress = 0;
+    var currentAssemblyProgress = 0;
+    var currentRawProgress = 0;
+    var lastRenderedAssemblyProgress = -1;
+    var lastRenderedRawProgress = -1;
+    var hasRendered = false;
+    var lastFrameTime = 0;
 
     var metrics = {
       width: window.innerWidth || 1,
@@ -55,12 +61,16 @@
       return Math.min(upper, Math.max(lower, value));
     };
 
-    var easeOutCubic = function (t) {
-      return 1 - Math.pow(1 - t, 3);
+    var easeOutQuart = function (t) {
+      return 1 - Math.pow(1 - t, 4);
     };
 
     var smoothstep = function (t) {
       return t * t * (3 - 2 * t);
+    };
+
+    var smootherstep = function (t) {
+      return t * t * t * (t * (t * 6 - 15) + 10);
     };
 
     var getHeaderOffset = function () {
@@ -206,6 +216,7 @@
       한 번의 스크롤 안에서 조립 흐름이 확실히 보이도록 조정했습니다.
     */
     var COMPLETE_AT = 0.65;
+    var SCROLL_LENGTH_VH = 520;
 
     var getRawScrollProgress = function () {
       var scrollTop = getScrollTop();
@@ -214,13 +225,14 @@
 
     var animatePiece = function (state, progress) {
       var local = clamp((progress - state.start) / Math.max(0.001, state.end - state.start));
-      var eased = easeOutCubic(local);
+      var motion = smootherstep(local);
+      var eased = easeOutQuart(motion);
       var remain = 1 - eased;
       var currentX = state.x * remain;
       var currentY = state.y * remain;
       var currentR = state.r * remain;
       var currentScale = state.s + (1 - state.s) * eased;
-      var opacity = local <= 0 ? 0 : smoothstep(local);
+      var opacity = local <= 0 ? 0 : smootherstep(local);
       var opacityValue = opacity.toFixed(3);
       var transformValue =
         "translate(" + currentX.toFixed(2) + " " + currentY.toFixed(2) + ") " +
@@ -313,32 +325,86 @@
       }
     };
 
+    var updateTargets = function () {
+      targetRawProgress = getRawScrollProgress();
+      targetAssemblyProgress = clamp(targetRawProgress / COMPLETE_AT);
+    };
+
+    var getFrameSmoothing = function (timestamp) {
+      var delta = lastFrameTime ? Math.min(64, Math.max(8, timestamp - lastFrameTime)) : 16.7;
+      lastFrameTime = timestamp;
+
+      /*
+        스크롤 값은 그대로 쓰되, 화면에 그리는 값만 짧게 보간합니다.
+        그래서 휠 스크롤이 계단처럼 들어와도 SVG 조각이 한 번 더 부드럽게 따라옵니다.
+      */
+      return 1 - Math.pow(0.001, delta / 360);
+    };
+
+    var renderFrame = function (timestamp) {
+      var shouldForce = forceRender || !hasRendered;
+      var smoothing;
+      var diffAssembly;
+      var diffRaw;
+      var needsNextFrame;
+
+      animationFrameId = 0;
+      updateTargets();
+
+      if (shouldForce) {
+        currentAssemblyProgress = targetAssemblyProgress;
+        currentRawProgress = targetRawProgress;
+        lastFrameTime = timestamp;
+      } else {
+        smoothing = getFrameSmoothing(timestamp);
+        currentAssemblyProgress += (targetAssemblyProgress - currentAssemblyProgress) * smoothing;
+        currentRawProgress += (targetRawProgress - currentRawProgress) * smoothing;
+      }
+
+      diffAssembly = Math.abs(targetAssemblyProgress - currentAssemblyProgress);
+      diffRaw = Math.abs(targetRawProgress - currentRawProgress);
+
+      if (diffAssembly < 0.0008) {
+        currentAssemblyProgress = targetAssemblyProgress;
+      }
+
+      if (diffRaw < 0.0008) {
+        currentRawProgress = targetRawProgress;
+      }
+
+      if (
+        shouldForce ||
+        Math.abs(currentAssemblyProgress - lastRenderedAssemblyProgress) >= 0.0004 ||
+        Math.abs(currentRawProgress - lastRenderedRawProgress) >= 0.0004
+      ) {
+        render(currentAssemblyProgress, currentRawProgress);
+        lastRenderedAssemblyProgress = currentAssemblyProgress;
+        lastRenderedRawProgress = currentRawProgress;
+      }
+
+      hasRendered = true;
+      forceRender = false;
+
+      needsNextFrame =
+        Math.abs(targetAssemblyProgress - currentAssemblyProgress) >= 0.0008 ||
+        Math.abs(targetRawProgress - currentRawProgress) >= 0.0008;
+
+      if (needsNextFrame) {
+        animationFrameId = window.requestAnimationFrame(renderFrame);
+      } else {
+        lastFrameTime = 0;
+      }
+    };
+
     var requestRender = function (force) {
       forceRender = forceRender || Boolean(force);
+      updateTargets();
 
-      if (isTicking) {
+      if (animationFrameId) {
         return;
       }
 
-      isTicking = true;
-
-      window.requestAnimationFrame(function () {
-        var rawProgress;
-        var assemblyProgress;
-
-        isTicking = false;
-        rawProgress = getRawScrollProgress();
-        assemblyProgress = clamp(rawProgress / COMPLETE_AT);
-
-        if (!forceRender && Math.abs(assemblyProgress - lastAssemblyProgress) < 0.001 && Math.abs(rawProgress - lastRawProgress) < 0.001) {
-          return;
-        }
-
-        render(assemblyProgress, rawProgress);
-        lastAssemblyProgress = assemblyProgress;
-        lastRawProgress = rawProgress;
-        forceRender = false;
-      });
+      animationFrameId = window.requestAnimationFrame(renderFrame);
     };
 
     var handleResize = function () {
