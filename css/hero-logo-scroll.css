@@ -8,6 +8,7 @@
   --nw-lockup-width: clamp(360px, 34.5vw, 820px);
   --nw-hero-fit-scale: 1;
   --nw-lockup-y: clamp(12px, 2vh, 24px);
+  --nw-balance-y: 0px;
 
   position: relative;
   height: 300vh;
@@ -53,7 +54,8 @@
   top: var(--header-height);
   z-index: 2;
   height: calc(100vh - var(--header-height));
-  height: calc(90vh - var(--header-height));
+  height: calc(100svh - var(--header-height));
+  height: calc(100dvh - var(--header-height));
   min-height: 0;
   display: grid;
   place-items: center;
@@ -101,7 +103,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  transform: translate3d(0, var(--nw-lockup-y), 0) scale(var(--nw-hero-fit-scale));
+  transform: translate3d(0, calc(var(--nw-lockup-y) + var(--nw-balance-y)), 0) scale(var(--nw-hero-fit-scale));
   transform-origin: center center;
   will-change: transform;
 }
@@ -431,6 +433,107 @@
   .nw-progress {
     bottom: 24px;
     width: min(230px, 42vw);
+  }
+}
+
+
+
+@media (max-height: 480px) {
+  .nw-sticky-stage {
+    padding: 8px 16px 10px;
+  }
+
+  .nw-stage-copy {
+    display: none;
+  }
+
+  .nw-logo-scroll {
+    --nw-lockup-y: 0px;
+  }
+
+  .nw-logo-lockup {
+    width: min(calc(100vw - 32px), 520px);
+    max-width: calc(100vw - 32px);
+  }
+
+  .nw-brand-copy {
+    width: min(82vw, 480px);
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .nw-hero-actions {
+    width: min(88vw, 460px);
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .nw-hero-actions .btn {
+    width: 50%;
+    min-width: 0;
+    min-height: 36px;
+    padding-inline: 12px;
+    font-size: 0.8rem;
+  }
+}
+
+
+@media (max-width: 360px) and (max-height: 480px) {
+  .nw-hero-actions {
+    width: min(90vw, 300px);
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .nw-hero-actions .btn {
+    width: 100%;
+    min-height: 34px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 560px) and (max-height: 560px) {
+  .nw-sticky-stage {
+    padding: 10px 14px 12px;
+  }
+
+  .nw-logo-scroll {
+    --nw-lockup-y: 0px;
+  }
+
+  .nw-logo-lockup {
+    max-width: calc(100vw - 28px);
+  }
+
+  .nw-brand-copy {
+    width: min(90vw, 440px);
+    margin-top: 8px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .nw-hero-actions {
+    gap: 7px;
+    margin-top: 8px;
+  }
+
+  .nw-hero-actions .btn {
+    min-height: 38px;
+    padding-inline: 16px;
+    font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 360px) and (max-height: 560px) {
+  .nw-stage-copy {
+    top: 12px;
+  }
+
+  .nw-stage-copy h1 {
+    font-size: clamp(18px, 6vw, 26px);
   }
 }
 
