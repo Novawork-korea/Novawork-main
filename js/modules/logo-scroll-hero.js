@@ -33,11 +33,6 @@
     var progressWrap = document.querySelector(".nw-progress");
     var nextSection = section.nextElementSibling;
 
-    if (aura) {
-      aura.remove();
-      aura = null;
-    }
-
     var actionsAreActive = false;
     var animationFrameId = 0;
     var forceRender = false;
