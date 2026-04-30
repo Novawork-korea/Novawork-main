@@ -425,15 +425,9 @@ window.initInquiryForm = function initInquiryForm() {
 
   if (iframe) {
     iframe.addEventListener("load", function () {
-      if (!isSubmitting || serverMessageReceived) {
-        return;
-      }
-
-      window.setTimeout(function () {
-        if (isSubmitting && !serverMessageReceived) {
-          finishError("서버 응답을 확인하지 못했습니다. 전화 또는 이메일로 문의해 주세요.");
-        }
-      }, 800);
+      // Google Apps Script는 중간 프레임을 먼저 로드한 뒤 실제 HtmlService 응답을 실행할 수 있습니다.
+      // iframe load 자체만으로 성공/실패를 판단하면 정상 접수 중에도 오류가 표시될 수 있으므로,
+      // 최종 판단은 postMessage 또는 15초 fallbackTimer에 맡깁니다.
     });
   }
 
