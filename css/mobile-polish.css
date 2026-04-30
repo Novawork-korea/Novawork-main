@@ -1,0 +1,748 @@
+/* Mobile readability and compact layout polish - 2026-04-30 */
+
+/* Home hero: clickable downward arrow */
+.nw-logo-scroll .nw-scroll-hint {
+  --nw-arrow-size: 48px;
+  left: 50%;
+  right: auto;
+  bottom: clamp(22px, 4svh, 46px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nw-arrow-size);
+  height: var(--nw-arrow-size);
+  margin-left: calc(var(--nw-arrow-size) / -2);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+  text-decoration: none;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.nw-logo-scroll .nw-scroll-hint:hover,
+.nw-logo-scroll .nw-scroll-hint:focus-visible {
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.nw-logo-scroll .nw-scroll-hint:focus-visible {
+  outline: 0;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.14),
+    0 16px 44px rgba(0, 0, 0, 0.26);
+}
+
+.nw-scroll-hint__arrow {
+  width: 13px;
+  height: 13px;
+  margin-top: -4px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: nwArrowDownPulse 1.55s ease-in-out infinite;
+}
+
+@keyframes nwArrowDownPulse {
+  0%, 100% {
+    opacity: 0.46;
+    translate: 0 -3px;
+  }
+
+  45% {
+    opacity: 1;
+    translate: 0 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 54px;
+    --section-padding-compact: 40px;
+  }
+
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    line-height: 1.64;
+  }
+
+  .container,
+  .hero .container {
+    width: min(var(--container-width), calc(100% - 28px));
+  }
+
+  .section-head {
+    max-width: 100%;
+    margin-bottom: 26px;
+  }
+
+  .section-label,
+  .package-label,
+  .scope-label,
+  .value-label,
+  .example-label,
+  .process-number,
+  .deliverable-card span,
+  .method-card span,
+  .service-number,
+  .showcase-body span,
+  .home-feature-card span,
+  .criteria-card span,
+  .form-step {
+    min-height: 28px;
+    padding: 0 10px;
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+  }
+
+  .section-label,
+  .process-number,
+  .value-label,
+  .method-card span,
+  .scope-label,
+  .package-label,
+  .deliverable-card span,
+  .example-label,
+  .service-number,
+  .showcase-body span,
+  .home-feature-card span,
+  .criteria-card span {
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    margin-bottom: 10px;
+    font-size: clamp(1.55rem, 6.4vw, 2.05rem);
+    line-height: 1.16;
+  }
+
+  .section-desc {
+    font-size: 0.93rem;
+    line-height: 1.62;
+  }
+
+  .page-hero {
+    padding: calc(var(--header-height) + 28px) 0 34px;
+  }
+
+  .page-hero-with-visual {
+    padding-bottom: 40px;
+  }
+
+  .page-hero-grid,
+  .hero-grid,
+  .form-shell,
+  .split-section,
+  .home-split-grid {
+    gap: 18px;
+  }
+
+  .page-hero-visual,
+  .image-card,
+  .home-wide-visual {
+    min-height: 0;
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .page-hero-visual img,
+  .image-card img,
+  .home-wide-visual img {
+    min-height: 140px;
+    max-height: 190px;
+  }
+
+  .page-hero-points,
+  .form-utility {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .page-hero-points span,
+  .form-utility span,
+  .cta-points li {
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  .about-grid,
+  .service-list,
+  .portfolio-grid,
+  .package-grid,
+  .home-feature-grid,
+  .showcase-grid,
+  .process-list,
+  .value-grid,
+  .method-grid,
+  .scope-grid,
+  .deliverable-grid,
+  .example-detail-grid,
+  .criteria-grid,
+  .sample-summary-grid,
+  .trust-strip,
+  .check-grid,
+  .radio-group,
+  .form-grid {
+    gap: 14px;
+  }
+
+  .process-list,
+  .value-grid,
+  .method-grid,
+  .deliverable-grid,
+  .criteria-grid,
+  .sample-summary-grid,
+  .showcase-grid,
+  .trust-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scope-grid,
+  .about-grid,
+  .service-list,
+  .portfolio-grid,
+  .package-grid,
+  .home-feature-grid,
+  .form-grid,
+  .check-grid,
+  .radio-group {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .info-card,
+  .service-card,
+  .process-card,
+  .contact-panel,
+  .form-section,
+  .portfolio-content,
+  .lead-card,
+  .value-card,
+  .method-card,
+  .scope-card,
+  .package-card,
+  .deliverable-card,
+  .privacy-card,
+  .contact-box,
+  .criteria-card,
+  .quote-criteria,
+  .notice-box,
+  .trust-item,
+  .showcase-body {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .info-card h3,
+  .service-card h3,
+  .process-card h3,
+  .contact-panel h3,
+  .portfolio-content h3,
+  .value-card h3,
+  .method-card h3,
+  .scope-card h3,
+  .package-card h3,
+  .deliverable-card h3,
+  .home-feature-card h3,
+  .showcase-body h3,
+  .criteria-card h4,
+  .privacy-card h2,
+  .privacy-card h3,
+  .faq-category-title {
+    margin-bottom: 8px;
+    font-size: 1.02rem;
+    line-height: 1.32;
+  }
+
+  .info-card p,
+  .service-card p,
+  .process-card p,
+  .contact-panel p,
+  .portfolio-content p,
+  .value-card p,
+  .method-card p,
+  .scope-card p,
+  .package-card p,
+  .deliverable-card p,
+  .privacy-card p,
+  .home-feature-card p,
+  .showcase-body p,
+  .criteria-card p,
+  .notice-box p,
+  .form-text,
+  .faq-item p,
+  .faq-answer li {
+    font-size: 0.88rem;
+    line-height: 1.58;
+  }
+
+  .service-card,
+  .package-card {
+    gap: 12px;
+  }
+
+  .service-card-media {
+    border-radius: 14px;
+  }
+
+  .service-card-media img {
+    height: 118px;
+    padding: 12px;
+  }
+
+  .service-card ul,
+  .package-list,
+  .deliverable-list,
+  .visual-check-list,
+  .home-feature-list,
+  .privacy-card ul,
+  .privacy-list,
+  .faq-answer ul {
+    gap: 7px;
+  }
+
+  .service-card li,
+  .package-list li,
+  .deliverable-list li,
+  .visual-check-list li,
+  .home-feature-list li,
+  .privacy-card li,
+  .privacy-list li {
+    padding-left: 16px;
+    font-size: 0.88rem;
+    line-height: 1.56;
+  }
+
+  .home-feature-card {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .home-feature-card figure {
+    min-height: 72px;
+    border-radius: 14px;
+  }
+
+  .home-feature-card figure img {
+    width: 78%;
+    height: 52px;
+  }
+
+  .home-feature-card span,
+  .showcase-body span {
+    margin-bottom: 8px;
+  }
+
+  .showcase-media {
+    min-height: 108px;
+    padding: 12px;
+  }
+
+  .showcase-media img {
+    height: 96px;
+  }
+
+  .portfolio-thumb {
+    min-height: 132px;
+    padding: 14px;
+  }
+
+  .portfolio-thumb img {
+    height: 104px;
+  }
+
+  .portfolio-thumb span {
+    left: 12px;
+    bottom: 12px;
+    min-height: 28px;
+    padding: 0 9px;
+    font-size: 0.74rem;
+  }
+
+  .chip-list {
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .chip {
+    min-height: 28px;
+    padding: 0 9px;
+    font-size: 0.74rem;
+  }
+
+  .portfolio-upload-grid {
+    gap: 14px;
+  }
+
+  .portfolio-upload-body,
+  .kakao-channel-box {
+    padding: 18px;
+  }
+
+  .portfolio-upload-media,
+  .portfolio-upload-media img {
+    min-height: 158px;
+    height: 158px;
+  }
+
+  .portfolio-link-hint {
+    min-height: 30px;
+    margin-top: 14px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+
+  .quote-criteria {
+    margin-top: 24px;
+  }
+
+  .quote-criteria-head {
+    margin-bottom: 16px;
+  }
+
+  .quote-criteria-head h3 {
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+  }
+
+  .kakao-channel-box {
+    gap: 14px;
+  }
+
+  .kakao-steps {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .kakao-steps span {
+    min-height: 34px;
+    font-size: 0.82rem;
+  }
+
+  .kakao-search-card {
+    display: grid;
+    min-height: 108px;
+    padding: 12px;
+  }
+
+  .kakao-search-card strong {
+    font-size: 1.85rem;
+    letter-spacing: 0.1em;
+  }
+
+  .cta-band {
+    gap: 18px;
+  }
+
+  .cta-points {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .btn,
+  .btn-small {
+    min-height: 46px;
+    padding: 0 18px;
+    font-size: 0.9rem;
+  }
+
+  .faq-list,
+  .privacy-content {
+    gap: 12px;
+  }
+
+  .faq-category {
+    margin-top: 30px;
+  }
+
+  .faq-item summary {
+    min-height: 54px;
+    padding: 0 18px;
+    font-size: 0.94rem;
+  }
+
+  .faq-item p,
+  .faq-answer {
+    padding: 0 18px 18px;
+  }
+
+  .form-shell {
+    display: block;
+  }
+
+  .contact-form,
+  .inquiry-form {
+    gap: 14px;
+  }
+
+  .form-heading {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .form-step {
+    min-width: 38px;
+    height: 28px;
+  }
+
+  .form-title {
+    margin-bottom: 4px;
+    font-size: 1.04rem;
+  }
+
+  input,
+  select {
+    min-height: 46px;
+    padding: 0 12px;
+    font-size: 0.92rem;
+  }
+
+  textarea,
+  .inquiry-form textarea {
+    min-height: 132px;
+    padding: 12px;
+    font-size: 0.92rem;
+  }
+
+  .check-grid label,
+  .radio-group label,
+  .consent-item {
+    min-height: 46px;
+    padding: 11px 12px;
+    border-radius: 14px;
+    font-size: 0.88rem;
+    line-height: 1.42;
+  }
+
+  .field-spaced {
+    margin-top: 12px;
+  }
+
+  .form-submit-bar {
+    gap: 10px;
+  }
+
+  .form-submit-note,
+  .field-help,
+  .field-error,
+  .text-counter,
+  .form-status {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .nw-logo-scroll .nw-progress {
+    display: none;
+  }
+
+  .nw-logo-scroll .nw-scroll-hint {
+    --nw-arrow-size: 44px;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    display: inline-flex;
+    color: rgba(255, 255, 255, 0.74);
+    background: rgba(255, 255, 255, 0.075);
+  }
+
+  .nw-scroll-hint__arrow {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --section-padding: 44px;
+    --section-padding-compact: 32px;
+  }
+
+  .container,
+  .hero .container {
+    width: min(var(--container-width), calc(100% - 24px));
+  }
+
+  .section-head {
+    margin-bottom: 22px;
+  }
+
+  .section-title {
+    font-size: clamp(1.42rem, 7.2vw, 1.82rem);
+  }
+
+  .section-desc {
+    font-size: 0.9rem;
+  }
+
+  .page-hero {
+    padding: calc(var(--header-height) + 22px) 0 28px;
+  }
+
+  .page-hero-points,
+  .form-utility,
+  .cta-points {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .process-list,
+  .value-grid,
+  .method-grid,
+  .deliverable-grid,
+  .criteria-grid,
+  .sample-summary-grid,
+  .showcase-grid,
+  .trust-strip {
+    gap: 10px;
+  }
+
+  .card,
+  .info-card,
+  .service-card,
+  .process-card,
+  .contact-panel,
+  .form-section,
+  .portfolio-content,
+  .lead-card,
+  .value-card,
+  .method-card,
+  .scope-card,
+  .package-card,
+  .deliverable-card,
+  .privacy-card,
+  .contact-box,
+  .criteria-card,
+  .quote-criteria,
+  .notice-box,
+  .trust-item,
+  .showcase-body {
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  .process-card,
+  .value-card,
+  .method-card,
+  .deliverable-card,
+  .criteria-card,
+  .trust-item,
+  .showcase-body {
+    padding: 14px;
+  }
+
+  .info-card h3,
+  .service-card h3,
+  .process-card h3,
+  .contact-panel h3,
+  .portfolio-content h3,
+  .value-card h3,
+  .method-card h3,
+  .scope-card h3,
+  .package-card h3,
+  .deliverable-card h3,
+  .home-feature-card h3,
+  .showcase-body h3,
+  .criteria-card h4,
+  .privacy-card h2,
+  .privacy-card h3 {
+    font-size: 0.96rem;
+  }
+
+  .process-card p,
+  .value-card p,
+  .method-card p,
+  .deliverable-card p,
+  .criteria-card p,
+  .showcase-body p,
+  .trust-item span {
+    font-size: 0.8rem;
+    line-height: 1.46;
+  }
+
+  .home-feature-card {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .home-feature-card figure {
+    min-height: 64px;
+  }
+
+  .home-feature-card figure img {
+    height: 46px;
+  }
+
+  .showcase-media {
+    min-height: 94px;
+    padding: 10px;
+  }
+
+  .showcase-media img {
+    height: 82px;
+  }
+
+  .page-hero-visual img,
+  .image-card img,
+  .home-wide-visual img {
+    min-height: 118px;
+    max-height: 156px;
+  }
+
+  .portfolio-upload-media,
+  .portfolio-upload-media img {
+    min-height: 142px;
+    height: 142px;
+  }
+
+  .faq-item summary {
+    min-height: 50px;
+  }
+
+  .nw-logo-scroll .nw-scroll-hint {
+    --nw-arrow-size: 40px;
+  }
+}
+
+@media (max-width: 360px) {
+  .page-hero-points,
+  .form-utility,
+  .cta-points,
+  .process-list,
+  .value-grid,
+  .method-grid,
+  .deliverable-grid,
+  .criteria-grid,
+  .sample-summary-grid,
+  .showcase-grid,
+  .trust-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .home-feature-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-scroll-hint__arrow {
+    animation: none;
+  }
+}
