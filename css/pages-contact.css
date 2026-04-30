@@ -211,3 +211,7 @@
 .contact-panel .business-mini-list li {
   grid-template-columns: 86px minmax(0, 1fr);
 }
+
+.js-conditional-field[hidden] {
+  display: none !important;
+}

@@ -5,6 +5,10 @@ window.initInquiryForm = function initInquiryForm() {
     return;
   }
 
+  const DETAILS_MIN_LENGTH = 20;
+  const TRACKING_FIELDS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+  const MESSAGE_SOURCE = "novawork-inquiry";
+
   const submitButton = form.querySelector('button[type="submit"]');
   const detailsField = form.querySelector("#details");
   const detailsCounter = form.querySelector("[data-details-count]");
@@ -14,12 +18,19 @@ window.initInquiryForm = function initInquiryForm() {
   const privacyField = form.querySelector('input[name="privacy"]');
   const honeypotField = form.querySelector('input[name="website"]');
   const serviceFields = form.querySelectorAll('input[name="service"]');
+  const serviceOtherCheck = form.querySelector("#service-other-check");
+  const serviceOtherField = form.querySelector("#service-other");
+  const serviceOtherWrap = form.querySelector("[data-service-other-field]");
+  const sourceField = form.querySelector("#source");
+  const sourceDetailField = form.querySelector("#source-detail");
+  const sourceDetailWrap = form.querySelector("[data-source-detail-field]");
   const iframe =
     document.querySelector('iframe[name="' + form.getAttribute("target") + '"]') ||
     document.querySelector("#form-response-frame");
 
   let isSubmitting = false;
   let fallbackTimer = null;
+  let serverMessageReceived = false;
   const defaultButtonText = submitButton ? submitButton.textContent : "문의 접수하기";
 
   const createStatusBox = function () {
@@ -40,7 +51,8 @@ window.initInquiryForm = function initInquiryForm() {
       return;
     }
 
-    detailsCounter.textContent = detailsField.value.trim().length + "자";
+    const length = detailsField.value.trim().length;
+    detailsCounter.textContent = length + "자 / 최소 " + DETAILS_MIN_LENGTH + "자";
   };
 
   const syncChoiceState = function () {
@@ -48,6 +60,35 @@ window.initInquiryForm = function initInquiryForm() {
       const input = label.querySelector('input[type="checkbox"], input[type="radio"]');
       label.classList.toggle("is-checked", Boolean(input && input.checked));
     });
+  };
+
+  const syncConditionalFields = function () {
+    const showServiceOther = Boolean(serviceOtherCheck && serviceOtherCheck.checked);
+
+    if (serviceOtherWrap) {
+      serviceOtherWrap.hidden = !showServiceOther;
+    }
+
+    if (!showServiceOther && serviceOtherField) {
+      serviceOtherField.value = "";
+      serviceOtherField.classList.remove("is-invalid");
+      serviceOtherField.removeAttribute("aria-invalid");
+      serviceOtherField.removeAttribute("aria-describedby");
+    }
+
+    const sourceValue = sourceField ? sourceField.value : "";
+    const showSourceDetail = ["SNS", "지인 소개", "기타"].includes(sourceValue);
+
+    if (sourceDetailWrap) {
+      sourceDetailWrap.hidden = !showSourceDetail;
+    }
+
+    if (!showSourceDetail && sourceDetailField) {
+      sourceDetailField.value = "";
+      sourceDetailField.classList.remove("is-invalid");
+      sourceDetailField.removeAttribute("aria-invalid");
+      sourceDetailField.removeAttribute("aria-describedby");
+    }
   };
 
   const clearStatus = function () {
@@ -160,7 +201,50 @@ window.initInquiryForm = function initInquiryForm() {
     submitButton.textContent = submitting ? "전송 중..." : defaultButtonText;
   };
 
-  const finishSubmission = function (message, resetForm) {
+  const setHiddenValue = function (selector, value) {
+    const field = form.querySelector(selector);
+
+    if (field) {
+      field.value = value || "";
+    }
+  };
+
+  const readStoredTrackingValue = function (name) {
+    try {
+      return window.sessionStorage.getItem("novawork_" + name) || "";
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const writeStoredTrackingValue = function (name, value) {
+    if (!value) {
+      return;
+    }
+
+    try {
+      window.sessionStorage.setItem("novawork_" + name, value);
+    } catch (error) {
+      // sessionStorage를 사용할 수 없는 환경에서는 현재 URL 값만 사용합니다.
+    }
+  };
+
+  const populateTrackingFields = function () {
+    const params = new URLSearchParams(window.location.search);
+
+    TRACKING_FIELDS.forEach(function (name) {
+      const value = params.get(name) || readStoredTrackingValue(name);
+      writeStoredTrackingValue(name, value);
+      setHiddenValue("#" + name.replace(/_/g, "-"), value);
+    });
+
+    setHiddenValue("#page-url", window.location.href);
+    setHiddenValue("#page-origin", window.location.origin);
+    setHiddenValue("#user-agent", window.navigator.userAgent);
+    setHiddenValue("#submitted-at-client", new Date().toISOString());
+  };
+
+  const finishSuccess = function (message, resetForm) {
     if (!isSubmitting) {
       return;
     }
@@ -193,7 +277,27 @@ window.initInquiryForm = function initInquiryForm() {
       form.reset();
       updateCounter();
       syncChoiceState();
+      syncConditionalFields();
+      populateTrackingFields();
     }
+  };
+
+  const finishError = function (message) {
+    if (!isSubmitting) {
+      return;
+    }
+
+    const statusBox = createStatusBox();
+    isSubmitting = false;
+
+    if (fallbackTimer) {
+      window.clearTimeout(fallbackTimer);
+      fallbackTimer = null;
+    }
+
+    statusBox.className = "form-status is-error";
+    statusBox.textContent = message || "전송 중 오류가 발생했습니다. 전화 또는 이메일로 문의해 주세요.";
+    setSubmitting(false);
   };
 
   const handleSpamSubmission = function (event) {
@@ -203,6 +307,8 @@ window.initInquiryForm = function initInquiryForm() {
     form.reset();
     updateCounter();
     syncChoiceState();
+    syncConditionalFields();
+    populateTrackingFields();
 
     statusBox.className = "form-status is-success";
     statusBox.textContent = "문의가 접수되었습니다.";
@@ -212,6 +318,7 @@ window.initInquiryForm = function initInquiryForm() {
     let valid = true;
 
     clearErrors();
+    syncConditionalFields();
 
     if (nameField && !nameField.value.trim()) {
       showFieldError(nameField, "담당자 이름을 입력해 주세요.");
@@ -241,8 +348,18 @@ window.initInquiryForm = function initInquiryForm() {
       valid = false;
     }
 
-    if (detailsField && detailsField.value.trim().length < 5) {
-      showFieldError(detailsField, "프로젝트 내용을 간단히 입력해 주세요.");
+    if (serviceOtherCheck && serviceOtherCheck.checked && serviceOtherField && !serviceOtherField.value.trim()) {
+      showFieldError(serviceOtherField, "기타 서비스 내용을 입력해 주세요.");
+      valid = false;
+    }
+
+    if (detailsField && detailsField.value.trim().length < DETAILS_MIN_LENGTH) {
+      showFieldError(detailsField, "프로젝트 내용을 최소 " + DETAILS_MIN_LENGTH + "자 이상 입력해 주세요.");
+      valid = false;
+    }
+
+    if (sourceField && sourceField.value === "기타" && sourceDetailField && !sourceDetailField.value.trim()) {
+      showFieldError(sourceDetailField, "기타 유입 경로를 입력해 주세요.");
       valid = false;
     }
 
@@ -256,6 +373,8 @@ window.initInquiryForm = function initInquiryForm() {
 
   form.addEventListener("submit", function (event) {
     const statusBox = createStatusBox();
+
+    populateTrackingFields();
 
     if (honeypotField && honeypotField.value.trim()) {
       handleSpamSubmission(event);
@@ -271,6 +390,7 @@ window.initInquiryForm = function initInquiryForm() {
     }
 
     isSubmitting = true;
+    serverMessageReceived = false;
     setSubmitting(true);
     statusBox.className = "form-status";
     statusBox.textContent = "문의 내용을 전송하고 있습니다.";
@@ -280,13 +400,40 @@ window.initInquiryForm = function initInquiryForm() {
     }
 
     fallbackTimer = window.setTimeout(function () {
-      finishSubmission("전송 확인이 지연되고 있습니다. 중복 제출하지 마시고, 24시간 내 답변이 없으면 전화 또는 이메일로 확인해 주세요.", false);
-    }, 10000);
+      if (!serverMessageReceived) {
+        finishError("전송 확인이 지연되고 있습니다. 중복 제출하지 마시고, 24시간 내 답변이 없으면 전화 또는 이메일로 확인해 주세요.");
+      }
+    }, 15000);
+  });
+
+  window.addEventListener("message", function (event) {
+    const data = event.data || {};
+
+    if (!data || data.source !== MESSAGE_SOURCE || !isSubmitting) {
+      return;
+    }
+
+    serverMessageReceived = true;
+
+    if (data.status === "success") {
+      finishSuccess(data.message || "문의가 접수되었습니다. 24시간 내 1차 답변을 드리겠습니다.", true);
+      return;
+    }
+
+    finishError(data.message || "전송 중 오류가 발생했습니다. 전화 또는 이메일로 문의해 주세요.");
   });
 
   if (iframe) {
     iframe.addEventListener("load", function () {
-      finishSubmission("문의가 접수되었습니다. 24시간 내 1차 답변을 드리겠습니다.", true);
+      if (!isSubmitting || serverMessageReceived) {
+        return;
+      }
+
+      window.setTimeout(function () {
+        if (isSubmitting && !serverMessageReceived) {
+          finishError("서버 응답을 확인하지 못했습니다. 전화 또는 이메일로 문의해 주세요.");
+        }
+      }, 800);
     });
   }
 
@@ -317,9 +464,12 @@ window.initInquiryForm = function initInquiryForm() {
       clearStatus();
       updateCounter();
       syncChoiceState();
+      syncConditionalFields();
     });
   });
 
+  populateTrackingFields();
   updateCounter();
   syncChoiceState();
+  syncConditionalFields();
 };

@@ -5,6 +5,26 @@
     return String(value || "").replace(/\s+/g, " ").trim().slice(0, 80);
   }
 
+
+  function storeTrackingParams() {
+    var params = new URLSearchParams(window.location.search);
+    var names = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+
+    names.forEach(function (name) {
+      var value = params.get(name);
+
+      if (!value) {
+        return;
+      }
+
+      try {
+        window.sessionStorage.setItem("novawork_" + name, safeText(value));
+      } catch (error) {
+        // sessionStorage를 사용할 수 없는 환경에서는 저장하지 않습니다.
+      }
+    });
+  }
+
   function sendEvent(eventName, params) {
     var payload = Object.assign({
       event_category: "novawork_engagement"
@@ -80,6 +100,8 @@
       }, params || {}));
     }
   };
+
+  storeTrackingParams();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {

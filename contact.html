@@ -149,25 +149,37 @@
             </div>
           </aside>
 
-          <form id="inquiry-form" class="contact-form inquiry-form" action="https://script.google.com/macros/s/AKfycbyPaufR4QBB_t4iOMAW-g078iw9WdChrPaZZW1-TD_o4s-yWYymDs6nAtCZfeHE-bA/exec" method="post" target="hidden_iframe">
+          <form id="inquiry-form" class="contact-form inquiry-form" action="https://script.google.com/macros/s/AKfycbxxDswCOP2_6uxYcz5cutjwRBDtF9L9iIF1uO2mptlBODBvC3DDG27diX_1JjGpLPk/exec" method="post" target="hidden_iframe" accept-charset="UTF-8" novalidate>
             <div class="form-utility" aria-label="작성 안내"><span>작성 시간 1~2분</span><span>이름 · 연락수단 · 서비스 · 내용만 필수</span><span>예산/일정은 미정이어도 가능</span></div>
+
+            <input type="hidden" name="form_name" value="NOVAWORK 프로젝트 접수" />
+            <input type="hidden" name="form_version" value="2026-04-30-v2" />
+            <input id="page-url" type="hidden" name="page_url" value="" />
+            <input id="page-origin" type="hidden" name="page_origin" value="" />
+            <input id="user-agent" type="hidden" name="user_agent" value="" />
+            <input id="submitted-at-client" type="hidden" name="submitted_at_client" value="" />
+            <input id="utm-source" type="hidden" name="utm_source" value="" />
+            <input id="utm-medium" type="hidden" name="utm_medium" value="" />
+            <input id="utm-campaign" type="hidden" name="utm_campaign" value="" />
+            <input id="utm-term" type="hidden" name="utm_term" value="" />
+            <input id="utm-content" type="hidden" name="utm_content" value="" />
 
             <div class="honeypot-field" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
 
             <div class="form-section">
               <div class="form-heading"><span class="form-step">01</span><div><h2 class="form-title">기본 정보</h2><p class="form-text">상담을 위해 필요한 기본 정보를 입력해 주십시오.</p></div></div>
               <div class="form-grid">
-                <div class="field"><label class="field-label" for="company">회사명 / 업체명 <span class="field-optional">선택</span></label><input id="company" name="company" type="text" autocomplete="organization" /></div>
-                <div class="field"><label class="field-label" for="name">담당자 이름 <span class="field-required">*</span></label><input id="name" name="name" type="text" autocomplete="name" required /></div>
-                <div class="field"><label class="field-label" for="phone">담당자 연락처</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="010-1234-5678" /><p class="field-help">전화 회신을 원하시면 입력해 주세요.</p></div>
-                <div class="field"><label class="field-label" for="email">이메일</label><input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" /><p class="field-help">연락처 또는 이메일 중 하나는 입력해 주세요.</p></div>
-                <div class="field is-full"><label class="field-label" for="homepage">홈페이지 URL</label><input id="homepage" name="homepage" type="url" placeholder="https://example.com" /><p class="field-help">운영 중인 사이트가 있다면 남겨주십시오.</p></div>
+                <div class="field"><label class="field-label" for="company">회사명 / 업체명 <span class="field-optional">선택</span></label><input id="company" name="company" type="text" autocomplete="organization" maxlength="80" /></div>
+                <div class="field"><label class="field-label" for="name">담당자 이름 <span class="field-required">*</span></label><input id="name" name="name" type="text" autocomplete="name" maxlength="40" required /></div>
+                <div class="field"><label class="field-label" for="phone">담당자 연락처</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="010-1234-5678" maxlength="30" /><p class="field-help">전화 회신을 원하시면 입력해 주세요.</p></div>
+                <div class="field"><label class="field-label" for="email">이메일</label><input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" maxlength="120" /><p class="field-help">연락처 또는 이메일 중 하나는 입력해 주세요.</p></div>
+                <div class="field is-full"><label class="field-label" for="homepage">홈페이지 URL</label><input id="homepage" name="homepage" type="url" placeholder="https://example.com" maxlength="300" /><p class="field-help">운영 중인 사이트가 있다면 남겨주십시오.</p></div>
               </div>
             </div>
 
             <div class="form-section">
-              <div class="form-heading"><span class="form-step">02</span><div><h2 class="form-title">필요한 서비스</h2><p class="form-text">해당되는 항목을 모두 선택해 주십시오.</p></div></div>
-              <div class="check-grid">
+              <div class="form-heading"><span class="form-step">02</span><div><h2 class="form-title">필요한 서비스</h2><p class="form-text">해당되는 항목을 모두 선택해 주십시오. 복수 선택 항목은 시트에 모두 저장됩니다.</p></div></div>
+              <div class="check-grid" data-service-group>
                 <label><input type="checkbox" name="service" value="신규 웹사이트 제작" /> 신규 웹사이트 제작</label>
                 <label><input type="checkbox" name="service" value="기존 사이트 리뉴얼" /> 기존 사이트 리뉴얼</label>
                 <label><input type="checkbox" name="service" value="랜딩페이지 제작" /> 랜딩페이지 제작</label>
@@ -175,32 +187,42 @@
                 <label><input type="checkbox" name="service" value="문의폼 연결" /> 문의폼 연결</label>
                 <label><input type="checkbox" name="service" value="기본 SEO 세팅" /> 기본 SEO 세팅</label>
                 <label><input type="checkbox" name="service" value="콘텐츠 구조 정리" /> 콘텐츠 구조 정리</label>
-                <label><input type="checkbox" name="service" value="기타" /> 기타</label>
+                <label><input id="service-other-check" type="checkbox" name="service" value="기타" /> 기타</label>
+              </div>
+              <div class="field field-spaced is-full js-conditional-field" data-service-other-field hidden>
+                <label class="field-label" for="service-other">기타 서비스 내용</label>
+                <input id="service-other" name="service_other" type="text" placeholder="예) 예약 시스템, 채널톡 연결, 간단한 관리자 기능 등" maxlength="120" />
+                <p class="field-help">기타를 선택했다면 필요한 내용을 짧게 적어주세요.</p>
               </div>
             </div>
 
             <div class="form-section">
               <div class="form-heading"><span class="form-step">03</span><div><h2 class="form-title">프로젝트 내용</h2><p class="form-text">예산과 일정, 참고할 자료가 있다면 함께 적어주십시오.</p></div></div>
               <div class="form-grid">
-                <div class="field"><label class="field-label" for="budget">예산 <span class="field-optional">선택</span></label><select id="budget" name="budget"><option value="">예산 선택 또는 미정</option><option value="100만원 미만">100만원 미만</option><option value="100만원 ~ 300만원">100만원 ~ 300만원</option><option value="300만원 ~ 500만원">300만원 ~ 500만원</option><option value="500만원 ~ 1,000만원">500만원 ~ 1,000만원</option><option value="1,000만원 이상">1,000만원 이상</option><option value="미정">미정</option></select></div>
+                <div class="field"><label class="field-label" for="budget">예산 <span class="field-optional">선택</span></label><select id="budget" name="budget"><option value="">예산 선택 또는 미정</option><option value="소형 작업 상담">소형 작업 상담</option><option value="100만원 ~ 300만원">100만원 ~ 300만원</option><option value="300만원 ~ 500만원">300만원 ~ 500만원</option><option value="500만원 ~ 1,000만원">500만원 ~ 1,000만원</option><option value="1,000만원 이상">1,000만원 이상</option><option value="미정">미정</option></select></div>
                 <div class="field"><label class="field-label" for="schedule">일정 <span class="field-optional">선택</span></label><select id="schedule" name="schedule"><option value="">일정 선택 또는 미정</option><option value="최대한 빠르게">최대한 빠르게</option><option value="1개월 이내">1개월 이내</option><option value="1~3개월 이내">1~3개월 이내</option><option value="3~6개월 이내">3~6개월 이내</option><option value="일정 미정">일정 미정</option></select></div>
-                <div class="field is-full"><label class="field-label" for="reference">참고 사이트 URL</label><input id="reference" name="reference" type="url" placeholder="https://example.com" /><p class="field-help">벤치마킹 중인 사이트가 있으면 함께 적어주십시오.</p></div>
-                <div class="field is-full"><label class="field-label" for="details">프로젝트 상세 내용 <span class="field-required">*</span></label><textarea id="details" name="details" placeholder="예) 제작 목적, 필요한 기능, 원하는 분위기, 현재 운영 중인 문제점 등을 작성해 주십시오." required></textarea><p class="field-help">간단히 적어도 접수 가능합니다. 상세할수록 더 정확한 안내가 가능합니다.</p><p class="text-counter" data-details-count>0자</p></div>
+                <div class="field is-full"><label class="field-label" for="reference">참고 사이트 URL</label><input id="reference" name="reference" type="text" placeholder="https://example.com, https://example.co.kr" maxlength="600" /><p class="field-help">참고 사이트가 여러 개라면 쉼표로 구분해 적어주세요.</p></div>
+                <div class="field is-full"><label class="field-label" for="details">프로젝트 상세 내용 <span class="field-required">*</span></label><textarea id="details" name="details" placeholder="예) 업종, 필요한 페이지, 원하는 분위기, 꼭 필요한 기능, 현재 운영 중인 문제점을 적어주세요." minlength="20" maxlength="2000" required></textarea><p class="field-help">최소 20자 이상 적어주세요. 상세할수록 더 정확한 안내가 가능합니다.</p><p class="text-counter" data-details-count>0자</p></div>
               </div>
             </div>
 
             <div class="form-section">
-              <div class="form-heading"><span class="form-step">04</span><div><h2 class="form-title">상담 방식 및 유입 경로</h2><p class="form-text">원하시는 상담 방식이 있다면 선택해 주십시오.</p></div></div>
+              <div class="form-heading"><span class="form-step">04</span><div><h2 class="form-title">상담 방식 및 유입 경로</h2><p class="form-text">원하시는 상담 방식과 유입 경로를 남겨주시면 응대와 마케팅 분석에 도움이 됩니다.</p></div></div>
               <div class="radio-group"><label><input type="radio" name="consulting" value="전화상담" /> 전화상담</label><label><input type="radio" name="consulting" value="이메일상담" /> 이메일상담</label><label><input type="radio" name="consulting" value="둘 다 가능" /> 둘 다 가능</label></div>
               <div class="field field-spaced"><label class="field-label" for="source">유입 경로</label><select id="source" name="source"><option value="">유입 경로 선택</option><option value="구글 검색">구글 검색</option><option value="네이버 검색">네이버 검색</option><option value="SNS">SNS</option><option value="지인 소개">지인 소개</option><option value="기존 거래처">기존 거래처</option><option value="기타">기타</option></select></div>
+              <div class="field field-spaced js-conditional-field" data-source-detail-field hidden>
+                <label class="field-label" for="source-detail">유입 경로 상세</label>
+                <input id="source-detail" name="source_detail" type="text" placeholder="예: 인스타그램, 블로그, 카페, 소개자 성함 등" maxlength="120" />
+                <p class="field-help">SNS, 지인 소개, 기타를 선택했다면 가능하면 상세 내용을 적어주세요.</p>
+              </div>
             </div>
 
             <div class="form-section consent-section">
               <div class="form-heading"><span class="form-step">05</span><div><h2 class="form-title">동의</h2><p class="form-text">접수와 회신을 위해 필요한 동의 항목입니다.</p></div></div>
               <div class="radio-group">
-                <label class="consent-item"><input type="checkbox" name="privacy" required /><span class="consent-text">개인정보 수집 및 이용에 동의합니다. <a class="link-underline" href="privacy.html" target="_blank" rel="noopener">개인정보처리방침 보기</a> <em>(필수)</em></span></label>
+                <label class="consent-item"><input type="checkbox" name="privacy" value="동의" required /><span class="consent-text">개인정보 수집 및 이용에 동의합니다. <a class="link-underline" href="privacy.html" target="_blank" rel="noopener">개인정보처리방침 보기</a> <em>(필수)</em></span></label>
               </div>
-              <div class="form-submit-bar"><p class="form-submit-note">접수 후 24시간 내 1차 답변을 드립니다.</p><div class="form-submit"><button type="submit" class="btn btn-primary">접수하기</button></div></div>
+              <div class="form-submit-bar"><p class="form-submit-note">접수 후 24시간 내 1차 답변을 드립니다. 시트에는 상태, 우선순위, 회신 기한, 다음 액션까지 함께 관리됩니다.</p><div class="form-submit"><button type="submit" class="btn btn-primary">접수하기</button></div></div>
             </div>
           </form>
 

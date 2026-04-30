@@ -33,6 +33,7 @@
     var progressWrap = document.querySelector(".nw-progress");
     var nextSection = section.nextElementSibling;
 
+
     var actionsAreActive = false;
     var animationFrameId = 0;
     var forceRender = false;
