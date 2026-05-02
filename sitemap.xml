@@ -2,37 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://novawork.kr/</loc>
-    <lastmod>2026-04-27</lastmod>
     <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/about.html</loc>
-    <lastmod>2026-04-27</lastmod>
     <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/services.html</loc>
-    <lastmod>2026-04-27</lastmod>
     <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/portfolio.html</loc>
-    <lastmod>2026-04-27</lastmod>
     <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/faq.html</loc>
-    <lastmod>2026-04-27</lastmod>
     <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/contact.html</loc>
-    <lastmod>2026-04-27</lastmod>
     <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://novawork.kr/privacy.html</loc>
-    <lastmod>2026-04-27</lastmod>
     <changefreq>yearly</changefreq>
   </url>
 </urlset>
