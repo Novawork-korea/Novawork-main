@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
-  <title id="title">Example image placeholder</title>
-  <desc id="desc">A monochrome placeholder image for future portfolio uploads.</desc>
+  <title id="title">예시 이미지 영역</title>
+  <desc id="desc">향후 포트폴리오 업로드를 위한 흑백 예시 이미지 영역입니다.</desc>
   <rect width="960" height="600" fill="#0b0b0b"/>
   <rect x="64" y="58" width="832" height="484" rx="34" fill="#151515" stroke="#3a3a3a" stroke-width="2"/>
   <rect x="104" y="98" width="752" height="332" rx="24" fill="#101010" stroke="#4a4a4a" stroke-width="2"/>

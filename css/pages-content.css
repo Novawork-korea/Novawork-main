@@ -210,7 +210,7 @@
 }
 
 
-/* Real portfolio placeholder area */
+/* Real portfolio example area */
 .portfolio-upload-section {
   background-color: #080808;
 }
@@ -363,14 +363,33 @@
 }
 
 .kakao-search-card {
-  display: ruby-text;
+  display: grid;
   place-items: center;
-  min-height: 200px;
-  padding: 12px;
+  gap: 10px;
+  min-height: 260px;
+  padding: 18px;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   background-color: #000000;
   text-align: center;
+}
+
+
+.kakao-qr-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 220px);
+  padding: 12px;
+  border-radius: 18px;
+  background-color: #ffffff;
+}
+
+.kakao-qr-link img {
+  display: block;
+  width: 100%;
+  max-width: 210px;
+  height: auto;
 }
 
 .kakao-search-card span {
@@ -380,11 +399,10 @@
 }
 
 .kakao-search-card strong {
-  margin-top: 10px;
   color: var(--color-white);
-  font-size: clamp(3rem, 3vw, 2.4rem);
-  font-weight: 350;
-  letter-spacing: 0.12em;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
 }
 
 @media (max-width: 1024px) {
@@ -397,7 +415,7 @@
   }
 
   .kakao-search-card {
-    min-height: 140px;
+    min-height: 240px;
   }
 }
 
@@ -425,5 +443,9 @@
   .kakao-steps span {
     justify-content: center;
     width: 100%;
+  }
+
+  .kakao-qr-link {
+    width: min(100%, 210px);
   }
 }

@@ -439,13 +439,18 @@
 
   .kakao-search-card {
     display: grid;
-    min-height: 108px;
-    padding: 12px;
+    min-height: 220px;
+    padding: 14px;
+  }
+
+  .kakao-qr-link {
+    width: min(100%, 190px);
+    padding: 10px;
   }
 
   .kakao-search-card strong {
-    font-size: 1.85rem;
-    letter-spacing: 0.1em;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
   }
 
   .cta-band {
