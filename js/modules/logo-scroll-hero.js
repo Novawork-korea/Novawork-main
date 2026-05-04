@@ -92,6 +92,8 @@
     var RENDER_EPSILON = 0.001;
 
     var actionsAreActive = false;
+    var animationLayerActive = false;
+    var wheelListenerActive = false;
 
     var animationFrameId = 0;
     var resizeFrameId = 0;
@@ -208,6 +210,26 @@
 
     var isBoundary = function (value) {
       return value === 0 || value === 1;
+    };
+
+    var setAnimationLayersActive = function (active) {
+      if (animationLayerActive === active) {
+        return;
+      }
+
+      animationLayerActive = active;
+      section.classList.toggle("is-animating", active);
+    };
+
+    var isHeroNearViewport = function (scrollTop) {
+      var currentScrollTop = typeof scrollTop === "number" ? scrollTop : getScrollTop();
+      var before = metrics.height * 0.85;
+      var after = metrics.height * 0.85;
+
+      return (
+        currentScrollTop >= metrics.sectionTop - before &&
+        currentScrollTop <= metrics.nextSectionTop + after
+      );
     };
 
     var getViewportSize = function () {
@@ -685,6 +707,32 @@
       requestRender(false);
     };
 
+    var setWheelListenerActive = function (active) {
+      if (wheelListenerActive === active) {
+        return;
+      }
+
+      wheelListenerActive = active;
+
+      if (active) {
+        window.addEventListener("wheel", handleWheel, { passive: false });
+      } else {
+        window.removeEventListener("wheel", handleWheel);
+        endWheelControl();
+      }
+    };
+
+    var updateWheelListenerState = function (scrollTop) {
+      var currentScrollTop = typeof scrollTop === "number" ? scrollTop : getScrollTop();
+      var bounds = getHeroScrollBounds();
+      var buffer = Math.max(160, metrics.height * 0.7);
+      var shouldBeActive =
+        currentScrollTop >= bounds.start - buffer &&
+        currentScrollTop <= bounds.end + buffer;
+
+      setWheelListenerActive(shouldBeActive);
+    };
+
     var pieceStates = pieces.map(function (piece) {
       var box = piece.getBBox();
 
@@ -1017,6 +1065,7 @@
         animationFrameId = window.requestAnimationFrame(renderFrame);
       } else {
         lastFrameTime = 0;
+        setAnimationLayersActive(false);
       }
     };
 
@@ -1035,12 +1084,22 @@
         return;
       }
 
+      setAnimationLayersActive(true);
       animationFrameId = window.requestAnimationFrame(renderFrame);
     };
 
     var handleScroll = function () {
+      var scrollTop = getScrollTop();
+
+      updateWheelListenerState(scrollTop);
+
       if (!wheelControlActive) {
-        syncWheelStateToCurrentScroll();
+        wheelCurrentScrollTop = scrollTop;
+        wheelTargetScrollTop = scrollTop;
+      }
+
+      if (!isHeroNearViewport(scrollTop) && hasRenderedAssembly && hasRenderedUi) {
+        return;
       }
 
       requestRender(false);
@@ -1056,6 +1115,7 @@
         lastRenderTime = 0;
 
         updateMetrics();
+        updateWheelListenerState();
         requestRender(true);
       });
     };
@@ -1082,6 +1142,7 @@
     };
 
     updateMetrics();
+    updateWheelListenerState();
     setActionsActive(false);
 
     resetRestoredHeroScroll();
@@ -1106,7 +1167,6 @@
       requestRender(true);
     }, 80);
 
-    window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
     window.addEventListener("load", handleResize, { once: true });

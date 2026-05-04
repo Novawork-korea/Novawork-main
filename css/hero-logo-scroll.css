@@ -71,7 +71,7 @@
   z-index: 4;
   max-width: 520px;
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: auto;
 }
 
 .nw-eyebrow {
@@ -105,7 +105,7 @@
   text-align: center;
   transform: translate3d(0, calc(var(--nw-lockup-y) + var(--nw-balance-y)), 0) scale(var(--nw-hero-fit-scale));
   transform-origin: center center;
-  will-change: transform;
+  will-change: auto;
 }
 
 .nw-logo-aura {
@@ -119,7 +119,7 @@
   opacity: 0.2;
   pointer-events: none;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.14), transparent 58%);
-  will-change: opacity, transform;
+  will-change: auto;
 }
 
 .nw-logo-svg {
@@ -137,7 +137,7 @@
 .nw-logo-piece {
   fill: currentColor;
   opacity: 0;
-  will-change: transform, opacity;
+  will-change: auto;
   backface-visibility: hidden;
 }
 
@@ -159,7 +159,7 @@
   letter-spacing: -0.02em;
   opacity: 0;
   transform: translateY(18px);
-  will-change: opacity, transform;
+  will-change: auto;
 }
 
 .nw-hero-actions {
@@ -173,7 +173,7 @@
   opacity: 0;
   transform: translateY(18px);
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: auto;
 }
 
 .nw-hero-actions.is-visible {
@@ -199,7 +199,7 @@
   line-height: 1;
   text-transform: uppercase;
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: auto;
 }
 
 .nw-scroll-hint__mouse {
@@ -248,7 +248,7 @@
   height: 1px;
   background: rgba(255, 255, 255, 0.13);
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: auto;
 }
 
 .nw-progress__bar {
@@ -257,7 +257,7 @@
   transform: scaleX(0);
   transform-origin: left center;
   background: rgba(255, 255, 255, 0.88);
-  will-change: transform;
+  will-change: auto;
 }
 
 .nw-progress__text {
@@ -269,6 +269,22 @@
   font-weight: 800;
   letter-spacing: 0.16em;
   line-height: 1;
+}
+
+
+.nw-logo-scroll.is-animating .nw-stage-copy,
+.nw-logo-scroll.is-animating .nw-logo-aura,
+.nw-logo-scroll.is-animating .nw-logo-piece,
+.nw-logo-scroll.is-animating .nw-brand-copy,
+.nw-logo-scroll.is-animating .nw-hero-actions,
+.nw-logo-scroll.is-animating .nw-scroll-hint,
+.nw-logo-scroll.is-animating .nw-progress {
+  will-change: opacity, transform;
+}
+
+.nw-logo-scroll.is-animating .nw-logo-lockup,
+.nw-logo-scroll.is-animating .nw-progress__bar {
+  will-change: transform;
 }
 
 @media (max-width: 780px) {

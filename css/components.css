@@ -851,7 +851,7 @@ input[type="radio"] {
     opacity 0.78s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
+  will-change: auto;
 }
 
 .reveal[data-reveal="left"] {
@@ -894,7 +894,6 @@ body.scroll-reveal-ready .reveal.is-revealing {
     opacity 0.78s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.78s cubic-bezier(0.16, 1, 0.3, 1) !important;
   transition-delay: var(--reveal-delay, 0ms) !important;
-  will-change: opacity, transform;
 }
 
 body.scroll-reveal-ready .reveal:not(.is-visible) {
@@ -918,4 +917,5 @@ body.scroll-reveal-ready .reveal[data-reveal="bottom"]:not(.is-visible) {
 body.scroll-reveal-ready .reveal.is-visible.is-revealing {
   opacity: 1 !important;
   transform: translate3d(0, 0, 0) !important;
+  will-change: opacity, transform;
 }

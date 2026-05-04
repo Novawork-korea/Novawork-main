@@ -1,9 +1,16 @@
 window.initCurrentPage = function initCurrentPage() {
   const navLinks = document.querySelectorAll(".nav-link, .mobile-menu-list a, .footer-nav a");
 
-  const normalizePath = function (path) {
-    const cleanPath = (path || "")
-      .replace(window.location.origin, "")
+  const normalizePath = function (value) {
+    let path = "";
+
+    try {
+      path = new URL(value || "index.html", window.location.href).pathname;
+    } catch (error) {
+      path = String(value || "");
+    }
+
+    const cleanPath = path
       .replace(/^\.\//, "")
       .split("#")[0]
       .split("?")[0]
@@ -16,7 +23,7 @@ window.initCurrentPage = function initCurrentPage() {
     return cleanPath.split("/").pop() || "index.html";
   };
 
-  const currentFile = normalizePath(window.location.pathname);
+  const currentFile = normalizePath(window.location.href);
 
   navLinks.forEach(function (link) {
     const href = link.getAttribute("href") || "";

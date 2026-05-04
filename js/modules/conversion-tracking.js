@@ -5,7 +5,6 @@
     return String(value || "").replace(/\s+/g, " ").trim().slice(0, 80);
   }
 
-
   function storeTrackingParams() {
     var params = new URLSearchParams(window.location.search);
     var names = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
@@ -42,33 +41,45 @@
     return safeText(link.getAttribute("aria-label") || link.textContent || link.getAttribute("href"));
   }
 
+  function trackLinkClick(link) {
+    var href = link.getAttribute("href") || "";
+
+    if (href.indexOf("tel:") === 0) {
+      sendEvent("click_phone", { link_text: getLinkLabel(link) });
+      return;
+    }
+
+    if (href.indexOf("mailto:") === 0) {
+      sendEvent("click_email", { link_text: getLinkLabel(link) });
+      return;
+    }
+
+    if (href.indexOf("contact.html") !== -1 || href.indexOf("#inquiry-form") !== -1) {
+      sendEvent("cta_click", {
+        link_text: getLinkLabel(link),
+        link_url: href
+      });
+    }
+  }
+
   function bindClickTracking() {
-    document.querySelectorAll('a[href]').forEach(function (link) {
-      var href = link.getAttribute("href") || "";
+    if (document.documentElement.dataset.novaworkClickTrackingReady === "true") {
+      return;
+    }
 
-      if (href.indexOf("tel:") === 0) {
-        link.addEventListener("click", function () {
-          sendEvent("click_phone", { link_text: getLinkLabel(link) });
-        });
+    document.documentElement.dataset.novaworkClickTrackingReady = "true";
+
+    document.addEventListener("click", function (event) {
+      var link = event.target && event.target.closest
+        ? event.target.closest("a[href]")
+        : null;
+
+      if (!link) {
         return;
       }
 
-      if (href.indexOf("mailto:") === 0) {
-        link.addEventListener("click", function () {
-          sendEvent("click_email", { link_text: getLinkLabel(link) });
-        });
-        return;
-      }
-
-      if (href.indexOf("contact.html") !== -1 || href.indexOf("#inquiry-form") !== -1) {
-        link.addEventListener("click", function () {
-          sendEvent("cta_click", {
-            link_text: getLinkLabel(link),
-            link_url: href
-          });
-        });
-      }
-    });
+      trackLinkClick(link);
+    }, { passive: true });
   }
 
   function bindFormStartTracking() {
