@@ -345,8 +345,9 @@
 
   .page-hero-visual {
     min-height: 220px;
-    padding: 20px;
+    padding: 0;
     border-radius: 24px;
+    overflow: hidden;
   }
 
   .page-hero-visual img,

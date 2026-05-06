@@ -249,7 +249,7 @@ body {
 .portfolio-thumb img,
 .image-card img,
 .home-wide-visual img {
-  filter: grayscale(1) contrast(1.08) brightness(0.92);
+  filter: contrast(1.03) brightness(0.96);
 }
 
 .hero-visual {

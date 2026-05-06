@@ -50,12 +50,12 @@
   <link rel="stylesheet" href="./css/base.css" />
   <link rel="stylesheet" href="./css/layout.css" />
   <link rel="stylesheet" href="./css/components.css?v=fit-preserved-20260504" />
-  <link rel="stylesheet" href="./css/pages-content.css" />
+  <link rel="stylesheet" href="./css/pages-content.css?v=portfolio-mobile-20260505" />
   <link rel="stylesheet" href="./css/responsive.css" />
   <link rel="stylesheet" href="./css/monochrome.css" />
-  <link rel="stylesheet" href="./css/mobile-polish.css?v=20260430" />
+  <link rel="stylesheet" href="./css/mobile-polish.css?v=portfolio-mobile-20260505" />
 </head>
-<body>
+<body class="portfolio-page">
   <a class="skip-link" href="#main">본문 바로가기</a>
 
   <header class="header">
@@ -122,21 +122,28 @@
           </div>
           </div>
           <figure class="page-hero-visual">
-            <img src="./assets/visual-portfolio.svg" alt="제작 예시 카드 구성을 보여주는 이미지" loading="eager" width="720" height="520" decoding="async" fetchpriority="high" />
+            <img class="photo-real" src="./assets/photo-visual-portfolio.webp" alt="긴 회의 테이블에서 웹사이트 제작 방향을 논의하는 장면" loading="eager" width="720" height="520" decoding="async" fetchpriority="high" />
           </figure>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section id="portfolio-types" class="section portfolio-types-section">
       <div class="container">
+        <nav class="portfolio-mobile-nav" aria-label="제작 예시 빠른 이동">
+          <a href="#portfolio-types">제작 유형</a>
+          <a href="#sample-sites">업종 샘플</a>
+          <a href="#sample-guide">정리 기준</a>
+          <a href="#sample-points">설계 포인트</a>
+          <a href="#portfolio-contact">접수하기</a>
+        </nav>
         <div class="notice-box sample-notice">
           <strong>샘플 안내</strong>
           <p>아래 제작 예시는 실제 납품 사례 공개 전, NOVAWORK가 제작 가능한 구조를 보여주기 위한 샘플입니다. 업종, 문구, 이미지, 문의 항목은 상담 후 사업 상황에 맞게 조정합니다.</p>
         </div>
         <div class="portfolio-grid">
           <article class="portfolio-card">
-            <div class="portfolio-thumb thumb-corporate"><img src="./assets/example-corporate.svg" alt="기업 홈페이지 예시 이미지" loading="lazy" width="360" height="200" decoding="async" /><span>Corporate Site</span></div>
+            <div class="portfolio-thumb thumb-corporate"><img class="photo-real" src="./assets/photo-example-corporate.webp" alt="회의실에서 팀이 프로젝트 방향을 논의하는 장면" loading="lazy" width="360" height="200" decoding="async" /><span>기업형</span></div>
             <div class="portfolio-content">
               <h3>기업 소개 홈페이지</h3>
               <p>회사 소개, 서비스 안내, 문의 유도까지 기본 흐름이 명확한 기업형 웹사이트입니다.</p>
@@ -147,7 +154,7 @@
           </article>
 
           <article class="portfolio-card">
-            <div class="portfolio-thumb thumb-brand"><img src="./assets/example-brand.svg" alt="브랜드 페이지 예시 이미지" loading="lazy" width="360" height="200" decoding="async" /><span>Brand Page</span></div>
+            <div class="portfolio-thumb thumb-brand"><img class="photo-real" src="./assets/photo-example-brand.webp" alt="브랜드 패키지 라벨을 붙이며 제품 이미지를 준비하는 장면" loading="lazy" width="360" height="200" decoding="async" /><span>브랜드형</span></div>
             <div class="portfolio-content">
               <h3>브랜드 소개 페이지</h3>
               <p>브랜드 성격과 메시지를 명확하게 전달할 수 있는 소개형 페이지입니다.</p>
@@ -157,7 +164,7 @@
           </article>
 
           <article class="portfolio-card">
-            <div class="portfolio-thumb thumb-landing"><img src="./assets/example-landing.svg" alt="랜딩페이지 예시 이미지" loading="lazy" width="360" height="200" decoding="async" /><span>Landing Page</span></div>
+            <div class="portfolio-thumb thumb-landing"><img class="photo-real" src="./assets/photo-example-landing.webp" alt="웹페이지 디자인 화면을 제작하는 디자이너의 작업 장면" loading="lazy" width="360" height="200" decoding="async" /><span>랜딩형</span></div>
             <div class="portfolio-content">
               <h3>캠페인/광고 랜딩페이지</h3>
               <p>광고 유입 이후 짧은 흐름 안에서 핵심 메시지와 행동 유도를 정리합니다.</p>
@@ -168,7 +175,7 @@
           </article>
 
           <article class="portfolio-card">
-            <div class="portfolio-thumb thumb-maintenance"><img src="./assets/example-maintenance.svg" alt="유지관리형 사이트 예시 이미지" loading="lazy" width="360" height="200" decoding="async" /><span>Maintenance</span></div>
+            <div class="portfolio-thumb thumb-maintenance"><img class="photo-real" src="./assets/photo-example-maintenance.webp" alt="노트북과 여러 기기로 웹사이트를 점검하는 장면" loading="lazy" width="360" height="200" decoding="async" /><span>운영관리</span></div>
             <div class="portfolio-content">
               <h3>유지관리형 사이트</h3>
               <p>자주 수정이 발생하는 운영형 사이트에 맞춰 관리와 보완 중심으로 구성합니다.</p>
@@ -179,7 +186,7 @@
           </article>
 
           <article class="portfolio-card">
-            <div class="portfolio-thumb thumb-consulting"><img src="./assets/example-consulting.svg" alt="상담 신청형 페이지 예시 이미지" loading="lazy" width="360" height="200" decoding="async" /><span>Consulting Page</span></div>
+            <div class="portfolio-thumb thumb-consulting"><img class="photo-real" src="./assets/photo-example-consulting.webp" alt="상담 테이블에서 노트북과 문서를 두고 대화하는 장면" loading="lazy" width="360" height="200" decoding="async" /><span>상담신청</span></div>
             <div class="portfolio-content">
               <h3>상담 신청형 페이지</h3>
               <p>상담, 예약, 신청처럼 사용자의 행동을 명확히 유도하는 페이지입니다.</p>
@@ -189,7 +196,7 @@
           </article>
 
           <article class="portfolio-card">
-            <div class="portfolio-thumb thumb-renewal"><img src="./assets/example-renewal.svg" alt="기존 사이트 리뉴얼 예시 이미지" loading="lazy" width="360" height="200" decoding="async" /><span>Renewal</span></div>
+            <div class="portfolio-thumb thumb-renewal"><img class="photo-real" src="./assets/photo-example-renewal.webp" alt="여러 모니터에서 웹사이트 리뉴얼 시안을 검토하는 장면" loading="lazy" width="360" height="200" decoding="async" /><span>리뉴얼</span></div>
             <div class="portfolio-content">
               <h3>기존 사이트 리뉴얼</h3>
               <p>오래된 문장과 화면 구조를 정리해 더 읽기 쉽고 문의하기 쉬운 형태로 개선합니다.</p>
@@ -201,7 +208,7 @@
       </div>
     </section>
 
-    <section class="section portfolio-upload-section" aria-labelledby="portfolio-upload-title">
+    <section id="sample-sites" class="section portfolio-upload-section" aria-labelledby="portfolio-upload-title">
       <div class="container">
         <div class="section-head">
           <p class="section-label">SAMPLE PORTFOLIO</p>
@@ -212,7 +219,7 @@
           <article class="portfolio-upload-card">
             <a class="portfolio-upload-link" href="https://pf-workroom.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="공방 홈페이지 샘플 사이트 새 창에서 보기">
               <figure class="portfolio-upload-media">
-                <img src="./assets/portfolio-workroom.svg" alt="공방 홈페이지 샘플 이미지" loading="lazy" width="960" height="600" decoding="async" />
+                <img class="photo-real" src="./assets/photo-portfolio-workroom.webp" alt="도예 공방에서 작품을 만드는 수업 장면" loading="lazy" width="960" height="600" decoding="async" />
               </figure>
               <div class="portfolio-upload-body">
                 <span class="example-label">WORKROOM SAMPLE</span>
@@ -231,7 +238,7 @@
           <article class="portfolio-upload-card">
             <a class="portfolio-upload-link" href="https://pf-interior.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="인테리어 업체 홈페이지 샘플 사이트 새 창에서 보기">
               <figure class="portfolio-upload-media">
-                <img src="./assets/portfolio-interior.svg" alt="인테리어 업체 홈페이지 샘플 이미지" loading="lazy" width="960" height="600" decoding="async" />
+                <img class="photo-real" src="./assets/photo-portfolio-interior.webp" alt="고급스럽게 연출된 현대적인 거실 인테리어 공간" loading="lazy" width="960" height="600" decoding="async" />
               </figure>
               <div class="portfolio-upload-body">
                 <span class="example-label">INTERIOR SAMPLE</span>
@@ -250,7 +257,7 @@
           <article class="portfolio-upload-card">
             <a class="portfolio-upload-link" href="https://pf-academy.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="학원 홈페이지 샘플 사이트 새 창에서 보기">
               <figure class="portfolio-upload-media">
-                <img src="./assets/portfolio-academy.svg" alt="학원 홈페이지 샘플 이미지" loading="lazy" width="960" height="600" decoding="async" />
+                <img class="photo-real" src="./assets/photo-portfolio-academy.webp" alt="튜터와 학생들이 교재를 보며 공부하는 수업 장면" loading="lazy" width="960" height="600" decoding="async" />
               </figure>
               <div class="portfolio-upload-body">
                 <span class="example-label">ACADEMY SAMPLE</span>
@@ -270,7 +277,7 @@
     </section>
 
 
-    <section class="section section-compact sample-summary-section">
+    <section id="sample-guide" class="section section-compact sample-summary-section">
       <div class="container">
         <div class="section-head">
           <p class="section-label">SAMPLE GUIDE</p>
@@ -286,7 +293,7 @@
       </div>
     </section>
 
-    <section class="section process">
+    <section id="sample-points" class="section process portfolio-point-section">
       <div class="container">
         <div class="section-head">
           <p class="section-label">POINT</p>
@@ -302,7 +309,7 @@
       </div>
     </section>
 
-    <section class="section contact">
+    <section id="portfolio-contact" class="section contact">
       <div class="container">
         <div class="contact-box cta-band">
           <div class="section-head">

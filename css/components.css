@@ -256,10 +256,11 @@
 }
 
 .service-card-media img {
+  display: block;
   width: 100%;
   height: 180px;
-  object-fit: contain;
-  padding: 18px;
+  object-fit: cover;
+  padding: 0;
 }
 
 .service-card ul,
@@ -320,14 +321,15 @@
 .portfolio-thumb {
   position: relative;
   min-height: 220px;
-  padding: 24px;
+  padding: 0;
   background-color: #eef4ff;
 }
 
 .portfolio-thumb img {
+  display: block;
   width: 100%;
-  height: 170px;
-  object-fit: contain;
+  height: 220px;
+  object-fit: cover;
 }
 
 .portfolio-thumb span {
@@ -412,7 +414,7 @@
 .image-card,
 .home-wide-visual {
   overflow: hidden;
-  padding: 28px;
+  padding: 0;
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
@@ -421,7 +423,7 @@
 .home-wide-visual img {
   width: 100%;
   min-height: 260px;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .value-card,
@@ -918,4 +920,16 @@ body.scroll-reveal-ready .reveal.is-visible.is-revealing {
   opacity: 1 !important;
   transform: translate3d(0, 0, 0) !important;
   will-change: opacity, transform;
+}
+
+
+.photo-real {
+  display: block;
+  object-fit: cover;
+}
+
+.image-card .photo-real,
+.home-wide-visual .photo-real,
+.page-hero-visual .photo-real {
+  border-radius: inherit;
 }
