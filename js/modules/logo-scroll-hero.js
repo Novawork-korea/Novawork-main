@@ -22,6 +22,7 @@
     }
 
     var docEl = document.documentElement;
+    var body = document.body;
     var header = document.querySelector(".header");
     var stage = document.querySelector(".nw-sticky-stage");
     var stageCopy = document.querySelector(".nw-stage-copy");
@@ -124,6 +125,24 @@
     var wheelLastFrameTime = 0;
     var wheelPreviousScrollBehavior = "";
 
+    /*
+      First-load intro:
+      Instead of replacing the existing scroll animation, we drive the real hero
+      scroll position from 0% to the logo-complete point. This keeps the original
+      scroll interaction alive after the intro finishes.
+    */
+    var INTRO_DURATION = 3000;
+    var INTRO_START_DELAY = 200;
+    var INTRO_FINISH_DELAY = 120;
+    var introPlaying = false;
+    var introHasCompleted = false;
+    var introFrameId = 0;
+    var introStartTimerId = 0;
+    var introFinishTimerId = 0;
+    var introStartTime = null;
+    var introLastRawProgress = 0;
+    var introPreviousScrollBehavior = "";
+
     var metrics = {
       width: window.innerWidth || 1,
       height: window.innerHeight || 1,
@@ -202,6 +221,12 @@
 
     var easeOutCubic = function (t) {
       return 1 - Math.pow(1 - t, 3);
+    };
+
+    var easeInOutCubic = function (t) {
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
     };
 
     var smoothstep = function (t) {
@@ -533,6 +558,217 @@
       return true;
     };
 
+    var setScrollTopWithoutSmoothScroll = function (scrollTop) {
+      var previousBehavior = docEl.style.scrollBehavior;
+
+      docEl.style.scrollBehavior = "auto";
+      window.scrollTo(0, scrollTop);
+      docEl.style.scrollBehavior = previousBehavior;
+    };
+
+    var getIntroCompleteScrollTop = function () {
+      var bounds = getHeroScrollBounds();
+      var completeTop = bounds.start + metrics.maxScroll * COMPLETE_AT;
+
+      return clamp(completeTop, bounds.start, bounds.end);
+    };
+
+    var shouldRunIntroOnLoad = function () {
+      if (window.location.hash || introHasCompleted) {
+        return false;
+      }
+
+      var scrollTop = getScrollTop();
+      var bounds = getHeroScrollBounds();
+
+      return scrollTop <= bounds.end + 4;
+    };
+
+    var lockIntroInput = function () {
+      introPreviousScrollBehavior = docEl.style.scrollBehavior;
+      docEl.style.scrollBehavior = "auto";
+
+      introPlaying = true;
+      section.classList.add("is-intro-playing");
+      section.classList.remove("is-intro-complete");
+      docEl.classList.add("nw-intro-lock");
+
+      if (body) {
+        body.classList.add("nw-intro-lock");
+      }
+
+      setWheelListenerActive(false);
+      setActionsActive(false);
+    };
+
+    var unlockIntroInput = function () {
+      section.classList.remove("is-intro-playing");
+      section.classList.add("is-intro-complete");
+      docEl.classList.remove("nw-intro-lock");
+      docEl.style.scrollBehavior = introPreviousScrollBehavior || "";
+      introPreviousScrollBehavior = "";
+
+      if (body) {
+        body.classList.remove("nw-intro-lock");
+      }
+    };
+
+    var finishIntro = function () {
+      if (introFrameId) {
+        window.cancelAnimationFrame(introFrameId);
+        introFrameId = 0;
+      }
+
+      if (introStartTimerId) {
+        window.clearTimeout(introStartTimerId);
+        introStartTimerId = 0;
+      }
+
+      if (introFinishTimerId) {
+        window.clearTimeout(introFinishTimerId);
+        introFinishTimerId = 0;
+      }
+
+      var completeTop = getIntroCompleteScrollTop();
+
+      window.scrollTo(0, completeTop);
+      updateMetrics();
+      syncWheelStateToCurrentScroll();
+      updateTargets(completeTop);
+
+      targetAssemblyProgress = 1;
+      currentAssemblyProgress = 1;
+      currentUiOut = targetUiOut;
+
+      renderAssembly(currentAssemblyProgress, true);
+      renderScrollUi(currentUiOut, true);
+
+      lastRenderedAssemblyProgress = currentAssemblyProgress;
+      lastRenderedUiOut = currentUiOut;
+      hasRenderedAssembly = true;
+      hasRenderedUi = true;
+
+      setActionsActive(true);
+      introPlaying = false;
+      introHasCompleted = true;
+      introStartTime = null;
+      introLastRawProgress = 1;
+
+      unlockIntroInput();
+      updateWheelListenerState(completeTop);
+      requestRender(true);
+    };
+
+    var scheduleIntroFinish = function () {
+      if (introFinishTimerId) {
+        return;
+      }
+
+      introFinishTimerId = window.setTimeout(finishIntro, INTRO_FINISH_DELAY);
+    };
+
+    var playIntroFrame = function (timestamp) {
+      introFrameId = 0;
+
+      if (!introPlaying || document.hidden) {
+        return;
+      }
+
+      if (introStartTime === null) {
+        introStartTime = timestamp;
+      }
+
+      var rawProgress = clamp((timestamp - introStartTime) / INTRO_DURATION);
+      var easedProgress = easeOutCubic(rawProgress);
+      var bounds = getHeroScrollBounds();
+      var completeTop = getIntroCompleteScrollTop();
+      var introScrollTop = bounds.start + (completeTop - bounds.start) * easedProgress;
+
+      introLastRawProgress = rawProgress;
+      window.scrollTo(0, introScrollTop);
+
+      syncWheelStateToCurrentScroll();
+      updateTargets(introScrollTop);
+      requestRender(false);
+
+      if (rawProgress < 1) {
+        introFrameId = window.requestAnimationFrame(playIntroFrame);
+        return;
+      }
+
+      scheduleIntroFinish();
+    };
+
+    var startIntro = function () {
+      if (introPlaying || introHasCompleted) {
+        return;
+      }
+
+      updateMetrics();
+      lockIntroInput();
+
+      var bounds = getHeroScrollBounds();
+
+      setScrollTopWithoutSmoothScroll(bounds.start);
+      syncWheelStateToCurrentScroll();
+      updateTargets(bounds.start);
+
+      targetAssemblyProgress = 0;
+      targetUiOut = 0;
+      currentAssemblyProgress = 0;
+      currentUiOut = 0;
+      introStartTime = null;
+      introLastRawProgress = 0;
+      lastRenderTime = 0;
+      lastFrameTime = 0;
+
+      renderAssembly(0, true);
+      renderScrollUi(0, true);
+      setActionsActive(false);
+
+      if (introStartTimerId) {
+        window.clearTimeout(introStartTimerId);
+      }
+
+      introStartTimerId = window.setTimeout(function () {
+        introStartTimerId = 0;
+
+        if (!introPlaying || introFrameId) {
+          return;
+        }
+
+        introFrameId = window.requestAnimationFrame(playIntroFrame);
+      }, INTRO_START_DELAY);
+    };
+
+    var preventIntroScroll = function (event) {
+      if (!introPlaying) {
+        return;
+      }
+
+      event.preventDefault();
+    };
+
+    var preventIntroKeyScroll = function (event) {
+      if (!introPlaying) {
+        return;
+      }
+
+      var scrollKeys = {
+        ArrowDown: true,
+        ArrowUp: true,
+        PageDown: true,
+        PageUp: true,
+        Home: true,
+        End: true,
+        " ": true
+      };
+
+      if (scrollKeys[event.key]) {
+        event.preventDefault();
+      }
+    };
+
     var syncWheelStateToCurrentScroll = function () {
       var scrollTop = getScrollTop();
 
@@ -684,6 +920,11 @@
     };
 
     var handleWheel = function (event) {
+      if (introPlaying) {
+        event.preventDefault();
+        return;
+      }
+
       var normalizedDelta = normalizeWheelDelta(event);
 
       if (!shouldControlWheel(event, normalizedDelta)) {
@@ -723,6 +964,11 @@
     };
 
     var updateWheelListenerState = function (scrollTop) {
+      if (introPlaying) {
+        setWheelListenerActive(false);
+        return;
+      }
+
       var currentScrollTop = typeof scrollTop === "number" ? scrollTop : getScrollTop();
       var bounds = getHeroScrollBounds();
       var buffer = Math.max(160, metrics.height * 0.7);
@@ -1115,6 +1361,13 @@
         lastRenderTime = 0;
 
         updateMetrics();
+
+        if (introPlaying) {
+          syncWheelStateToCurrentScroll();
+          requestRender(true);
+          return;
+        }
+
         updateWheelListenerState();
         requestRender(true);
       });
@@ -1132,12 +1385,36 @@
           wheelFrameId = 0;
         }
 
+        if (introFrameId) {
+          window.cancelAnimationFrame(introFrameId);
+          introFrameId = 0;
+        }
+
+        if (introStartTimerId) {
+          window.clearTimeout(introStartTimerId);
+          introStartTimerId = 0;
+        }
+
         lastFrameTime = 0;
         endWheelControl();
         return;
       }
 
       updateMetrics();
+
+      if (introPlaying) {
+        introStartTime = window.performance && window.performance.now
+          ? window.performance.now() - introLastRawProgress * INTRO_DURATION
+          : null;
+
+        if (!introFrameId) {
+          introFrameId = window.requestAnimationFrame(playIntroFrame);
+        }
+
+        requestRender(true);
+        return;
+      }
+
       requestRender(true);
     };
 
@@ -1156,22 +1433,36 @@
 
     requestRender(true);
 
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("load", handleResize, { once: true });
+    window.addEventListener("wheel", preventIntroScroll, { passive: false });
+    window.addEventListener("touchmove", preventIntroScroll, { passive: false });
+
+    document.addEventListener("keydown", preventIntroKeyScroll);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    if (shouldRunIntroOnLoad()) {
+      startIntro();
+    }
+
     window.setTimeout(function () {
       updateMetrics();
+
+      if (introPlaying) {
+        syncWheelStateToCurrentScroll();
+        requestRender(true);
+        return;
+      }
 
       if (resetRestoredHeroScroll()) {
         updateMetrics();
       }
 
       syncWheelStateToCurrentScroll();
+      updateWheelListenerState();
       requestRender(true);
     }, 80);
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize, { passive: true });
-    window.addEventListener("load", handleResize, { once: true });
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", handleResize, {

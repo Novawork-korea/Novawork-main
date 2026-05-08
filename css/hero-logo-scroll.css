@@ -272,6 +272,33 @@
 }
 
 
+
+html.nw-intro-lock,
+body.nw-intro-lock {
+  overscroll-behavior: none;
+}
+
+body.nw-intro-lock {
+  touch-action: none;
+}
+
+.nw-logo-scroll.is-intro-playing {
+  cursor: wait;
+}
+
+.nw-logo-scroll.is-intro-playing .nw-hero-actions,
+.nw-logo-scroll.is-intro-playing .nw-scroll-hint {
+  pointer-events: none;
+}
+
+.nw-logo-scroll.is-intro-playing .nw-progress {
+  display: block;
+}
+
+.nw-logo-scroll.is-intro-complete .nw-scroll-hint {
+  pointer-events: auto;
+}
+
 .nw-logo-scroll.is-animating .nw-stage-copy,
 .nw-logo-scroll.is-animating .nw-logo-aura,
 .nw-logo-scroll.is-animating .nw-logo-piece,

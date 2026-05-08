@@ -1068,3 +1068,13 @@
     justify-content: center;
   }
 }
+
+
+/* Home intro: keep the intro progress indicator visible on compact screens. */
+.nw-logo-scroll.is-intro-playing .nw-progress {
+  display: block !important;
+}
+
+.nw-logo-scroll.is-intro-playing .nw-scroll-hint {
+  pointer-events: none;
+}
