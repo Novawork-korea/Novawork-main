@@ -26,38 +26,98 @@
 
   function sendEvent(eventName, params) {
     var payload = Object.assign({
-      event_category: "novawork_engagement"
+      event_category: "novawork_engagement",
+      page_path: window.location.pathname || "/"
     }, params || {});
 
-    if (typeof window.gtag === "function") {
-      window.gtag("event", eventName, payload);
-    }
-
+    // GA4 이벤트는 사이트 코드에서 직접 gtag로 보내지 않고,
+    // dataLayer → GTM → GA4 Event Tag 흐름으로만 전송합니다.
+    // 이렇게 해야 직접 gtag 전송과 GTM 전송의 중복 수집을 피할 수 있습니다.
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(Object.assign({ event: eventName }, payload));
   }
 
   function getLinkLabel(link) {
-    return safeText(link.getAttribute("aria-label") || link.textContent || link.getAttribute("href"));
+    return safeText(link.getAttribute("aria-label") || link.textContent || "");
+  }
+
+  function getLinkArea(link) {
+    if (link.closest(".mobile-menu")) {
+      return "mobile_menu";
+    }
+
+    if (link.closest(".header")) {
+      return "header";
+    }
+
+    if (link.closest(".footer")) {
+      return "footer";
+    }
+
+    if (link.closest(".quick-contact")) {
+      return "quick_contact";
+    }
+
+    if (link.closest(".hero")) {
+      return "hero";
+    }
+
+    if (link.closest("main")) {
+      return "content";
+    }
+
+    return "unknown";
+  }
+
+  function getCtaDestination(href) {
+    if (href.indexOf("#inquiry-form") !== -1) {
+      return "inquiry_form";
+    }
+
+    if (href.indexOf("contact.html") !== -1) {
+      return "contact_page";
+    }
+
+    return "other";
   }
 
   function trackLinkClick(link) {
     var href = link.getAttribute("href") || "";
+    var label = getLinkLabel(link);
+    var area = getLinkArea(link);
 
     if (href.indexOf("tel:") === 0) {
-      sendEvent("click_phone", { link_text: getLinkLabel(link) });
+      // 전화번호 자체는 GA4로 보내지 않습니다. 클릭 행동만 측정합니다.
+      sendEvent("click_phone", {
+        method: "phone",
+        link_area: area
+      });
       return;
     }
 
     if (href.indexOf("mailto:") === 0) {
-      sendEvent("click_email", { link_text: getLinkLabel(link) });
+      // 이메일 주소 자체는 GA4로 보내지 않습니다. 클릭 행동만 측정합니다.
+      sendEvent("click_email", {
+        method: "email",
+        link_area: area
+      });
+      return;
+    }
+
+    if (href.indexOf("pf.kakao.com") !== -1) {
+      sendEvent("click_kakao", {
+        method: "kakao",
+        link_text: label || "kakao_channel",
+        link_area: area
+      });
       return;
     }
 
     if (href.indexOf("contact.html") !== -1 || href.indexOf("#inquiry-form") !== -1) {
       sendEvent("cta_click", {
-        link_text: getLinkLabel(link),
-        link_url: href
+        link_text: label,
+        link_area: area,
+        destination: getCtaDestination(href)
       });
     }
   }
