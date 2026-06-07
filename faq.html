@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<script id="nw-route-transition-boot">
+(function () {
+  "use strict";
+  var VERSION = "v42";
+  var KEY = "novawork:route-transition";
+  var root = document.documentElement;
+  var leaving = false;
+  var entering = false;
+  var enterFinished = false;
+  var enterTimer = 0;
+  var coverTimer = 0;
+  var reduceMotion = false;
+  try { reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (error) {}
+
+  var COVER_MS = reduceMotion ? 420 : 860;
+  var REVEAL_MS = reduceMotion ? 520 : 920;
+  var CONTENT_MS = reduceMotion ? 420 : 820;
+  var EASE_COVER = "cubic-bezier(0.76, 0, 0.24, 1)";
+  var EASE_CONTENT = "cubic-bezier(0.16, 1, 0.3, 1)";
+
+  function storageGet() {
+    try { return window.sessionStorage ? window.sessionStorage.getItem(KEY) : null; } catch (error) { return null; }
+  }
+  function storageSet(value) {
+    try { if (window.sessionStorage) window.sessionStorage.setItem(KEY, value); } catch (error) {}
+  }
+  function storageRemove() {
+    try { if (window.sessionStorage) window.sessionStorage.removeItem(KEY); } catch (error) {}
+  }
+  function now() {
+    return Date.now ? Date.now() : new Date().getTime();
+  }
+  function getFreshEntry() {
+    var raw = storageGet();
+    if (!raw) return null;
+    try {
+      var data = JSON.parse(raw);
+      if (!data || !data.t || now() - Number(data.t) > 45000) {
+        storageRemove();
+        return null;
+      }
+      return data;
+    } catch (error) {
+      storageRemove();
+      return null;
+    }
+  }
+
+  if (getFreshEntry()) {
+    window.__NW_ROUTE_ENTERING = true;
+    root.classList.add("nw-route-transitioning", "nw-route-entering");
+    root.classList.remove("nw-route-leaving", "nw-route-ready");
+  }
+
+  function sameDocumentHashOnly(url) {
+    return url.protocol === window.location.protocol &&
+      url.host === window.location.host &&
+      url.pathname === window.location.pathname &&
+      url.search === window.location.search &&
+      !!url.hash;
+  }
+  function isInternalUrl(url) {
+    var loc = window.location;
+    if (url.protocol === "file:" && loc.protocol === "file:") return true;
+    if (url.origin && loc.origin && url.origin !== "null" && loc.origin !== "null") return url.origin === loc.origin;
+    return url.protocol === loc.protocol && url.host === loc.host;
+  }
+  function isHtmlRoute(url) {
+    var path = url.pathname || "/";
+    return path === "/" || /(?:\.html|\/)$/i.test(path);
+  }
+  function getTransitionUrl(link, event) {
+    if (!link || leaving) return null;
+    if (event) {
+      if (event.defaultPrevented) return null;
+      if (typeof event.button === "number" && event.button !== 0) return null;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
+    }
+    if (link.hasAttribute("download") || link.closest("[data-no-transition]")) return null;
+    var target = (link.getAttribute("target") || "").toLowerCase();
+    if (target && target !== "_self") return null;
+    var href = link.getAttribute("href") || "";
+    if (!href || href.charAt(0) === "#") return null;
+    if (/^(tel:|mailto:|sms:|javascript:|data:|blob:)/i.test(href)) return null;
+    var url;
+    try { url = new URL(href, window.location.href); } catch (error) { return null; }
+    if (!isInternalUrl(url)) return null;
+    if (sameDocumentHashOnly(url)) return null;
+    if (url.href === window.location.href) return null;
+    if (!isHtmlRoute(url)) return null;
+    return url;
+  }
+
+  function setBaseStyle(el, styles) {
+    Object.keys(styles).forEach(function (key) { el.style[key] = styles[key]; });
+  }
+  function ensureCurtain(state) {
+    if (!document.body) return null;
+    var curtain = document.querySelector(".nw-route-curtain");
+    if (!curtain) {
+      curtain = document.createElement("div");
+      curtain.className = "nw-route-curtain";
+      curtain.setAttribute("aria-hidden", "true");
+      var panel = document.createElement("div");
+      panel.className = "nw-route-curtain__panel";
+      curtain.appendChild(panel);
+      document.body.appendChild(curtain);
+    }
+    curtain.dataset.state = state || "leave";
+    setBaseStyle(curtain, {
+      position: "fixed",
+      inset: "0",
+      zIndex: "2147483647",
+      overflow: "hidden",
+      pointerEvents: "auto",
+      contain: "layout paint style",
+      background: "transparent"
+    });
+    var panelEl = curtain.querySelector(".nw-route-curtain__panel");
+    if (panelEl) {
+      setBaseStyle(panelEl, {
+        position: "absolute",
+        left: "0",
+        right: "0",
+        top: "-1px",
+        bottom: "-1px",
+        background: "#000",
+        transform: state === "enter" ? "translate3d(0, 0, 0)" : "translate3d(0, 100%, 0)",
+        willChange: "transform",
+        backfaceVisibility: "hidden"
+      });
+    }
+    return curtain;
+  }
+  function removeCurtain() {
+    var curtain = document.querySelector(".nw-route-curtain");
+    if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain);
+  }
+  function animateElement(el, frames, options, done) {
+    var finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      if (frames && frames.length && frames[frames.length - 1].transform) el.style.transform = frames[frames.length - 1].transform;
+      if (typeof done === "function") done();
+    }
+    if (el && typeof el.animate === "function") {
+      try {
+        var animation = el.animate(frames, options);
+        animation.onfinish = finish;
+        animation.oncancel = finish;
+        return animation;
+      } catch (error) {}
+    }
+    window.setTimeout(finish, Math.max(0, Number(options && options.duration) || 0));
+    return null;
+  }
+  function dispatch(name, detail) {
+    try { document.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
+    try { window.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
+  }
+  function closeOpenUi() {
+    if (!document.body) return;
+    document.body.classList.remove("menu-open");
+    var menu = document.querySelector(".mobile-menu");
+    var toggle = document.querySelector(".menu-toggle");
+    if (menu) {
+      menu.classList.remove("is-open");
+      menu.setAttribute("aria-hidden", "true");
+      menu.dataset.state = "closed";
+    }
+    if (toggle) {
+      toggle.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+  }
+  function startLeave(url) {
+    if (!url || leaving) return false;
+    leaving = true;
+    storageSet(JSON.stringify({ v: VERSION, t: now(), to: url.href, from: window.location.href }));
+    closeOpenUi();
+    root.classList.remove("nw-route-entering", "nw-route-ready");
+    root.classList.add("nw-route-transitioning", "nw-route-leaving", "nw-route-overlay-ready");
+    var curtain = ensureCurtain("leave");
+    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
+    dispatch("novawork:route-leave-start", { to: url.href, source: "route-" + VERSION });
+    var navigated = false;
+    function go() {
+      if (navigated) return;
+      navigated = true;
+      window.location.assign(url.href);
+    }
+    window.clearTimeout(coverTimer);
+    coverTimer = window.setTimeout(go, COVER_MS + 260);
+    if (!panel) {
+      window.setTimeout(go, 40);
+      return true;
+    }
+    panel.getBoundingClientRect();
+    window.requestAnimationFrame(function () {
+      animateElement(panel, [
+        { transform: "translate3d(0, 100%, 0)" },
+        { transform: "translate3d(0, 0, 0)" }
+      ], { duration: COVER_MS, easing: EASE_COVER, fill: "forwards" }, go);
+    });
+    return true;
+  }
+  function finishEnter() {
+    if (enterFinished) return;
+    enterFinished = true;
+    window.clearTimeout(enterTimer);
+    root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
+    window.__NW_ROUTE_ENTERING = false;
+    entering = false;
+    removeCurtain();
+    dispatch("novawork:route-enter-done", { source: "route-" + VERSION });
+  }
+  function startEnter() {
+    if (entering || enterFinished) return;
+    var entry = getFreshEntry();
+    var shouldEnter = !!entry || root.classList.contains("nw-route-entering") || window.__NW_ROUTE_ENTERING === true;
+    if (!shouldEnter) return;
+    entering = true;
+    storageRemove();
+    window.__NW_ROUTE_ENTERING = true;
+    root.classList.add("nw-route-transitioning", "nw-route-entering");
+    root.classList.remove("nw-route-leaving", "nw-route-ready");
+    var curtain = ensureCurtain("enter");
+    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
+    root.classList.add("nw-route-overlay-ready");
+    if (curtain) curtain.getBoundingClientRect();
+    dispatch("novawork:route-enter-start", { from: entry && entry.from, source: "route-" + VERSION });
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        root.classList.add("nw-route-ready");
+        window.clearTimeout(enterTimer);
+        enterTimer = window.setTimeout(finishEnter, Math.max(REVEAL_MS + CONTENT_MS, 1200));
+        if (!panel) return;
+        animateElement(panel, [
+          { transform: "translate3d(0, 0, 0)" },
+          { transform: "translate3d(0, -100%, 0)" }
+        ], { duration: REVEAL_MS, easing: EASE_COVER, fill: "forwards", delay: 90 }, finishEnter);
+      });
+    });
+  }
+
+  document.addEventListener("click", function (event) {
+    var target = event.target;
+    if (!target || !target.closest) return;
+    var link = target.closest("a[href]");
+    var url = getTransitionUrl(link, event);
+    if (!url) return;
+    event.preventDefault();
+    event.stopPropagation();
+    startLeave(url);
+  }, true);
+
+  document.addEventListener("DOMContentLoaded", startEnter, { once: true });
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      leaving = false;
+      entering = false;
+      enterFinished = false;
+      storageRemove();
+      root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
+      removeCurtain();
+      window.__NW_ROUTE_ENTERING = false;
+      return;
+    }
+    startEnter();
+  }, { passive: true });
+  if (document.readyState !== "loading") startEnter();
+
+  window.NOVAWORKRouteTransition = {
+    version: VERSION,
+    start: function (href) {
+      var url;
+      try { url = new URL(href, window.location.href); } catch (error) { return false; }
+      return startLeave(url);
+    }
+  };
+})();
+</script>
+<style id="nw-route-transition-critical">
+html.nw-route-transitioning,
+html.nw-route-entering,
+html.nw-route-leaving { background: #000; scroll-behavior: auto !important; }
+html.nw-route-transitioning *,
+html.nw-route-entering *,
+html.nw-route-leaving * { scroll-behavior: auto !important; }
+html.nw-route-entering body,
+html.nw-route-leaving body { background: #000; }
+html.nw-route-entering::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  background: #000;
+  pointer-events: auto;
+  opacity: 1;
+}
+html.nw-route-entering.nw-route-overlay-ready::before {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 80ms linear, visibility 80ms step-end;
+}
+html.nw-route-entering .site-loader { display: none !important; }
+html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript),
+html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
+  will-change: opacity, transform;
+}
+html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
+  opacity: 0 !important;
+  transform: translate3d(0, 34px, 0) !important;
+}
+html.nw-route-entering.nw-route-ready body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+  transition: opacity 760ms cubic-bezier(0.16, 1, 0.3, 1) 160ms, transform 860ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
+}
+html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
+  opacity: .72;
+  transform: translate3d(0, -16px, 0);
+  transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1), transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nw-route-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  overflow: hidden;
+  pointer-events: auto;
+  contain: layout paint style;
+}
+.nw-route-curtain__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  bottom: -1px;
+  background: #000;
+  transform: translate3d(0, 100%, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+</style>
+
+<!-- Google Tag Manager -->
+<script>
+(function(w,d,l,i){
+  w[l]=w[l]||[];
+  w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+  var loaded=false;
+  function loadGTM(){
+    if(loaded) return;
+    loaded=true;
+    var f=d.getElementsByTagName('script')[0];
+    var j=d.createElement('script');
+    j.async=true;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+i;
+    f.parentNode.insertBefore(j,f);
+  }
+  if('requestIdleCallback' in w){w.requestIdleCallback(loadGTM,{timeout:3200});}
+  else{w.setTimeout(loadGTM,2200);}
+  w.addEventListener('pointerdown',loadGTM,{once:true,passive:true});
+  w.addEventListener('keydown',loadGTM,{once:true});
+})(window,document,'dataLayer','GTM-MSVM26W9');
+</script>
+<!-- End Google Tag Manager -->
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FAQ | NOVAWORK</title>
+<meta content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다." name="description"/>
+<meta content="index,follow" name="robots"/>
+<meta content="#050505" name="theme-color"/>
+<link href="https://novawork.kr/faq.html" rel="canonical"/>
+<link href="./assets/favicon.png" rel="icon" type="image/png"/>
+<link href="./assets/favicon-180.png" rel="apple-touch-icon"/>
+<meta content="website" property="og:type"/>
+<meta content="ko_KR" property="og:locale"/>
+<meta content="NOVAWORK" property="og:site_name"/>
+<meta content="FAQ | NOVAWORK" property="og:title"/>
+<meta content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다." property="og:description"/>
+<meta content="https://novawork.kr/faq.html" property="og:url"/>
+<meta content="https://novawork.kr/assets/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="image/png" property="og:image:type"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="FAQ | NOVAWORK" name="twitter:title"/>
+<meta content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다." name="twitter:description"/>
+<meta content="https://novawork.kr/assets/og-image.png" name="twitter:image"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "어떤 서비스로 문의해야 할지 모르겠으면 어떻게 하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "서비스명을 맞히지 않아도 됩니다. 현재 문제, 원하는 결과, 참고 자료, 운영 중인 사이트 URL을 남겨주시면 홈페이지 제작, 웹시스템, 수정, 추적 세팅, AI 챗봇, 데이터 수집 중 맞는 범위로 정리해드립니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "홈페이지·랜딩페이지 제작과 React·Firebase 웹시스템은 무엇이 다른가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "홈페이지·랜딩페이지는 정보를 보여주고 문의로 연결하는 화면 제작입니다. 고객 신청 내역을 DB에 저장하고 관리자가 확인·수정·처리해야 한다면 React·Firebase 관리자 웹시스템으로 진행해야 합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "기존 홈페이지 오류 수정은 어떤 범위까지 가능한가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HTML/CSS 레이아웃, 모바일 반응형, 이미지·문구·링크·버튼, 헤더/푸터 메뉴, 간단한 섹션 추가, 팝업·탭·토글·아코디언, JavaScript 오류, 폼 연결 또는 외부 링크 점검이 가능합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "GA4/GTM 세팅은 무엇을 확인할 수 있게 해주나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "방문자가 어떤 버튼을 클릭했는지, 전화·카카오톡·문의폼 중 어떤 문의 동선이 사용되는지, 랜딩페이지에서 주요 행동이 발생했는지, 이벤트가 GA4에 정상 수집되는지를 확인할 수 있게 합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "GPT·AI 챗봇은 어떤 방식으로 진행되나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "자주 받는 질문, 서비스 설명, 가격표, 정책 문서를 기준으로 AI가 답변할 범위와 답변하면 안 되는 범위를 분리하고, 사람 상담으로 넘길 조건까지 함께 정리합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "AI 챗봇 답변의 정확도는 보장되나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "AI는 상담 응답 보조 도구이므로 100% 정확도를 보장하지 않습니다. 답변 범위, 금지 답변, 사람에게 넘길 조건, 검수 기준을 설계해 운영 리스크를 줄이는 방향으로 진행합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "웹 데이터 크롤링은 모든 사이트가 가능한가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아닙니다. 공개 웹페이지의 구조화된 목록 데이터가 대상입니다. 로그인 필요 데이터, 유료 데이터, 개인정보·민감정보, 캡차·봇 차단 우회, 사이트 정책 위반 가능성이 있는 수집은 진행하지 않습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "작업 후 오류 확인 기간이 있나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "홈페이지 제작, 수정, GA4/GTM, AI 챗봇, 크롤링은 보통 납품 후 7일 이내 작업 범위 내 오류를 확인하며, React·Firebase 웹시스템은 최종 납품 후 14일 이내 기능 오류를 확인합니다."
+      }
+    }
+  ]
+}
+</script>
+<link href="./css/site-base.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
+<link href="./css/site-ui.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
+</head>
+<body class="faq-static-page has-mobile-quick-cta">
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+<iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-MSVM26W9" style="display:none;visibility:hidden" width="0"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+<a class="skip-link" href="#main">본문 바로가기</a>
+<header class="header">
+<div class="container">
+<div class="header-inner">
+<a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></a>
+<nav aria-label="주요 메뉴" class="nav">
+<ul class="nav-list">
+<li><a class="nav-link" href="index.html">홈</a></li>
+<li><a class="nav-link" href="about.html">회사소개</a></li>
+<li><a class="nav-link" href="services.html">서비스</a></li>
+<li><a class="nav-link" href="faq.html">FAQ</a></li>
+</ul>
+</nav>
+<div class="header-actions">
+<a class="btn btn-small btn-secondary header-cta" href="contact.html">접수하기</a>
+<button aria-controls="mobile-menu" aria-expanded="false" aria-label="모바일 메뉴 열기" class="menu-toggle" type="button">
+<span></span>
+<span></span>
+<span></span>
+</button>
+</div>
+</div>
+</div>
+<div aria-label="모바일 메뉴" aria-modal="true" class="mobile-menu" id="mobile-menu" role="dialog">
+<div class="mobile-menu-panel">
+<ul class="mobile-menu-list">
+<li><a href="index.html">홈</a></li>
+<li><a href="about.html">회사소개</a></li>
+<li><a href="services.html">서비스</a></li>
+<li><a href="faq.html">FAQ</a></li>
+</ul>
+<div aria-label="대표 서비스 바로가기" class="mobile-menu-shortcuts">
+<p>대표 서비스</p>
+<div class="mobile-menu-shortcut-grid">
+<a href="service-homepage-landing.html">홈페이지</a>
+<a href="service-react-firebase-admin.html">웹시스템</a>
+<a href="service-homepage-fix.html">오류 수정</a>
+<a href="service-ga4-gtm.html">GA4/GTM</a>
+<a href="service-gpt-ai-chatbot.html">AI 챗봇</a>
+<a href="service-web-crawling.html">크롤링</a>
+</div>
+</div><a class="btn btn-primary mobile-menu-cta" href="contact.html">접수하기</a>
+</div>
+</div>
+</header>
+<main id="main">
+<section class="page-hero page-hero-with-visual"><div class="container"><div class="page-hero-grid"><div class="section-head"><p class="section-label">FAQ</p><h1 class="section-title">서비스 선택 전에 헷갈리는 부분을 먼저 정리했습니다.</h1><p class="section-desc">각 서비스는 작업 목적, 준비 자료, 수정 기준, 제외 범위가 다릅니다. 문의 전 자주 묻는 내용을 기준으로 확인해 보세요.</p><div aria-label="FAQ 안내" class="page-hero-points"><span>서비스 선택</span><span>비용·일정</span><span>수정·오류 확인</span></div></div><figure class="page-hero-visual"><img alt="리서치부터 런칭까지 이어지는 흑백 작업 프로세스 이미지" class="photo-real" decoding="async" fetchpriority="high" height="810" loading="eager" src="./assets/visual-process-flow.webp" width="1440"/></figure></div></div></section>
+<section class="section faq-section"><div class="container"><div class="section-head"><p class="section-label">BASIC</p><h2 class="faq-category-title">기본 질문</h2></div><div class="faq-list"><details class="faq-item" open=""><summary>어떤 서비스로 문의해야 할지 모르겠으면 어떻게 하나요?</summary><p>서비스명을 맞히지 않아도 됩니다. 현재 문제, 원하는 결과, 참고 자료, 운영 중인 사이트 URL을 남겨주시면 홈페이지 제작, 웹시스템, 수정, 추적 세팅, AI 챗봇, 데이터 수집 중 맞는 범위로 정리해드립니다.</p></details><details class="faq-item"><summary>홈페이지·랜딩페이지 제작과 React·Firebase 웹시스템은 무엇이 다른가요?</summary><p>홈페이지·랜딩페이지는 정보를 보여주고 문의로 연결하는 화면 제작입니다. 고객 신청 내역을 DB에 저장하고 관리자가 확인·수정·처리해야 한다면 React·Firebase 관리자 웹시스템으로 진행해야 합니다.</p></details><details class="faq-item"><summary>기존 홈페이지 오류 수정은 어떤 범위까지 가능한가요?</summary><p>HTML/CSS 레이아웃, 모바일 반응형, 이미지·문구·링크·버튼, 헤더/푸터 메뉴, 간단한 섹션 추가, 팝업·탭·토글·아코디언, JavaScript 오류, 폼 연결 또는 외부 링크 점검이 가능합니다.</p></details><details class="faq-item"><summary>GA4/GTM 세팅은 무엇을 확인할 수 있게 해주나요?</summary><p>방문자가 어떤 버튼을 클릭했는지, 전화·카카오톡·문의폼 중 어떤 문의 동선이 사용되는지, 랜딩페이지에서 주요 행동이 발생했는지, 이벤트가 GA4에 정상 수집되는지를 확인할 수 있게 합니다.</p></details><details class="faq-item"><summary>GPT·AI 챗봇은 어떤 방식으로 진행되나요?</summary><p>자주 받는 질문, 서비스 설명, 가격표, 정책 문서를 기준으로 AI가 답변할 범위와 답변하면 안 되는 범위를 분리하고, 사람 상담으로 넘길 조건까지 함께 정리합니다.</p></details><details class="faq-item"><summary>AI 챗봇 답변의 정확도는 보장되나요?</summary><p>AI는 상담 응답 보조 도구이므로 100% 정확도를 보장하지 않습니다. 답변 범위, 금지 답변, 사람에게 넘길 조건, 검수 기준을 설계해 운영 리스크를 줄이는 방향으로 진행합니다.</p></details><details class="faq-item"><summary>웹 데이터 크롤링은 모든 사이트가 가능한가요?</summary><p>아닙니다. 공개 웹페이지의 구조화된 목록 데이터가 대상입니다. 로그인 필요 데이터, 유료 데이터, 개인정보·민감정보, 캡차·봇 차단 우회, 사이트 정책 위반 가능성이 있는 수집은 진행하지 않습니다.</p></details><details class="faq-item"><summary>작업 후 오류 확인 기간이 있나요?</summary><p>홈페이지 제작, 수정, GA4/GTM, AI 챗봇, 크롤링은 보통 납품 후 7일 이내 작업 범위 내 오류를 확인하며, React·Firebase 웹시스템은 최종 납품 후 14일 이내 기능 오류를 확인합니다.</p></details></div></div></section>
+<section class="section contact"><div class="container"><div class="contact-box cta-band"><div class="section-head"><p class="section-label">CONTACT</p><h2 class="section-title">답변을 확인했다면 현재 상황을 접수해 주세요</h2><p class="section-desc">정확한 견적과 일정은 서비스 유형, 기능 수, 데이터 구조, 계정 권한, 자료 준비 상태를 확인한 뒤 안내드립니다.</p></div><a class="btn btn-primary" href="contact.html">접수하기</a></div></div></section>
+</main><nav aria-label="모바일 빠른 문의" class="mobile-quick-cta">
+<a aria-label="NOVAWORK 카카오톡 채널로 문의하기" class="mobile-quick-cta__item" data-mobile-cta="kakao" href="https://pf.kakao.com/_xhDLjX?from=mobile-quick" rel="noopener noreferrer" target="_blank"><span>카카오톡</span></a>
+<a aria-label="NOVAWORK 프로젝트 접수하기" class="mobile-quick-cta__item mobile-quick-cta__primary" data-mobile-cta="contact" href="contact.html"><span>접수하기</span></a>
+</nav>
+<footer class="footer">
+<div class="container">
+<div class="footer-top">
+<div>
+<p class="footer-logo"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></p>
+<p class="footer-text">홈페이지·랜딩페이지 제작 · 관리자 웹시스템 · GA4/GTM · GPT 챗봇 · 데이터 수집</p>
+<ul aria-label="사업자 정보" class="footer-business">
+<li>대표: 고찬휘</li>
+<li>사업자등록번호: 613 27 53241</li>
+<li>이메일: <a href="mailto:contact@novawork.kr">contact@novawork.kr</a></li>
+<li>전화: <a href="tel:01055286580">010-5528-6580</a></li>
+<li>회신: 24시간 내 1차 답변</li>
+<li>서비스 지역: 전국 온라인 상담 가능</li>
+</ul>
+</div>
+<nav aria-label="하단 메뉴" class="footer-nav">
+<a href="index.html">홈</a>
+<a href="about.html">회사소개</a>
+<a href="services.html">서비스</a>
+<a href="faq.html">FAQ</a>
+<a href="contact.html">접수하기</a>
+<a href="privacy.html">개인정보처리방침</a>
+</nav>
+</div>
+<div class="footer-bottom">
+<p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
+<p class="footer-note">접수는 <a href="contact.html">접수 페이지</a> 또는 <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내 확인합니다.</p>
+</div>
+</div>
+</footer>
+<script src="./js/site-core.js?v=v42-route-transition-hardfix-20260607"></script>
+</body>
+</html>
