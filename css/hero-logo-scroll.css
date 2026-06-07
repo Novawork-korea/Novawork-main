@@ -551,7 +551,7 @@ body.nw-intro-lock {
 }
 
 
-/* v40: PC hero intro runs on compositor-backed transform/opacity animations. */
+/* v43: PC hero intro runs on compositor-backed transform/opacity animations. */
 .nw-logo-scroll.is-native-intro .nw-logo-piece,
 .nw-logo-scroll.is-native-intro .nw-stage-copy,
 .nw-logo-scroll.is-native-intro .nw-brand-copy,

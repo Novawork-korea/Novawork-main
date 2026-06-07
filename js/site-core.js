@@ -2,8 +2,8 @@
   "use strict";
 
   const root = document.documentElement;
-  if (root.dataset.nwCore === "v40") return;
-  root.dataset.nwCore = "v40";
+  if (root.dataset.nwCore === "v43") return;
+  root.dataset.nwCore = "v43";
 
   const raf = window.requestAnimationFrame || ((fn) => window.setTimeout(fn, 16));
   const ready = (fn) => {
@@ -270,8 +270,8 @@
   };
 
   const initScrollReveal = () => {
-    if (root.dataset.nwScrollReveal === "v40") return;
-    root.dataset.nwScrollReveal = "v40";
+    if (root.dataset.nwScrollReveal === "v43") return;
+    root.dataset.nwScrollReveal = "v43";
 
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const touchLayout = window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
@@ -336,165 +336,10 @@
   };
 
 
-  const initPageTransitions = () => {
-    if (window.NOVAWORKRouteTransition && window.NOVAWORKRouteTransition.version) return;
-    if (root.dataset.nwRouteTransition === "v40") return;
-    root.dataset.nwRouteTransition = "v40";
-
-    const STORAGE_KEY = "novawork:route-transition";
-    const COVER_MS = 680;
-    const ENTER_MS = 940;
-    let leaving = false;
-    let enterTimer = null;
-
-    const storage = {
-      get() {
-        try { return window.sessionStorage ? window.sessionStorage.getItem(STORAGE_KEY) : null; } catch (error) { return null; }
-      },
-      set(value) {
-        try { if (window.sessionStorage) window.sessionStorage.setItem(STORAGE_KEY, value); } catch (error) {}
-      },
-      remove() {
-        try { if (window.sessionStorage) window.sessionStorage.removeItem(STORAGE_KEY); } catch (error) {}
-      }
-    };
-
-    const ensureOverlay = () => {
-      let overlay = document.querySelector(".nw-page-transition");
-      if (overlay) return overlay;
-      overlay = document.createElement("div");
-      overlay.className = "nw-page-transition";
-      overlay.setAttribute("aria-hidden", "true");
-      const panel = document.createElement("div");
-      panel.className = "nw-page-transition__panel";
-      overlay.appendChild(panel);
-      document.body.appendChild(overlay);
-      return overlay;
-    };
-
-    const removeOverlay = () => {
-      const overlay = document.querySelector(".nw-page-transition");
-      if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
-    };
-
-    const finishEnter = () => {
-      if (enterTimer) window.clearTimeout(enterTimer);
-      enterTimer = null;
-      root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
-      window.__NW_ROUTE_ENTERING = false;
-      removeOverlay();
-      try { document.dispatchEvent(new CustomEvent("novawork:route-enter-done", { detail: { source: "site-core-v40" } })); } catch (error) {}
-      try { window.dispatchEvent(new CustomEvent("novawork:route-enter-done", { detail: { source: "site-core-v40" } })); } catch (error) {}
-    };
-
-    const hasFreshStoredEntry = () => {
-      const raw = storage.get();
-      if (!raw) return false;
-      try {
-        const data = JSON.parse(raw);
-        if (!data || !data.t || Date.now() - Number(data.t) > 30000) {
-          storage.remove();
-          return false;
-        }
-      } catch (error) {}
-      return true;
-    };
-
-    const runEnter = () => {
-      const shouldEnter = hasFreshStoredEntry() || root.classList.contains("nw-route-entering") || window.__NW_ROUTE_ENTERING === true;
-      if (!shouldEnter) return;
-      storage.remove();
-      window.__NW_ROUTE_ENTERING = true;
-      const overlay = ensureOverlay();
-      overlay.dataset.state = "enter";
-      root.classList.add("nw-route-transitioning", "nw-route-entering", "nw-route-overlay-ready");
-      root.classList.remove("nw-route-leaving", "nw-route-ready");
-      void overlay.offsetHeight;
-      raf(() => {
-        raf(() => {
-          root.classList.add("nw-route-ready");
-          if (enterTimer) window.clearTimeout(enterTimer);
-          enterTimer = window.setTimeout(finishEnter, ENTER_MS);
-        });
-      });
-    };
-
-    const sameDocumentHashOnly = (url) => {
-      return url.origin === window.location.origin &&
-        url.pathname === window.location.pathname &&
-        url.search === window.location.search &&
-        !!url.hash;
-    };
-
-    const getTransitionUrl = (link, event) => {
-      if (!link || leaving) return null;
-      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
-      if (link.hasAttribute("download") || link.closest("[data-no-transition]")) return null;
-      const target = (link.getAttribute("target") || "").toLowerCase();
-      if (target && target !== "_self") return null;
-      const href = link.getAttribute("href") || "";
-      if (!href || href.charAt(0) === "#") return null;
-      if (/^(tel:|mailto:|sms:|javascript:)/i.test(href)) return null;
-      let url;
-      try { url = new URL(href, window.location.href); } catch (error) { return null; }
-      if (url.origin !== window.location.origin) return null;
-      if (sameDocumentHashOnly(url)) return null;
-      if (url.href === window.location.href) return null;
-      const path = url.pathname || "/";
-      const isHtmlRoute = /(?:\.html|\/)$/.test(path) || path === "/";
-      if (!isHtmlRoute) return null;
-      return url;
-    };
-
-    const navigateAfterCover = (url) => {
-      window.setTimeout(() => {
-        window.location.href = url.href;
-      }, COVER_MS);
-    };
-
-    const startLeave = (url) => {
-      if (leaving) return;
-      leaving = true;
-      storage.set(JSON.stringify({ v: "v40", t: Date.now(), to: url.href, from: window.location.href }));
-      if (document.body) document.body.classList.remove("menu-open");
-      const overlay = ensureOverlay();
-      overlay.dataset.state = "leave";
-      root.classList.remove("nw-route-entering", "nw-route-ready");
-      root.classList.add("nw-route-transitioning", "nw-route-leaving", "nw-route-overlay-ready");
-      void overlay.offsetHeight;
-      try { document.dispatchEvent(new CustomEvent("novawork:route-leave-start", { detail: { to: url.href } })); } catch (error) {}
-      navigateAfterCover(url);
-    };
-
-    document.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const link = target.closest("a[href]");
-      if (!link) return;
-      const url = getTransitionUrl(link, event);
-      if (!url) return;
-      event.preventDefault();
-      startLeave(url);
-    }, true);
-
-    window.addEventListener("pageshow", (event) => {
-      if (event.persisted) {
-        leaving = false;
-        storage.remove();
-        root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
-        removeOverlay();
-        return;
-      }
-      runEnter();
-    }, { passive: true });
-
-    runEnter();
-  };
-
+  // v43: page transitions are handled by the early head boot script.
 
   storeTrackingParams();
   ready(() => {
-    initPageTransitions();
     initCurrentPage();
     initHeaderScroll();
     initMobileMenu();

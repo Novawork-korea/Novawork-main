@@ -6,7 +6,7 @@
 <script id="nw-route-transition-boot">
 (function () {
   "use strict";
-  var VERSION = "v42";
+  var VERSION = "v43";
   var KEY = "novawork:route-transition";
   var root = document.documentElement;
   var leaving = false;
@@ -179,6 +179,16 @@
       toggle.setAttribute("aria-expanded", "false");
     }
   }
+  function focusMainAfterRoute() {
+    var main = document.querySelector("main");
+    if (!main) return;
+    if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
+    try {
+      main.focus({ preventScroll: true });
+    } catch (error) {
+      try { main.focus(); } catch (innerError) {}
+    }
+  }
   function startLeave(url) {
     if (!url || leaving) return false;
     leaving = true;
@@ -218,6 +228,7 @@
     window.__NW_ROUTE_ENTERING = false;
     entering = false;
     removeCurtain();
+    focusMainAfterRoute();
     dispatch("novawork:route-enter-done", { source: "route-" + VERSION });
   }
   function startEnter() {
@@ -256,7 +267,6 @@
     var url = getTransitionUrl(link, event);
     if (!url) return;
     event.preventDefault();
-    event.stopPropagation();
     startLeave(url);
   }, true);
 
@@ -463,8 +473,8 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
   ]
 }
 </script>
-<link href="./css/site-base.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
+<link href="./css/site-base.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
+<link href="./css/site-ui.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
 </head>
 <body class="faq-static-page has-mobile-quick-cta">
 <!-- Google Tag Manager (noscript) -->
@@ -517,7 +527,7 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </header>
-<main id="main">
+<main id="main" tabindex="-1">
 <section class="page-hero page-hero-with-visual"><div class="container"><div class="page-hero-grid"><div class="section-head"><p class="section-label">FAQ</p><h1 class="section-title">서비스 선택 전에 헷갈리는 부분을 먼저 정리했습니다.</h1><p class="section-desc">각 서비스는 작업 목적, 준비 자료, 수정 기준, 제외 범위가 다릅니다. 문의 전 자주 묻는 내용을 기준으로 확인해 보세요.</p><div aria-label="FAQ 안내" class="page-hero-points"><span>서비스 선택</span><span>비용·일정</span><span>수정·오류 확인</span></div></div><figure class="page-hero-visual"><img alt="리서치부터 런칭까지 이어지는 흑백 작업 프로세스 이미지" class="photo-real" decoding="async" fetchpriority="high" height="810" loading="eager" src="./assets/visual-process-flow.webp" width="1440"/></figure></div></div></section>
 <section class="section faq-section"><div class="container"><div class="section-head"><p class="section-label">BASIC</p><h2 class="faq-category-title">기본 질문</h2></div><div class="faq-list"><details class="faq-item" open=""><summary>어떤 서비스로 문의해야 할지 모르겠으면 어떻게 하나요?</summary><p>서비스명을 맞히지 않아도 됩니다. 현재 문제, 원하는 결과, 참고 자료, 운영 중인 사이트 URL을 남겨주시면 홈페이지 제작, 웹시스템, 수정, 추적 세팅, AI 챗봇, 데이터 수집 중 맞는 범위로 정리해드립니다.</p></details><details class="faq-item"><summary>홈페이지·랜딩페이지 제작과 React·Firebase 웹시스템은 무엇이 다른가요?</summary><p>홈페이지·랜딩페이지는 정보를 보여주고 문의로 연결하는 화면 제작입니다. 고객 신청 내역을 DB에 저장하고 관리자가 확인·수정·처리해야 한다면 React·Firebase 관리자 웹시스템으로 진행해야 합니다.</p></details><details class="faq-item"><summary>기존 홈페이지 오류 수정은 어떤 범위까지 가능한가요?</summary><p>HTML/CSS 레이아웃, 모바일 반응형, 이미지·문구·링크·버튼, 헤더/푸터 메뉴, 간단한 섹션 추가, 팝업·탭·토글·아코디언, JavaScript 오류, 폼 연결 또는 외부 링크 점검이 가능합니다.</p></details><details class="faq-item"><summary>GA4/GTM 세팅은 무엇을 확인할 수 있게 해주나요?</summary><p>방문자가 어떤 버튼을 클릭했는지, 전화·카카오톡·문의폼 중 어떤 문의 동선이 사용되는지, 랜딩페이지에서 주요 행동이 발생했는지, 이벤트가 GA4에 정상 수집되는지를 확인할 수 있게 합니다.</p></details><details class="faq-item"><summary>GPT·AI 챗봇은 어떤 방식으로 진행되나요?</summary><p>자주 받는 질문, 서비스 설명, 가격표, 정책 문서를 기준으로 AI가 답변할 범위와 답변하면 안 되는 범위를 분리하고, 사람 상담으로 넘길 조건까지 함께 정리합니다.</p></details><details class="faq-item"><summary>AI 챗봇 답변의 정확도는 보장되나요?</summary><p>AI는 상담 응답 보조 도구이므로 100% 정확도를 보장하지 않습니다. 답변 범위, 금지 답변, 사람에게 넘길 조건, 검수 기준을 설계해 운영 리스크를 줄이는 방향으로 진행합니다.</p></details><details class="faq-item"><summary>웹 데이터 크롤링은 모든 사이트가 가능한가요?</summary><p>아닙니다. 공개 웹페이지의 구조화된 목록 데이터가 대상입니다. 로그인 필요 데이터, 유료 데이터, 개인정보·민감정보, 캡차·봇 차단 우회, 사이트 정책 위반 가능성이 있는 수집은 진행하지 않습니다.</p></details><details class="faq-item"><summary>작업 후 오류 확인 기간이 있나요?</summary><p>홈페이지 제작, 수정, GA4/GTM, AI 챗봇, 크롤링은 보통 납품 후 7일 이내 작업 범위 내 오류를 확인하며, React·Firebase 웹시스템은 최종 납품 후 14일 이내 기능 오류를 확인합니다.</p></details></div></div></section>
 <section class="section contact"><div class="container"><div class="contact-box cta-band"><div class="section-head"><p class="section-label">CONTACT</p><h2 class="section-title">답변을 확인했다면 현재 상황을 접수해 주세요</h2><p class="section-desc">정확한 견적과 일정은 서비스 유형, 기능 수, 데이터 구조, 계정 권한, 자료 준비 상태를 확인한 뒤 안내드립니다.</p></div><a class="btn btn-primary" href="contact.html">접수하기</a></div></div></section>
@@ -555,6 +565,6 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </footer>
-<script src="./js/site-core.js?v=v42-route-transition-hardfix-20260607"></script>
+<script src="./js/site-core.js?v=v43-cleanup-contact-20260607"></script>
 </body>
 </html>

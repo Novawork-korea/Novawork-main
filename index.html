@@ -6,7 +6,7 @@
 <script id="nw-route-transition-boot">
 (function () {
   "use strict";
-  var VERSION = "v42";
+  var VERSION = "v43";
   var KEY = "novawork:route-transition";
   var root = document.documentElement;
   var leaving = false;
@@ -179,6 +179,16 @@
       toggle.setAttribute("aria-expanded", "false");
     }
   }
+  function focusMainAfterRoute() {
+    var main = document.querySelector("main");
+    if (!main) return;
+    if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
+    try {
+      main.focus({ preventScroll: true });
+    } catch (error) {
+      try { main.focus(); } catch (innerError) {}
+    }
+  }
   function startLeave(url) {
     if (!url || leaving) return false;
     leaving = true;
@@ -218,6 +228,7 @@
     window.__NW_ROUTE_ENTERING = false;
     entering = false;
     removeCurtain();
+    focusMainAfterRoute();
     dispatch("novawork:route-enter-done", { source: "route-" + VERSION });
   }
   function startEnter() {
@@ -256,7 +267,6 @@
     var url = getTransitionUrl(link, event);
     if (!url) return;
     event.preventDefault();
-    event.stopPropagation();
     startLeave(url);
   }, true);
 
@@ -479,8 +489,7 @@ html.site-reveal-done .site-loader { display: none !important; }
 </script>
 <!-- End Google Tag Manager -->
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link rel="preload" href="./assets/logo-symbol.png" as="image"/>
-<link rel="preload" href="./js/modules/logo-scroll-hero.js?v=v42-route-transition-hardfix-20260607" as="script"/>
+<link rel="preload" href="./js/modules/logo-scroll-hero.js?v=v43-cleanup-contact-20260607" as="script"/>
 <link rel="preload" href="./assets/logo-symbol.png" as="image" fetchpriority="high"/>
 <title>NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작</title>
 <meta content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다." name="description"/>
@@ -565,9 +574,9 @@ html.site-reveal-done .site-loader { display: none !important; }
   }
 }
 </script>
-<link href="./css/site-base.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
-<link href="./css/hero-logo-scroll.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
+<link href="./css/site-base.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
+<link href="./css/hero-logo-scroll.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
+<link href="./css/site-ui.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
 </head>
 <body class="home has-mobile-quick-cta">
 <div class="site-loader" aria-hidden="true">
@@ -626,7 +635,7 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </header>
-<main id="main"><section class="nw-logo-scroll" aria-label="NOVAWORK 로고 스크롤 조립 애니메이션">
+<main id="main" tabindex="-1"><section class="nw-logo-scroll" aria-label="NOVAWORK 로고 스크롤 조립 애니메이션">
           <div class="nw-sticky-stage">
             <div class="nw-stage-copy">
               <p class="nw-eyebrow">NOVAWORK</p>
@@ -1063,8 +1072,8 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </footer>
-<script src="./js/modules/logo-scroll-hero.js?v=v42-route-transition-hardfix-20260607"></script>
-<script src="./js/modules/site-reveal.js?v=v42-route-transition-hardfix-20260607"></script>
-<script src="./js/site-core.js?v=v42-route-transition-hardfix-20260607"></script>
+<script src="./js/modules/logo-scroll-hero.js?v=v43-cleanup-contact-20260607"></script>
+<script src="./js/modules/site-reveal.js?v=v43-cleanup-contact-20260607"></script>
+<script src="./js/site-core.js?v=v43-cleanup-contact-20260607"></script>
 </body>
 </html>

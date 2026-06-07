@@ -51,7 +51,7 @@
     var introAnimations = [];
     var actionsActive = false;
 
-    docEl.dataset.nwHeroEngine = "v40";
+    docEl.dataset.nwHeroEngine = "v43";
 
     var clamp = function (value, min, max) {
       var lo = typeof min === "number" ? min : 0;

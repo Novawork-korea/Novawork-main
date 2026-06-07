@@ -6,7 +6,7 @@
 <script id="nw-route-transition-boot">
 (function () {
   "use strict";
-  var VERSION = "v42";
+  var VERSION = "v43";
   var KEY = "novawork:route-transition";
   var root = document.documentElement;
   var leaving = false;
@@ -179,6 +179,16 @@
       toggle.setAttribute("aria-expanded", "false");
     }
   }
+  function focusMainAfterRoute() {
+    var main = document.querySelector("main");
+    if (!main) return;
+    if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
+    try {
+      main.focus({ preventScroll: true });
+    } catch (error) {
+      try { main.focus(); } catch (innerError) {}
+    }
+  }
   function startLeave(url) {
     if (!url || leaving) return false;
     leaving = true;
@@ -218,6 +228,7 @@
     window.__NW_ROUTE_ENTERING = false;
     entering = false;
     removeCurtain();
+    focusMainAfterRoute();
     dispatch("novawork:route-enter-done", { source: "route-" + VERSION });
   }
   function startEnter() {
@@ -256,7 +267,6 @@
     var url = getTransitionUrl(link, event);
     if (!url) return;
     event.preventDefault();
-    event.stopPropagation();
     startLeave(url);
   }, true);
 
@@ -459,8 +469,8 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
     ]
   }
 ]</script>
-<link href="./css/site-base.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
+<link href="./css/site-base.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
+<link href="./css/site-ui.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
 </head>
 <body class="service-detail-page has-mobile-quick-cta">
 <!-- Google Tag Manager (noscript) -->
@@ -513,7 +523,7 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </header>
-<main id="main">
+<main id="main" tabindex="-1">
 <section class="service-detail-hero service-detail-hero--clean">
 <div class="container service-detail-hero-inner">
 <nav aria-label="현재 위치" class="breadcrumb">
@@ -708,6 +718,6 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </footer>
-<script src="./js/site-core.js?v=v42-route-transition-hardfix-20260607"></script>
+<script src="./js/site-core.js?v=v43-cleanup-contact-20260607"></script>
 </body>
 </html>

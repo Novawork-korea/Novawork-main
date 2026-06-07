@@ -6,7 +6,7 @@
 <script id="nw-route-transition-boot">
 (function () {
   "use strict";
-  var VERSION = "v42";
+  var VERSION = "v43";
   var KEY = "novawork:route-transition";
   var root = document.documentElement;
   var leaving = false;
@@ -179,6 +179,16 @@
       toggle.setAttribute("aria-expanded", "false");
     }
   }
+  function focusMainAfterRoute() {
+    var main = document.querySelector("main");
+    if (!main) return;
+    if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
+    try {
+      main.focus({ preventScroll: true });
+    } catch (error) {
+      try { main.focus(); } catch (innerError) {}
+    }
+  }
   function startLeave(url) {
     if (!url || leaving) return false;
     leaving = true;
@@ -218,6 +228,7 @@
     window.__NW_ROUTE_ENTERING = false;
     entering = false;
     removeCurtain();
+    focusMainAfterRoute();
     dispatch("novawork:route-enter-done", { source: "route-" + VERSION });
   }
   function startEnter() {
@@ -256,7 +267,6 @@
     var url = getTransitionUrl(link, event);
     if (!url) return;
     event.preventDefault();
-    event.stopPropagation();
     startLeave(url);
   }, true);
 
@@ -453,8 +463,8 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
   }
 }
 </script>
-<link href="./css/site-base.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v42-route-transition-hardfix-20260607" rel="stylesheet"/>
+<link href="./css/site-base.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
+<link href="./css/site-ui.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
 </head>
 <body class="contact-static-page">
 <!-- Google Tag Manager (noscript) -->
@@ -507,15 +517,15 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </header>
-<main id="main"><section class="page-hero page-hero-with-visual"><div class="container"><div class="page-hero-grid"><div class="section-head"><p class="section-label">PROJECT INQUIRY</p><h1 class="section-title">필요한 결과물과 현재 상황만 남겨주세요.</h1><p class="section-desc">정확한 서비스명을 몰라도 괜찮습니다. 대표 링크, 관리자 시스템, 오류 수정, 추적 세팅, GPT 챗봇, 데이터 수집 중 어느 범위인지 먼저 분리해 답변드립니다.</p><div aria-label="접수 안내" class="page-hero-points"><span>복수 선택 가능</span><span>예산 미정 가능</span><span>24시간 내 1차 답변</span></div></div><figure class="page-hero-visual"><img alt="문의 접수와 상담 화면을 보여주는 흑백 컨택트 이미지" class="photo-real" decoding="async" fetchpriority="high" height="810" loading="eager" src="./assets/visual-contact-cta.webp" width="1440"/></figure></div></div></section><section class="section"><div class="container"><div class="form-shell"><aside class="contact-side"><div class="contact-panel contact-panel-primary"><h3>문의 전에 핵심만 빠르게 확인해 보십시오</h3><p>작업 이름보다 현재 문제가 중요합니다. 대표 링크가 필요한지, 신청 데이터를 관리해야 하는지, 기존 사이트 오류인지, 문의 추적·AI 챗봇·데이터 수집이 필요한지에 따라 제안 방향이 달라집니다.</p><ul class="contact-facts"><li>현재 사용 중인 사이트, 기존 자료, 수집 대상 URL이 있다면 함께 남겨주세요.</li><li>관리자, DB, API, 로그인, 파일 업로드가 필요한 경우 반드시 적어주세요.</li><li>예산과 일정이 확정되지 않아도 원하는 결과만 적으면 1차 범위를 잡을 수 있습니다.</li></ul><div aria-label="빠른 문의" class="quick-contact"><a href="tel:01055286580">전화 문의</a><a href="mailto:contact@novawork.kr">이메일 문의</a><a href="#inquiry-form">접수 양식 작성</a><span>24시간 내 1차 답변드립니다.</span></div></div><div class="contact-panel"><h3>NOVAWORK 사업자 정보</h3><p>NOVAWORK는 대표 고찬휘가 직접 상담하고 프로젝트 범위를 정리합니다.</p><ul class="business-mini-list"><li><strong>대표</strong><span>고찬휘</span></li><li><strong>이메일</strong><span><a href="mailto:contact@novawork.kr">contact@novawork.kr</a></span></li><li><strong>전화</strong><span><a href="tel:01055286580">010-5528-6580</a></span></li><li><strong>사업자번호</strong><span>613 27 53241</span></li><li><strong>회신 기준</strong><span>24시간 내 1차 답변</span></li></ul></div><div class="contact-panel"><h3>이런 내용을 적어주시면 좋습니다</h3><p>필요한 결과물, 현재 문제, 참고 사이트/문서, 필요한 기능, 데이터 항목, 계정 권한, 원하는 일정과 예산 범위를 적어주십시오.</p></div></aside>
-<form accept-charset="UTF-8" action="https://script.google.com/macros/s/AKfycbzcGiK0f6oEzGL8p57zk5yDK7nm4_qsd0grnoZIeI2h3JwoN9W2IkhoMT82Irk9mulqxA/exec" class="contact-form inquiry-form" id="inquiry-form" method="post" novalidate="" target="hidden_iframe"><div aria-label="작성 안내" class="form-utility"><span>작성 시간 1~2분</span><span>이름 · 연락수단 · 서비스 · 내용만 필수</span><span>예산/일정은 미정이어도 가능</span></div><div class="service-prep-guide" data-service-prep="" hidden="">
+<main id="main" tabindex="-1"><section class="page-hero page-hero-with-visual"><div class="container"><div class="page-hero-grid"><div class="section-head"><p class="section-label">PROJECT INQUIRY</p><h1 class="section-title">필요한 결과물과 현재 상황만 남겨주세요.</h1><p class="section-desc">정확한 서비스명을 몰라도 괜찮습니다. 대표 링크, 관리자 시스템, 오류 수정, 추적 세팅, GPT 챗봇, 데이터 수집 중 어느 범위인지 먼저 분리해 답변드립니다.</p><div aria-label="접수 안내" class="page-hero-points"><span>복수 선택 가능</span><span>예산 미정 가능</span><span>24시간 내 1차 답변</span></div></div><figure class="page-hero-visual"><img alt="문의 접수와 상담 화면을 보여주는 흑백 컨택트 이미지" class="photo-real" decoding="async" fetchpriority="high" height="810" loading="eager" src="./assets/visual-contact-cta.webp" width="1440"/></figure></div></div></section><section class="section"><div class="container"><div class="form-shell"><aside class="contact-side"><div class="contact-panel contact-panel-primary"><h3>문의 전에 핵심만 빠르게 확인해 보십시오</h3><p>작업 이름보다 현재 문제가 중요합니다. 대표 링크가 필요한지, 신청 데이터를 관리해야 하는지, 기존 사이트 오류인지, 문의 추적·AI 챗봇·데이터 수집이 필요한지에 따라 제안 방향이 달라집니다.</p><ul class="contact-facts"><li>현재 사용 중인 사이트, 기존 자료, 수집 대상 URL이 있다면 함께 남겨주세요.</li><li>관리자, DB, API, 로그인, 파일 업로드가 필요한 경우 반드시 적어주세요.</li><li>예산과 일정이 확정되지 않아도 원하는 결과만 적으면 1차 범위를 잡을 수 있습니다.</li></ul><div aria-label="빠른 문의" class="quick-contact"><a href="tel:01055286580">전화 문의</a><a href="mailto:contact@novawork.kr">이메일 문의</a><a href="#inquiry-form">접수 양식 작성</a><span>24시간 내 1차 답변드립니다.</span></div></div><div class="contact-panel"><h3>NOVAWORK 사업자 정보</h3><p>NOVAWORK는 대표 고찬휘가 직접 상담하고 프로젝트 범위를 정리합니다.</p><ul class="business-mini-list"><li><strong>대표</strong><span>고찬휘</span></li><li><strong>이메일</strong><span><a href="mailto:contact@novawork.kr">contact@novawork.kr</a></span></li><li><strong>전화</strong><span><a href="tel:01055286580">010-5528-6580</a></span></li><li><strong>사업자번호</strong><span>613 27 53241</span></li><li><strong>회신 기준</strong><span>24시간 내 1차 답변</span></li></ul></div><div class="contact-panel"><h3>이런 내용을 적어주시면 좋습니다</h3><p>필요한 결과물, 현재 문제, 참고 사이트/문서, 필요한 기능, 데이터 항목, 계정 권한, 원하는 일정과 예산 범위를 적어주십시오.</p></div></aside>
+<form accept-charset="UTF-8" action="https://script.google.com/macros/s/AKfycbywZAKl2NEXCXagcu_jZ7WgAfiHcgcelu-tjzROfymWeSiahVr3vkVusiD6TMwRsJx9Qw/exec" class="contact-form inquiry-form" id="inquiry-form" method="post" novalidate="" target="hidden_iframe"><div aria-label="작성 안내" class="form-utility"><span>작성 시간 1~2분</span><span>이름 · 연락수단 · 서비스 · 내용만 필수</span><span>예산/일정은 미정이어도 가능</span></div><div class="service-prep-guide" data-service-prep="" hidden="">
 <div class="service-prep-guide-head">
 <span class="service-prep-label">선택한 서비스 준비자료</span>
 <h3 data-service-prep-title="">접수 전 확인 항목</h3>
 <p data-service-prep-desc="">서비스별로 상담에 필요한 자료를 먼저 정리해드립니다.</p>
 </div>
 <ul data-service-prep-list=""></ul>
-</div><input name="form_name" type="hidden" value="NOVAWORK 서비스 접수"/><input name="recipient_email" type="hidden" value="contact@novawork.kr"/><input name="form_version" type="hidden" value="2026-06-04-v31-smooth-perf"/><input id="package-name" name="package_name" type="hidden" value=""/><input id="page-url" name="page_url" type="hidden" value=""/><input id="page-origin" name="page_origin" type="hidden" value=""/><input id="user-agent" name="user_agent" type="hidden" value=""/><input id="submitted-at-client" name="submitted_at_client" type="hidden" value=""/><input id="utm-source" name="utm_source" type="hidden" value=""/><input id="utm-medium" name="utm_medium" type="hidden" value=""/><input id="utm-campaign" name="utm_campaign" type="hidden" value=""/><input id="utm-term" name="utm_term" type="hidden" value=""/><input id="utm-content" name="utm_content" type="hidden" value=""/><div aria-hidden="true" class="honeypot-field"><label for="website">Website</label><input autocomplete="off" id="website" name="website" tabindex="-1" type="text"/></div>
+</div><input name="form_name" type="hidden" value="NOVAWORK 서비스 접수"/><input name="recipient_email" type="hidden" value="contact@novawork.kr"/><input name="form_version" type="hidden" value="2026-06-07-v44-contact-response"/><input id="package-name" name="package_name" type="hidden" value=""/><input id="page-url" name="page_url" type="hidden" value=""/><input id="page-origin" name="page_origin" type="hidden" value=""/><input id="user-agent" name="user_agent" type="hidden" value=""/><input id="submitted-at-client" name="submitted_at_client" type="hidden" value=""/><input id="utm-source" name="utm_source" type="hidden" value=""/><input id="utm-medium" name="utm_medium" type="hidden" value=""/><input id="utm-campaign" name="utm_campaign" type="hidden" value=""/><input id="utm-term" name="utm_term" type="hidden" value=""/><input id="utm-content" name="utm_content" type="hidden" value=""/><div aria-hidden="true" class="honeypot-field"><label for="website">Website</label><input autocomplete="off" id="website" name="website" tabindex="-1" type="text"/></div>
 <div class="form-section"><div class="form-heading"><span class="form-step">01</span><div><h2 class="form-title">기본 정보</h2><p class="form-text">상담을 위해 필요한 기본 정보를 입력해 주십시오.</p></div></div><div class="form-grid"><div class="field"><label class="field-label" for="company">회사명 / 업체명 <span class="field-optional">선택</span></label><input autocomplete="organization" id="company" maxlength="80" name="company" type="text"/></div><div class="field"><label class="field-label" for="name">담당자 이름 <span class="field-required">*</span></label><input autocomplete="name" id="name" maxlength="40" name="name" required="" type="text"/></div><div class="field"><label class="field-label" for="phone">담당자 연락처</label><input autocomplete="tel" id="phone" maxlength="30" name="phone" placeholder="010-1234-5678" type="tel"/><p class="field-help">전화 회신을 원하시면 입력해 주세요.</p></div><div class="field"><label class="field-label" for="email">이메일</label><input autocomplete="email" id="email" maxlength="120" name="email" placeholder="name@example.com" type="email"/><p class="field-help">연락처 또는 이메일 중 하나는 입력해 주세요.</p></div><div class="field is-full"><label class="field-label" for="homepage">현재 사이트 / 참고 URL</label><input id="homepage" maxlength="300" name="homepage" placeholder="https://example.com 또는 참고 사이트" type="url"/><p class="field-help">운영 중인 사이트, 참고 사이트, 수집 대상 사이트가 있다면 남겨주십시오.</p></div></div></div>
 <div class="form-section"><div class="form-heading"><span class="form-step">02</span><div><h2 class="form-title">필요한 서비스</h2><p class="form-text">해당되는 항목을 모두 선택해 주십시오. 복수 선택 가능합니다.</p></div></div><div class="check-grid" data-service-group=""><label><input name="service" type="checkbox" value="홈페이지·랜딩페이지 제작"/> 홈페이지·랜딩페이지 제작</label>
 <label><input name="service" type="checkbox" value="React·Firebase 관리자 웹시스템"/> React·Firebase 관리자 웹시스템</label>
@@ -558,7 +568,7 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </footer>
-<script src="./js/modules/inquiry-form.js?v=v42-route-transition-hardfix-20260607"></script>
-<script src="./js/site-core.js?v=v42-route-transition-hardfix-20260607"></script>
+<script src="./js/modules/inquiry-form.js?v=v44-contact-response-20260607"></script>
+<script src="./js/site-core.js?v=v43-cleanup-contact-20260607"></script>
 </body>
 </html>

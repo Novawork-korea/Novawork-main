@@ -89,6 +89,10 @@ main {
   display: block;
 }
 
+main[tabindex="-1"]:focus {
+  outline: none;
+}
+
 
 /* ==================== tokens.css ==================== */
 :root {

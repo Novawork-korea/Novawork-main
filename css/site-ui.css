@@ -4280,6 +4280,16 @@ body.nw-scroll-reveal-active [data-nw-reveal="visible"] {
   transition-delay: var(--reveal-delay, 0ms) !important;
 }
 
+@media (hover: none) and (pointer: coarse), (prefers-reduced-motion: reduce) {
+  body.nw-scroll-reveal-active [data-nw-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+}
+
 
 /* Service detail responsive grid guard */
 @media (max-width: 1120px) {
@@ -5117,36 +5127,7 @@ body.nw-scroll-reveal-active [data-nw-reveal="visible"] {
 }
 
 
-/* v31 performance refinement */
-
-body.nw-scroll-reveal-active [data-nw-reveal="pending"] {
-  opacity: 0 !important;
-  transform: translate3d(0, 22px, 0) !important;
-  filter: none !important;
-  transition:
-    opacity 560ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 620ms cubic-bezier(0.16, 1, 0.3, 1) !important;
-  transition-delay: var(--reveal-delay, 0ms) !important;
-  will-change: opacity, transform;
-}
-body.nw-scroll-reveal-active [data-nw-reveal="visible"] {
-  opacity: 1 !important;
-  transform: translate3d(0, 0, 0) !important;
-  filter: none !important;
-  transition:
-    opacity 560ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 620ms cubic-bezier(0.16, 1, 0.3, 1) !important;
-  transition-delay: var(--reveal-delay, 0ms) !important;
-}
-@media (hover: none) and (pointer: coarse), (prefers-reduced-motion: reduce) {
-  body.nw-scroll-reveal-active [data-nw-reveal] {
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-    transition: none !important;
-    will-change: auto !important;
-  }
-}
+/* v43 cleanup: duplicate scroll reveal block removed. */
 .form-status-with-actions {
   display: grid;
   gap: 12px;
@@ -5177,127 +5158,7 @@ body.nw-scroll-reveal-active [data-nw-reveal="visible"] {
 }
 
 
-/* v40 page route transition: black cover wipes upward, next page content eases in. */
-:root {
-  --nw-route-cover-duration: 680ms;
-  --nw-route-reveal-duration: 760ms;
-  --nw-route-cover-ease: cubic-bezier(0.76, 0, 0.24, 1);
-  --nw-route-content-ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-html.nw-route-transitioning,
-html.nw-route-entering,
-html.nw-route-leaving {
-  scroll-behavior: auto !important;
-}
-
-html.nw-route-entering body,
-html.nw-route-leaving body {
-  background: #000;
-}
-
-html.nw-route-entering .site-loader {
-  display: none !important;
-}
-
-html.nw-route-entering::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 2147483646;
-  background: #000;
-  pointer-events: auto;
-  opacity: 1;
-}
-
-html.nw-route-entering.nw-route-overlay-ready::before {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 80ms linear, visibility 80ms step-end;
-}
-
-.nw-page-transition {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483646;
-  display: block;
-  overflow: hidden;
-  pointer-events: none;
-  contain: layout paint style;
-}
-
-.nw-page-transition__panel {
-  position: absolute;
-  inset: -1px 0 0;
-  background: #000;
-  transform: translate3d(0, 100%, 0);
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-html.nw-route-leaving .nw-page-transition,
-html.nw-route-entering .nw-page-transition {
-  pointer-events: auto;
-}
-
-html.nw-route-leaving .nw-page-transition__panel {
-  animation: nwRouteCoverUp var(--nw-route-cover-duration) var(--nw-route-cover-ease) both;
-}
-
-html.nw-route-entering .nw-page-transition__panel {
-  transform: translate3d(0, 0, 0);
-}
-
-html.nw-route-entering.nw-route-ready .nw-page-transition__panel {
-  animation: nwRouteRevealUp var(--nw-route-reveal-duration) var(--nw-route-cover-ease) 80ms both;
-}
-
-html.nw-route-entering body > :not(.nw-page-transition):not(.nw-route-curtain):not(script):not(style):not(noscript),
-html.nw-route-leaving body > :not(.nw-page-transition):not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  will-change: opacity, transform;
-}
-
-html.nw-route-entering body > :not(.site-loader):not(.nw-page-transition):not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  opacity: 0 !important;
-  transform: translate3d(0, 28px, 0) !important;
-}
-
-html.nw-route-entering.nw-route-ready body > :not(.site-loader):not(.nw-page-transition):not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  opacity: 1 !important;
-  transform: translate3d(0, 0, 0) !important;
-  transition:
-    opacity 700ms var(--nw-route-content-ease) 110ms,
-    transform 760ms var(--nw-route-content-ease) 110ms;
-}
-
-html.nw-route-leaving body > :not(.site-loader):not(.nw-page-transition):not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  opacity: 0.86;
-  transform: translate3d(0, -12px, 0);
-  transition:
-    opacity 360ms var(--nw-route-content-ease),
-    transform 420ms var(--nw-route-content-ease);
-}
-
-@keyframes nwRouteCoverUp {
-  from { transform: translate3d(0, 100%, 0); }
-  to { transform: translate3d(0, 0, 0); }
-}
-
-@keyframes nwRouteRevealUp {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(0, -100%, 0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --nw-route-cover-duration: 360ms;
-    --nw-route-reveal-duration: 420ms;
-  }
-}
-
-
-/* v42 route curtain hard override: keep the transition overlay independent from page-content reveal selectors. */
+/* v43 route curtain hard override: keep the transition overlay independent from page-content reveal selectors. */
 html.nw-route-transitioning body > .nw-route-curtain,
 html.nw-route-entering body > .nw-route-curtain,
 html.nw-route-leaving body > .nw-route-curtain {

@@ -122,8 +122,134 @@ window.initInquiryForm = function initInquiryForm() {
 
   let isSubmitting = false;
   let fallbackTimer = null;
+  let hardFallbackTimer = null;
   let serverMessageReceived = false;
+  let lateResponseWindowUntil = 0;
+  const SOFT_RESPONSE_TIMEOUT = 30000;
+  const HARD_RESPONSE_TIMEOUT = 90000;
+  const LATE_RESPONSE_WINDOW = 5 * 60 * 1000;
   const defaultButtonText = submitButton ? submitButton.textContent : "문의 접수하기";
+
+  const DRAFT_KEY = "novawork_inquiry_draft_v43";
+  const LEGACY_DRAFT_KEY = "novawork_inquiry_draft";
+  let draftTimer = null;
+
+  const isDraftField = function (field) {
+    if (!field || !field.name || field.type === "hidden") return false;
+    if (field.name === "website" || field.name === "privacy") return false;
+    return true;
+  };
+
+  const collectDraftFields = function () {
+    const fields = {};
+
+    Array.from(form.elements).forEach(function (field) {
+      if (!isDraftField(field)) return;
+
+      if (field.type === "checkbox") {
+        if (!Array.isArray(fields[field.name])) fields[field.name] = [];
+        if (field.checked) fields[field.name].push(field.value);
+        return;
+      }
+
+      if (field.type === "radio") {
+        if (!(field.name in fields)) fields[field.name] = "";
+        if (field.checked) fields[field.name] = field.value;
+        return;
+      }
+
+      fields[field.name] = field.value || "";
+    });
+
+    return fields;
+  };
+
+  const hasDraftContent = function (fields) {
+    return Object.keys(fields || {}).some(function (key) {
+      const value = fields[key];
+      if (Array.isArray(value)) return value.length > 0;
+      return String(value || "").trim().length > 0;
+    });
+  };
+
+  const writeDraft = function () {
+    try {
+      const fields = collectDraftFields();
+      if (!hasDraftContent(fields)) {
+        window.sessionStorage.removeItem(DRAFT_KEY);
+        return;
+      }
+
+      window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
+        version: "v43",
+        saved_at: new Date().toISOString(),
+        fields: fields
+      }));
+    } catch (error) {}
+  };
+
+  const scheduleDraftSave = function () {
+    if (draftTimer) window.clearTimeout(draftTimer);
+    draftTimer = window.setTimeout(writeDraft, 220);
+  };
+
+  const clearDraft = function () {
+    if (draftTimer) {
+      window.clearTimeout(draftTimer);
+      draftTimer = null;
+    }
+
+    try {
+      window.sessionStorage.removeItem(DRAFT_KEY);
+      window.sessionStorage.removeItem(LEGACY_DRAFT_KEY);
+    } catch (error) {}
+  };
+
+  const restoreDraft = function () {
+    let raw = null;
+
+    try {
+      raw = window.sessionStorage.getItem(DRAFT_KEY);
+    } catch (error) {
+      raw = null;
+    }
+
+    if (!raw) return false;
+
+    let saved = null;
+    try {
+      saved = JSON.parse(raw);
+    } catch (error) {
+      return false;
+    }
+
+    const fields = saved && saved.fields ? saved.fields : null;
+    if (!fields || !hasDraftContent(fields)) return false;
+
+    let restored = false;
+    Array.from(form.elements).forEach(function (field) {
+      if (!isDraftField(field)) return;
+      if (!(field.name in fields)) return;
+
+      const value = fields[field.name];
+      if (field.type === "checkbox") {
+        field.checked = Array.isArray(value) && value.includes(field.value);
+        restored = true;
+        return;
+      }
+
+      if (field.type === "radio") {
+        field.checked = String(value || "") === field.value;
+        restored = true;
+        return;
+      }
+
+      field.value = String(value || "");
+      restored = true;
+    });
+
+    return restored;
+  };
 
   const createStatusBox = function () {
     let statusBox = form.querySelector(".form-status");
@@ -418,17 +544,23 @@ window.initInquiryForm = function initInquiryForm() {
     setHiddenValue("#submitted-at-client", new Date().toISOString());
   };
 
-  const finishSuccess = function (message, resetForm) {
-    if (!isSubmitting) {
+  const finishSuccess = function (message, resetForm, force) {
+    if (!isSubmitting && !force) {
       return;
     }
 
     const statusBox = createStatusBox();
     isSubmitting = false;
+    lateResponseWindowUntil = 0;
 
     if (fallbackTimer) {
       window.clearTimeout(fallbackTimer);
       fallbackTimer = null;
+    }
+
+    if (hardFallbackTimer) {
+      window.clearTimeout(hardFallbackTimer);
+      hardFallbackTimer = null;
     }
 
     statusBox.className = "form-status is-success";
@@ -448,6 +580,7 @@ window.initInquiryForm = function initInquiryForm() {
     }
 
     if (resetForm) {
+      clearDraft();
       form.reset();
       updateCounter();
       syncChoiceState();
@@ -490,13 +623,16 @@ window.initInquiryForm = function initInquiryForm() {
   };
 
   const saveDraft = function () {
+    writeDraft();
     try {
-      window.sessionStorage.setItem("novawork_inquiry_draft", buildInquirySummary());
+      window.sessionStorage.setItem(LEGACY_DRAFT_KEY, buildInquirySummary());
     } catch (error) {}
   };
 
-  const finishError = function (message) {
-    if (!isSubmitting) {
+  const finishError = function (message, options) {
+    const allowWhenNotSubmitting = Boolean(options && options.allowWhenNotSubmitting);
+
+    if (!isSubmitting && !allowWhenNotSubmitting) {
       return;
     }
 
@@ -508,12 +644,17 @@ window.initInquiryForm = function initInquiryForm() {
       fallbackTimer = null;
     }
 
+    if (hardFallbackTimer) {
+      window.clearTimeout(hardFallbackTimer);
+      hardFallbackTimer = null;
+    }
+
     saveDraft();
     statusBox.className = "form-status is-error form-status-with-actions";
     statusBox.textContent = "";
 
     const displayMessage = message && message.indexOf("서버 저장") !== -1
-      ? "현재 Google Apps Script 저장 응답이 실패했습니다. 입력 내용은 지우지 않았습니다. 아래 이메일 또는 카카오톡으로 바로 보내주세요."
+      ? "Google Apps Script 또는 Google Sheet 연결이 실패했습니다. SHEET_ID, 시트 권한, 웹앱 재배포 URL을 확인해 주세요. 입력 내용은 지우지 않았습니다. 아래 이메일 또는 카카오톡으로 바로 보내주세요."
       : (message || "서버 접수 응답이 정상으로 확인되지 않았습니다. 입력 내용은 지우지 않았습니다. 아래 이메일 또는 카카오톡으로 바로 보내주세요.");
     const text = document.createElement("p");
     text.textContent = displayMessage;
@@ -536,6 +677,40 @@ window.initInquiryForm = function initInquiryForm() {
     statusBox.appendChild(text);
     statusBox.appendChild(actions);
     setSubmitting(false);
+  };
+
+  const showPendingResponseDelay = function () {
+    if (!isSubmitting || serverMessageReceived) return;
+
+    const statusBox = createStatusBox();
+    statusBox.className = "form-status is-pending form-status-with-actions";
+    statusBox.textContent = "";
+
+    const text = document.createElement("p");
+    text.textContent = "접수 처리는 진행 중입니다. Google Apps Script 응답이 늦어지고 있어 확인을 계속 기다리고 있습니다. 중복 제출하지 마세요.";
+
+    const actions = document.createElement("div");
+    actions.className = "form-status-actions";
+
+    const mail = document.createElement("a");
+    mail.href = buildMailtoHref();
+    mail.textContent = "이메일 백업 열기";
+
+    const kakao = document.createElement("a");
+    kakao.href = KAKAO_URL;
+    kakao.target = "_blank";
+    kakao.rel = "noopener noreferrer";
+    kakao.textContent = "카카오톡 문의";
+
+    actions.appendChild(mail);
+    actions.appendChild(kakao);
+    statusBox.appendChild(text);
+    statusBox.appendChild(actions);
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "접수 확인 대기 중...";
+    }
   };
 
   const handleSpamSubmission = function (event) {
@@ -627,8 +802,10 @@ window.initInquiryForm = function initInquiryForm() {
       return;
     }
 
+    writeDraft();
     isSubmitting = true;
     serverMessageReceived = false;
+    lateResponseWindowUntil = Date.now() + LATE_RESPONSE_WINDOW;
     setSubmitting(true);
     statusBox.className = "form-status";
     statusBox.textContent = "문의 내용을 전송하고 있습니다.";
@@ -637,34 +814,110 @@ window.initInquiryForm = function initInquiryForm() {
       window.clearTimeout(fallbackTimer);
     }
 
+    if (hardFallbackTimer) {
+      window.clearTimeout(hardFallbackTimer);
+    }
+
     fallbackTimer = window.setTimeout(function () {
       if (!serverMessageReceived) {
-        finishError("전송 확인이 지연되고 있습니다. 중복 제출하지 마시고, 24시간 내 답변이 없으면 contact@novawork.kr 또는 카카오톡으로 확인해 주세요.");
+        showPendingResponseDelay();
       }
-    }, 15000);
+    }, SOFT_RESPONSE_TIMEOUT);
+
+    hardFallbackTimer = window.setTimeout(function () {
+      if (!serverMessageReceived) {
+        finishError("전송 확인이 오래 지연되고 있습니다. 실제 접수가 완료됐을 수 있으니 중복 제출하지 마시고, 24시간 내 답변이 없으면 contact@novawork.kr 또는 카카오톡으로 확인해 주세요.");
+      }
+    }, HARD_RESPONSE_TIMEOUT);
   });
 
-  window.addEventListener("message", function (event) {
-    const data = event.data || {};
 
-    if (!data || data.source !== MESSAGE_SOURCE || !isSubmitting) {
+  const isAllowedMessageOrigin = function (origin) {
+    if (!origin || origin === "null") return true;
+
+    try {
+      const url = new URL(origin);
+      const host = url.hostname;
+      return host === "script.google.com" ||
+        host === "script.googleusercontent.com" ||
+        host.endsWith(".googleusercontent.com");
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const isTrustedFormMessage = function (event, data) {
+    if (!data || data.source !== MESSAGE_SOURCE) return false;
+
+    const originAllowed = isAllowedMessageOrigin(event.origin);
+    const directFrameSource = Boolean(iframe && event.source && event.source === iframe.contentWindow);
+
+    // Google Apps Script HtmlService can postMessage from a nested googleusercontent sandbox,
+    // so event.source is not always the same object as hidden_iframe.contentWindow.
+    // Accept the response when the signed source value and Google/null origin match.
+    if (originAllowed) return true;
+    if (directFrameSource) return true;
+
+    return false;
+  };
+
+  const parseMessageData = function (value) {
+    if (!value) return {};
+    if (typeof value === "string") {
+      try { return JSON.parse(value); } catch (error) { return {}; }
+    }
+    return value;
+  };
+
+  const serverErrorMessage = function (data) {
+    const code = data && data.error_code ? String(data.error_code) : "";
+
+    if (code === "SHEET_ID_NOT_SET") {
+      return "Google Apps Script의 SHEET_ID가 아직 실제 Google Sheet ID로 설정되지 않았습니다. ZIP 안의 GOOGLE-APPS-SCRIPT-INQUIRY.txt로 스크립트를 교체하고 새 /exec URL을 contact.html form action에 넣어주세요.";
+    }
+
+    if (code === "SHEET_OPEN_FAILED") {
+      return "Google Apps Script가 Google Sheet를 열지 못했습니다. SHEET_ID, 시트 접근 권한, 웹앱 실행 계정을 확인해 주세요.";
+    }
+
+    if (code === "SHEET_WRITE_FAILED") {
+      return "Google Sheet 행 저장에 실패했습니다. Apps Script 실행 로그에서 권한 승인, 시트 보호, 할당량을 확인해 주세요.";
+    }
+
+    if (code === "VALIDATION_FAILED") {
+      return data.message || "서버에서 필수 입력값이 누락된 것으로 판단했습니다. 입력 내용을 다시 확인해 주세요.";
+    }
+
+    return data.message || "서버 접수 응답이 실패했습니다. 입력 내용은 유지됩니다. contact@novawork.kr 또는 카카오톡으로 보내주세요.";
+  };
+
+  window.addEventListener("message", function (event) {
+    const data = parseMessageData(event.data);
+
+    if (!isTrustedFormMessage(event, data)) {
+      return;
+    }
+
+    const canAcceptResponse = isSubmitting || Date.now() <= lateResponseWindowUntil;
+
+    if (!canAcceptResponse) {
       return;
     }
 
     serverMessageReceived = true;
 
     if (data.status === "success") {
-      finishSuccess(data.message || "문의가 접수되었습니다. 24시간 내 1차 답변을 드리겠습니다.", true);
+      finishSuccess(data.message || "문의가 접수되었습니다. 24시간 내 1차 답변을 드리겠습니다.", true, true);
       return;
     }
 
-    finishError(data.message || "서버 접수 응답이 실패했습니다. 입력 내용은 유지됩니다. contact@novawork.kr 또는 카카오톡으로 보내주세요.");
+    finishError(serverErrorMessage(data), { allowWhenNotSubmitting: true });
   });
 
   if (iframe) {
     iframe.addEventListener("load", function () {
       // iframe load 자체만으로 성공/실패를 판단하면 정상 접수 중에도 오류가 표시될 수 있으므로,
-      // 최종 판단은 postMessage 또는 15초 fallbackTimer에 맡깁니다.
+      // 최종 판단은 postMessage 또는 단계별 fallbackTimer에 맡깁니다.
     });
   }
 
@@ -697,14 +950,17 @@ window.initInquiryForm = function initInquiryForm() {
       syncChoiceState();
       syncConditionalFields();
       updateServicePrepGuide();
+      scheduleDraftSave();
     });
   });
 
   applyPackageParam();
   applyServiceParam();
+  restoreDraft();
   populateTrackingFields();
   updateCounter();
   syncChoiceState();
   syncConditionalFields();
   updateServicePrepGuide();
+  window.addEventListener("beforeunload", writeDraft);
 };
