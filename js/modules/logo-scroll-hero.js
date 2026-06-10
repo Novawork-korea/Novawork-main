@@ -24,6 +24,9 @@
     var logoSvg = logoLockup ? logoLockup.querySelector(".nw-logo-svg") : document.querySelector(".nw-logo-svg");
     var aura = document.querySelector(".nw-logo-aura");
     var scrollHint = document.querySelector(".nw-scroll-hint");
+    var heroProgress = document.querySelector(".nw-hero-progress");
+    var progressFill = heroProgress ? heroProgress.querySelector(".nw-hero-progress__track b") : null;
+    var progressValue = heroProgress ? heroProgress.querySelector(".nw-hero-progress__value") : null;
     var actionLinks = heroActions ? Array.prototype.slice.call(heroActions.querySelectorAll("a")) : [];
     var nextSection = section.nextElementSibling;
 
@@ -49,9 +52,14 @@
     var introStart = 0;
     var introFinishTimer = 0;
     var introAnimations = [];
+    var progressFrame = 0;
+    var heroPeekTimer = 0;
+    var autoPeekCancelled = false;
     var actionsActive = false;
+    var actionsArmed = false;
+    var fitSignature = "";
 
-    docEl.dataset.nwHeroEngine = "v43";
+    docEl.dataset.nwHeroEngine = "EnhanceV5";
 
     var clamp = function (value, min, max) {
       var lo = typeof min === "number" ? min : 0;
@@ -64,10 +72,20 @@
     var scrollTop = function () { return window.pageYOffset || docEl.scrollTop || body.scrollTop || 0; };
     var setStyle = function (el, prop, value) { if (el && el.style[prop] !== value) el.style[prop] = value; };
     var setVar = function (el, prop, value) { if (el) el.style.setProperty(prop, value); };
+    var setHeroProgress = function (value) {
+      if (!heroProgress) return;
+      var progress = clamp(value);
+      var percent = Math.round(progress * 100);
+      if (progressFill) progressFill.style.transform = "scaleX(" + progress.toFixed(4) + ")";
+      if (progressValue && progressValue.textContent !== percent + "%") progressValue.textContent = percent + "%";
+      heroProgress.setAttribute("aria-valuenow", String(percent));
+      heroProgress.classList.toggle("is-complete", percent >= 100);
+    };
 
     var getViewport = function () {
-      var vv = window.visualViewport;
-      return { width: vv && vv.width ? vv.width : window.innerWidth, height: vv && vv.height ? vv.height : window.innerHeight };
+      // Use the layout viewport, not visualViewport. Mobile browser UI can change
+      // visualViewport height during the intro scroll jump and cause a visible logo snap.
+      return { width: window.innerWidth || (window.visualViewport && window.visualViewport.width) || 1, height: window.innerHeight || (window.visualViewport && window.visualViewport.height) || 1 };
     };
 
     var translateYOf = function (el) {
@@ -93,7 +111,7 @@
       setVar(logoLockup, "--nw-balance-y", clamp(balance, -maxShift, maxShift).toFixed(2) + "px");
     };
 
-    var updateResponsiveFit = function () {
+    var updateResponsiveFit = function (force) {
       if (!logoLockup) return;
       var stageWidth = Math.max(1, metrics.width);
       var stageHeight = Math.max(1, metrics.stageHeight);
@@ -124,12 +142,16 @@
       }
 
       targetWidth = clamp(Math.min(fitByWidth, fitByHeight, maxWidth), Math.min(minWidth, fitByWidth, maxWidth), Math.min(fitByWidth, fitByHeight, maxWidth));
+      var nextSignature = [Math.round(stageWidth), Math.round(stageHeight), Math.round(targetWidth)].join(":");
+      if (!force && nextSignature === fitSignature) return;
+      fitSignature = nextSignature;
       setVar(logoLockup, "--nw-lockup-width", targetWidth.toFixed(2) + "px");
       setVar(logoLockup, "--nw-hero-fit-scale", "1");
       updateBalance();
+      section.classList.add("is-fit-ready");
     };
 
-    var updateMetrics = function () {
+    var updateMetrics = function (forceFit) {
       var viewport = getViewport();
       metrics.width = Math.max(1, viewport.width || 1);
       metrics.height = Math.max(1, viewport.height || 1);
@@ -139,9 +161,9 @@
       metrics.sectionHeight = section.offsetHeight || 1;
       metrics.maxScroll = Math.max(1, metrics.sectionHeight - metrics.stageHeight);
       metrics.nextTop = nextSection ? nextSection.offsetTop || 0 : metrics.sectionTop + metrics.sectionHeight;
-      metrics.svgScale = logoSvg ? Math.max(0.01, logoSvg.getBoundingClientRect().width / 730) : 1;
       metrics.lowPower = metrics.width <= 780 || metrics.height <= 560 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
-      updateResponsiveFit();
+      updateResponsiveFit(forceFit === true);
+      metrics.svgScale = logoSvg ? Math.max(0.01, logoSvg.getBoundingClientRect().width / 730) : 1;
     };
 
     var rawProgress = function (top) {
@@ -206,24 +228,37 @@
       setStyle(el, "transform", "translateY(" + ((1 - amount) * move).toFixed(2) + "px)");
     };
 
+    var setActionsArmed = function (armed) {
+      if (!heroActions || actionsArmed === armed) return;
+      actionsArmed = armed;
+      heroActions.classList.toggle("is-armed", armed);
+    };
+
     var setActionsActive = function (active) {
-      if (!heroActions || actionsActive === active) return;
+      if (!heroActions || actionsActive === active) {
+        if (active) setActionsArmed(true);
+        return;
+      }
+      if (active) setActionsArmed(true);
       actionsActive = active;
       heroActions.classList.toggle("is-visible", active);
       actionLinks.forEach(function (link) { active ? link.removeAttribute("tabindex") : link.setAttribute("tabindex", "-1"); });
     };
 
     var renderAssembly = function (progress, force) {
+      setHeroProgress(progress);
       states.forEach(function (state) { animatePiece(state, progress, force); });
       if (stageCopy) {
         var introOut = smoothstep(clamp((progress - 0.06) / 0.2));
         setStyle(stageCopy, "opacity", (1 - introOut).toFixed(3));
         setStyle(stageCopy, "transform", "translateY(" + (-18 * introOut).toFixed(2) + "px)");
       }
-      var copyIn = smoothstep(clamp((progress - 0.78) / 0.22));
+      var copyIn = smoothstep(clamp((progress - 0.76) / 0.22));
+      var actionsIn = smoothstep(clamp((progress - 0.86) / 0.14));
       reveal(brandCopy, copyIn, 18);
-      reveal(heroActions, copyIn, 18);
-      setActionsActive(copyIn > 0.75);
+      reveal(heroActions, actionsIn, 22);
+      setActionsArmed(actionsIn > 0.08);
+      setActionsActive(actionsIn > 0.72);
       if (aura) {
         setStyle(aura, "opacity", (0.18 + progress * 0.28).toFixed(3));
         setStyle(aura, "transform", "translate(-50%, -54%) scale(" + (0.94 + progress * 0.08).toFixed(3) + ")");
@@ -234,6 +269,7 @@
       var opacity = (1 - out).toFixed(3);
       var move = (10 * out).toFixed(2);
       if (scrollHint) { setStyle(scrollHint, "opacity", opacity); setStyle(scrollHint, "transform", "translateY(" + move + "px)"); }
+      if (heroProgress) { setStyle(heroProgress, "opacity", opacity); setStyle(heroProgress, "transform", "translateY(" + move + "px)"); }
     };
 
     var render = function (force) {
@@ -277,8 +313,9 @@
       if (resizeId) return;
       resizeId = window.requestAnimationFrame(function () {
         resizeId = 0;
-        updateMetrics();
-        if (!introPlaying) requestRender(true);
+        if (introPlaying) return;
+        updateMetrics(true);
+        requestRender(true);
       });
     };
 
@@ -294,8 +331,56 @@
       docEl.style.scrollBehavior = previous;
     };
 
+    var stopProgressLoop = function () {
+      if (progressFrame) window.cancelAnimationFrame(progressFrame);
+      progressFrame = 0;
+    };
+
+    var startProgressLoop = function () {
+      stopProgressLoop();
+      var perf = window.performance && typeof window.performance.now === "function" ? window.performance : null;
+      var startAt = (perf ? perf.now() : Date.now()) + INTRO_DELAY;
+      var loop = function (time) {
+        if (!introPlaying) { progressFrame = 0; return; }
+        var now = typeof time === "number" ? time : (perf ? perf.now() : Date.now());
+        var raw = clamp((now - startAt) / INTRO_DURATION);
+        setHeroProgress(easeInOutCubic(raw));
+        if (raw < 1) progressFrame = window.requestAnimationFrame(loop);
+        else progressFrame = 0;
+      };
+      progressFrame = window.requestAnimationFrame(loop);
+    };
+
+    var cancelAutoPeek = function () {
+      if (!introDone || introPlaying) return;
+      autoPeekCancelled = true;
+      if (heroPeekTimer) window.clearTimeout(heroPeekTimer);
+      heroPeekTimer = 0;
+    };
+
+    var autoPeekNextContent = function () {
+      if (window.location.hash || !nextSection || document.hidden || autoPeekCancelled) return;
+      window.clearTimeout(heroPeekTimer);
+      heroPeekTimer = window.setTimeout(function () {
+        if (document.hidden || autoPeekCancelled || docEl.classList.contains("nw-route-transitioning") || body.classList.contains("menu-open")) return;
+        var top = scrollTop();
+        var minTop = getCompleteTop() - 8;
+        var maxTop = metrics.nextTop - Math.max(180, metrics.stageHeight * 0.84);
+        var isMobile = metrics.width <= 780;
+        var ratio = isMobile ? 0.08 : 0.1;
+        var minMove = isMobile ? 64 : 88;
+        var maxMove = isMobile ? 112 : 156;
+        var nudgeTop = top + Math.min(maxMove, Math.max(minMove, metrics.height * ratio));
+        var targetTop = clamp(Math.max(nudgeTop, minTop), 0, Math.max(0, maxTop));
+        if (targetTop <= top + 12) return;
+        try { window.scrollTo({ top: targetTop, behavior: "smooth" }); }
+        catch (error) { window.scrollTo(0, targetTop); }
+      }, 520);
+    };
+
     var clearIntroAnimations = function () {
       introAnimations.forEach(function (anim) {
+        try { if (anim && typeof anim.commitStyles === "function") anim.commitStyles(); } catch (error) {}
         try { anim.cancel(); } catch (error) {}
       });
       introAnimations = [];
@@ -307,10 +392,12 @@
       if (introFinishTimer) window.clearTimeout(introFinishTimer);
       introFrame = 0;
       introFinishTimer = 0;
+      setActionsArmed(true);
+      setActionsActive(true);
+      stopProgressLoop();
+      setHeroProgress(1);
       clearIntroAnimations();
       unlockIntroInput();
-      setScrollInstant(getCompleteTop());
-      updateMetrics();
       targetAssembly = currentAssembly = 1;
       targetUiOut = currentUiOut = uiOutProgress(scrollTop());
       render(true);
@@ -324,6 +411,7 @@
       try { document.dispatchEvent(new CustomEvent("novawork:hero-intro-done")); } catch (error) {}
       try { window.dispatchEvent(new CustomEvent("novawork:hero-intro-done")); } catch (error) {}
       requestRender(false);
+      autoPeekNextContent();
     };
 
     var animateNative = function (el, keyframes, options) {
@@ -363,13 +451,28 @@
         ], { duration: Math.max(520, INTRO_DURATION * 0.22), delay: INTRO_DELAY + INTRO_DURATION * 0.06, easing: easing, fill: "both" });
       }
 
-      [brandCopy, heroActions].forEach(function (el) {
-        if (!el) return;
-        animateNative(el, [
+      if (brandCopy) {
+        animateNative(brandCopy, [
           { opacity: "0", transform: "translateY(18px)" },
           { opacity: "1", transform: "translateY(0px)" }
-        ], { duration: Math.max(620, INTRO_DURATION * 0.24), delay: INTRO_DELAY + INTRO_DURATION * 0.77, easing: easing, fill: "both" });
-      });
+        ], { duration: Math.max(680, INTRO_DURATION * 0.24), delay: INTRO_DELAY + INTRO_DURATION * 0.75, easing: easing, fill: "both" });
+      }
+
+      if (heroActions) {
+        animateNative(heroActions, [
+          { opacity: "0", transform: "translateY(24px) scale(0.985)" },
+          { opacity: "0.001", transform: "translateY(16px) scale(0.992)", offset: 0.18 },
+          { opacity: "1", transform: "translateY(0px) scale(1)" }
+        ], { duration: Math.max(760, INTRO_DURATION * 0.24), delay: INTRO_DELAY + INTRO_DURATION * 0.82, easing: easing, fill: "both" });
+        actionLinks.forEach(function (link, index) {
+          link.style.opacity = "0";
+          link.style.transform = "translate3d(0, 10px, 0) scale(0.985)";
+          animateNative(link, [
+            { opacity: "0", transform: "translate3d(0, 10px, 0) scale(0.985)" },
+            { opacity: "1", transform: "translate3d(0, 0, 0) scale(1)" }
+          ], { duration: 560, delay: INTRO_DELAY + INTRO_DURATION * 0.86 + index * 70, easing: easing, fill: "both" });
+        });
+      }
 
       if (aura) {
         animateNative(aura, [
@@ -378,7 +481,7 @@
         ], { duration: INTRO_DURATION, delay: INTRO_DELAY, easing: easing, fill: "both" });
       }
 
-      introFinishTimer = window.setTimeout(finishIntro, INTRO_DELAY + INTRO_DURATION + 180);
+      introFinishTimer = window.setTimeout(finishIntro, INTRO_DELAY + INTRO_DURATION + 420);
       return true;
     };
 
@@ -395,10 +498,11 @@
 
     var startIntro = function () {
       if (introPlaying || introDone || window.location.hash) return;
-      updateMetrics();
+      updateMetrics(true);
       var top = scrollTop();
       var start = Math.max(0, metrics.sectionTop - metrics.headerOffset);
       var end = start + metrics.maxScroll;
+      var introRestTop = getCompleteTop();
       if (top > end + 4) return;
       introPlaying = true;
       lockIntroInput();
@@ -407,11 +511,14 @@
       section.classList.remove("is-intro-complete");
       docEl.classList.add("nw-intro-lock");
       body.classList.add("nw-intro-lock");
+      setActionsArmed(false);
       setActionsActive(false);
-      setScrollInstant(start);
+      setScrollInstant(introRestTop);
+      updateMetrics(true);
       currentAssembly = targetAssembly = 0;
       currentUiOut = targetUiOut = 0;
       render(true);
+      startProgressLoop();
       try { document.dispatchEvent(new CustomEvent("novawork:hero-intro-start")); } catch (error) {}
       try { window.dispatchEvent(new CustomEvent("novawork:hero-intro-start")); } catch (error) {}
       if (!playIntroNative()) {
@@ -441,7 +548,8 @@
       document.removeEventListener("keydown", preventIntroKey);
     };
 
-    updateMetrics();
+    updateMetrics(true);
+    setActionsArmed(false);
     setActionsActive(false);
     if (!window.location.hash && scrollTop() > 0 && scrollTop() < metrics.sectionTop + metrics.sectionHeight - metrics.headerOffset) setScrollInstant(0);
     updateTargets();
@@ -449,6 +557,9 @@
     currentUiOut = targetUiOut;
     render(true);
 
+    window.addEventListener("wheel", cancelAutoPeek, { passive: true });
+    window.addEventListener("touchstart", cancelAutoPeek, { passive: true });
+    document.addEventListener("keydown", cancelAutoPeek);
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
     window.addEventListener("load", handleResize, { once: true });

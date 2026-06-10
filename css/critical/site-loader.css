@@ -1,0 +1,75 @@
+:root { background: #050505; }
+html.site-is-loading,
+html.site-is-revealing { overflow: hidden; }
+html.site-is-loading body,
+html.site-is-revealing body { overflow: hidden; background: #050505; }
+body > .header,
+body > main,
+body > .footer {
+  transition:
+    opacity 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+html.site-is-loading body > :not(.site-loader) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translate3d(0, 24px, 0) !important;
+}
+html.site-is-loading body > .header {
+  transform: translate3d(0, -24px, 0) !important;
+}
+html.site-is-ready body > .header,
+html.site-is-ready body > main,
+html.site-is-ready body > .footer {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255,255,255,0.10), transparent 18rem),
+    radial-gradient(circle at 50% 110%, rgba(255,255,255,0.05), transparent 26rem),
+    #050505;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 520ms step-end;
+}
+html.site-is-loading .site-loader {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+html.site-is-revealing .site-loader,
+html.site-is-ready .site-loader {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+}
+html.site-reveal-done .site-loader { display: none !important; }
+.site-loader-inner {
+  display: grid;
+  place-items: center;
+  gap: 0;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.site-loader-inner img {
+  width: clamp(118px, 18vw, 190px);
+  height: auto;
+  border-radius: 0;
+  box-shadow: none;
+  filter: none;
+  opacity: .96;
+}

@@ -3,363 +3,8 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<script id="nw-route-transition-boot">
-(function () {
-  "use strict";
-  var VERSION = "v43";
-  var KEY = "novawork:route-transition";
-  var root = document.documentElement;
-  var leaving = false;
-  var entering = false;
-  var enterFinished = false;
-  var enterTimer = 0;
-  var coverTimer = 0;
-  var reduceMotion = false;
-  try { reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (error) {}
-
-  var COVER_MS = reduceMotion ? 420 : 860;
-  var REVEAL_MS = reduceMotion ? 520 : 920;
-  var CONTENT_MS = reduceMotion ? 420 : 820;
-  var EASE_COVER = "cubic-bezier(0.76, 0, 0.24, 1)";
-  var EASE_CONTENT = "cubic-bezier(0.16, 1, 0.3, 1)";
-
-  function storageGet() {
-    try { return window.sessionStorage ? window.sessionStorage.getItem(KEY) : null; } catch (error) { return null; }
-  }
-  function storageSet(value) {
-    try { if (window.sessionStorage) window.sessionStorage.setItem(KEY, value); } catch (error) {}
-  }
-  function storageRemove() {
-    try { if (window.sessionStorage) window.sessionStorage.removeItem(KEY); } catch (error) {}
-  }
-  function now() {
-    return Date.now ? Date.now() : new Date().getTime();
-  }
-  function getFreshEntry() {
-    var raw = storageGet();
-    if (!raw) return null;
-    try {
-      var data = JSON.parse(raw);
-      if (!data || !data.t || now() - Number(data.t) > 45000) {
-        storageRemove();
-        return null;
-      }
-      return data;
-    } catch (error) {
-      storageRemove();
-      return null;
-    }
-  }
-
-  if (getFreshEntry()) {
-    window.__NW_ROUTE_ENTERING = true;
-    root.classList.add("nw-route-transitioning", "nw-route-entering");
-    root.classList.remove("nw-route-leaving", "nw-route-ready");
-  }
-
-  function sameDocumentHashOnly(url) {
-    return url.protocol === window.location.protocol &&
-      url.host === window.location.host &&
-      url.pathname === window.location.pathname &&
-      url.search === window.location.search &&
-      !!url.hash;
-  }
-  function isInternalUrl(url) {
-    var loc = window.location;
-    if (url.protocol === "file:" && loc.protocol === "file:") return true;
-    if (url.origin && loc.origin && url.origin !== "null" && loc.origin !== "null") return url.origin === loc.origin;
-    return url.protocol === loc.protocol && url.host === loc.host;
-  }
-  function isHtmlRoute(url) {
-    var path = url.pathname || "/";
-    return path === "/" || /(?:\.html|\/)$/i.test(path);
-  }
-  function getTransitionUrl(link, event) {
-    if (!link || leaving) return null;
-    if (event) {
-      if (event.defaultPrevented) return null;
-      if (typeof event.button === "number" && event.button !== 0) return null;
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
-    }
-    if (link.hasAttribute("download") || link.closest("[data-no-transition]")) return null;
-    var target = (link.getAttribute("target") || "").toLowerCase();
-    if (target && target !== "_self") return null;
-    var href = link.getAttribute("href") || "";
-    if (!href || href.charAt(0) === "#") return null;
-    if (/^(tel:|mailto:|sms:|javascript:|data:|blob:)/i.test(href)) return null;
-    var url;
-    try { url = new URL(href, window.location.href); } catch (error) { return null; }
-    if (!isInternalUrl(url)) return null;
-    if (sameDocumentHashOnly(url)) return null;
-    if (url.href === window.location.href) return null;
-    if (!isHtmlRoute(url)) return null;
-    return url;
-  }
-
-  function setBaseStyle(el, styles) {
-    Object.keys(styles).forEach(function (key) { el.style[key] = styles[key]; });
-  }
-  function ensureCurtain(state) {
-    if (!document.body) return null;
-    var curtain = document.querySelector(".nw-route-curtain");
-    if (!curtain) {
-      curtain = document.createElement("div");
-      curtain.className = "nw-route-curtain";
-      curtain.setAttribute("aria-hidden", "true");
-      var panel = document.createElement("div");
-      panel.className = "nw-route-curtain__panel";
-      curtain.appendChild(panel);
-      document.body.appendChild(curtain);
-    }
-    curtain.dataset.state = state || "leave";
-    setBaseStyle(curtain, {
-      position: "fixed",
-      inset: "0",
-      zIndex: "2147483647",
-      overflow: "hidden",
-      pointerEvents: "auto",
-      contain: "layout paint style",
-      background: "transparent"
-    });
-    var panelEl = curtain.querySelector(".nw-route-curtain__panel");
-    if (panelEl) {
-      setBaseStyle(panelEl, {
-        position: "absolute",
-        left: "0",
-        right: "0",
-        top: "-1px",
-        bottom: "-1px",
-        background: "#000",
-        transform: state === "enter" ? "translate3d(0, 0, 0)" : "translate3d(0, 100%, 0)",
-        willChange: "transform",
-        backfaceVisibility: "hidden"
-      });
-    }
-    return curtain;
-  }
-  function removeCurtain() {
-    var curtain = document.querySelector(".nw-route-curtain");
-    if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain);
-  }
-  function animateElement(el, frames, options, done) {
-    var finished = false;
-    function finish() {
-      if (finished) return;
-      finished = true;
-      if (frames && frames.length && frames[frames.length - 1].transform) el.style.transform = frames[frames.length - 1].transform;
-      if (typeof done === "function") done();
-    }
-    if (el && typeof el.animate === "function") {
-      try {
-        var animation = el.animate(frames, options);
-        animation.onfinish = finish;
-        animation.oncancel = finish;
-        return animation;
-      } catch (error) {}
-    }
-    window.setTimeout(finish, Math.max(0, Number(options && options.duration) || 0));
-    return null;
-  }
-  function dispatch(name, detail) {
-    try { document.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
-    try { window.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
-  }
-  function closeOpenUi() {
-    if (!document.body) return;
-    document.body.classList.remove("menu-open");
-    var menu = document.querySelector(".mobile-menu");
-    var toggle = document.querySelector(".menu-toggle");
-    if (menu) {
-      menu.classList.remove("is-open");
-      menu.setAttribute("aria-hidden", "true");
-      menu.dataset.state = "closed";
-    }
-    if (toggle) {
-      toggle.classList.remove("is-open");
-      toggle.setAttribute("aria-expanded", "false");
-    }
-  }
-  function focusMainAfterRoute() {
-    var main = document.querySelector("main");
-    if (!main) return;
-    if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
-    try {
-      main.focus({ preventScroll: true });
-    } catch (error) {
-      try { main.focus(); } catch (innerError) {}
-    }
-  }
-  function startLeave(url) {
-    if (!url || leaving) return false;
-    leaving = true;
-    storageSet(JSON.stringify({ v: VERSION, t: now(), to: url.href, from: window.location.href }));
-    closeOpenUi();
-    root.classList.remove("nw-route-entering", "nw-route-ready");
-    root.classList.add("nw-route-transitioning", "nw-route-leaving", "nw-route-overlay-ready");
-    var curtain = ensureCurtain("leave");
-    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
-    dispatch("novawork:route-leave-start", { to: url.href, source: "route-" + VERSION });
-    var navigated = false;
-    function go() {
-      if (navigated) return;
-      navigated = true;
-      window.location.assign(url.href);
-    }
-    window.clearTimeout(coverTimer);
-    coverTimer = window.setTimeout(go, COVER_MS + 260);
-    if (!panel) {
-      window.setTimeout(go, 40);
-      return true;
-    }
-    panel.getBoundingClientRect();
-    window.requestAnimationFrame(function () {
-      animateElement(panel, [
-        { transform: "translate3d(0, 100%, 0)" },
-        { transform: "translate3d(0, 0, 0)" }
-      ], { duration: COVER_MS, easing: EASE_COVER, fill: "forwards" }, go);
-    });
-    return true;
-  }
-  function finishEnter() {
-    if (enterFinished) return;
-    enterFinished = true;
-    window.clearTimeout(enterTimer);
-    root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
-    window.__NW_ROUTE_ENTERING = false;
-    entering = false;
-    removeCurtain();
-    focusMainAfterRoute();
-    dispatch("novawork:route-enter-done", { source: "route-" + VERSION });
-  }
-  function startEnter() {
-    if (entering || enterFinished) return;
-    var entry = getFreshEntry();
-    var shouldEnter = !!entry || root.classList.contains("nw-route-entering") || window.__NW_ROUTE_ENTERING === true;
-    if (!shouldEnter) return;
-    entering = true;
-    storageRemove();
-    window.__NW_ROUTE_ENTERING = true;
-    root.classList.add("nw-route-transitioning", "nw-route-entering");
-    root.classList.remove("nw-route-leaving", "nw-route-ready");
-    var curtain = ensureCurtain("enter");
-    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
-    root.classList.add("nw-route-overlay-ready");
-    if (curtain) curtain.getBoundingClientRect();
-    dispatch("novawork:route-enter-start", { from: entry && entry.from, source: "route-" + VERSION });
-    window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(function () {
-        root.classList.add("nw-route-ready");
-        window.clearTimeout(enterTimer);
-        enterTimer = window.setTimeout(finishEnter, Math.max(REVEAL_MS + CONTENT_MS, 1200));
-        if (!panel) return;
-        animateElement(panel, [
-          { transform: "translate3d(0, 0, 0)" },
-          { transform: "translate3d(0, -100%, 0)" }
-        ], { duration: REVEAL_MS, easing: EASE_COVER, fill: "forwards", delay: 90 }, finishEnter);
-      });
-    });
-  }
-
-  document.addEventListener("click", function (event) {
-    var target = event.target;
-    if (!target || !target.closest) return;
-    var link = target.closest("a[href]");
-    var url = getTransitionUrl(link, event);
-    if (!url) return;
-    event.preventDefault();
-    startLeave(url);
-  }, true);
-
-  document.addEventListener("DOMContentLoaded", startEnter, { once: true });
-  window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-      leaving = false;
-      entering = false;
-      enterFinished = false;
-      storageRemove();
-      root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
-      removeCurtain();
-      window.__NW_ROUTE_ENTERING = false;
-      return;
-    }
-    startEnter();
-  }, { passive: true });
-  if (document.readyState !== "loading") startEnter();
-
-  window.NOVAWORKRouteTransition = {
-    version: VERSION,
-    start: function (href) {
-      var url;
-      try { url = new URL(href, window.location.href); } catch (error) { return false; }
-      return startLeave(url);
-    }
-  };
-})();
-</script>
-<style id="nw-route-transition-critical">
-html.nw-route-transitioning,
-html.nw-route-entering,
-html.nw-route-leaving { background: #000; scroll-behavior: auto !important; }
-html.nw-route-transitioning *,
-html.nw-route-entering *,
-html.nw-route-leaving * { scroll-behavior: auto !important; }
-html.nw-route-entering body,
-html.nw-route-leaving body { background: #000; }
-html.nw-route-entering::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 2147483646;
-  background: #000;
-  pointer-events: auto;
-  opacity: 1;
-}
-html.nw-route-entering.nw-route-overlay-ready::before {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 80ms linear, visibility 80ms step-end;
-}
-html.nw-route-entering .site-loader { display: none !important; }
-html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript),
-html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  will-change: opacity, transform;
-}
-html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  opacity: 0 !important;
-  transform: translate3d(0, 34px, 0) !important;
-}
-html.nw-route-entering.nw-route-ready body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
-  opacity: 1 !important;
-  transform: translate3d(0, 0, 0) !important;
-  transition: opacity 760ms cubic-bezier(0.16, 1, 0.3, 1) 160ms, transform 860ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
-}
-html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
-  opacity: .72;
-  transform: translate3d(0, -16px, 0);
-  transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1), transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.nw-route-curtain {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  overflow: hidden;
-  pointer-events: auto;
-  contain: layout paint style;
-}
-.nw-route-curtain__panel {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -1px;
-  bottom: -1px;
-  background: #000;
-  transform: translate3d(0, 100%, 0);
-  will-change: transform;
-  backface-visibility: hidden;
-}
-</style>
-
+<script id="nw-route-transition-boot" src="./js/boot/route-transition-boot.js?v=v55-enhance-v11-20260609"></script>
+<link href="./css/critical/route-transition.css?v=v55-enhance-v11-20260609" id="nw-route-transition-critical" rel="stylesheet"/>
 <!-- Google Tag Manager -->
 <script>
 (function(w,d,l,i){
@@ -463,8 +108,8 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
   }
 }
 </script>
-<link href="./css/site-base.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
+<link href="./css/site-base.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
+<link href="./css/site-ui.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
 </head>
 <body class="contact-static-page">
 <!-- Google Tag Manager (noscript) -->
@@ -479,10 +124,9 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 <a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></a>
 <nav aria-label="주요 메뉴" class="nav">
 <ul class="nav-list">
-<li><a class="nav-link" href="index.html">홈</a></li>
 <li><a class="nav-link" href="about.html">회사소개</a></li>
 <li><a class="nav-link" href="services.html">서비스</a></li>
-<li><a class="nav-link" href="faq.html">FAQ</a></li>
+<li><a class="nav-link" href="portfolio.html">포트폴리오</a></li><li><a class="nav-link" href="faq.html">FAQ</a></li>
 </ul>
 </nav>
 <div class="header-actions">
@@ -497,12 +141,7 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 <div aria-label="모바일 메뉴" aria-modal="true" class="mobile-menu" id="mobile-menu" role="dialog">
 <div class="mobile-menu-panel">
-<ul class="mobile-menu-list">
-<li><a href="index.html">홈</a></li>
-<li><a href="about.html">회사소개</a></li>
-<li><a href="services.html">서비스</a></li>
-<li><a href="faq.html">FAQ</a></li>
-</ul>
+<ul class="mobile-menu-list"><li><a href="about.html">회사소개</a></li><li><a href="services.html">서비스</a></li><li><a href="portfolio.html">포트폴리오</a></li><li><a href="faq.html">FAQ</a></li></ul>
 <div aria-label="대표 서비스 바로가기" class="mobile-menu-shortcuts">
 <p>대표 서비스</p>
 <div class="mobile-menu-shortcut-grid">
@@ -517,15 +156,7 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </header>
-<main id="main" tabindex="-1"><section class="page-hero page-hero-with-visual"><div class="container"><div class="page-hero-grid"><div class="section-head"><p class="section-label">PROJECT INQUIRY</p><h1 class="section-title">필요한 결과물과 현재 상황만 남겨주세요.</h1><p class="section-desc">정확한 서비스명을 몰라도 괜찮습니다. 대표 링크, 관리자 시스템, 오류 수정, 추적 세팅, GPT 챗봇, 데이터 수집 중 어느 범위인지 먼저 분리해 답변드립니다.</p><div aria-label="접수 안내" class="page-hero-points"><span>복수 선택 가능</span><span>예산 미정 가능</span><span>24시간 내 1차 답변</span></div></div><figure class="page-hero-visual"><img alt="문의 접수와 상담 화면을 보여주는 흑백 컨택트 이미지" class="photo-real" decoding="async" fetchpriority="high" height="810" loading="eager" src="./assets/visual-contact-cta.webp" width="1440"/></figure></div></div></section><section class="section"><div class="container"><div class="form-shell"><aside class="contact-side"><div class="contact-panel contact-panel-primary"><h3>문의 전에 핵심만 빠르게 확인해 보십시오</h3><p>작업 이름보다 현재 문제가 중요합니다. 대표 링크가 필요한지, 신청 데이터를 관리해야 하는지, 기존 사이트 오류인지, 문의 추적·AI 챗봇·데이터 수집이 필요한지에 따라 제안 방향이 달라집니다.</p><ul class="contact-facts"><li>현재 사용 중인 사이트, 기존 자료, 수집 대상 URL이 있다면 함께 남겨주세요.</li><li>관리자, DB, API, 로그인, 파일 업로드가 필요한 경우 반드시 적어주세요.</li><li>예산과 일정이 확정되지 않아도 원하는 결과만 적으면 1차 범위를 잡을 수 있습니다.</li></ul><div aria-label="빠른 문의" class="quick-contact"><a href="tel:01055286580">전화 문의</a><a href="mailto:contact@novawork.kr">이메일 문의</a><a href="#inquiry-form">접수 양식 작성</a><span>24시간 내 1차 답변드립니다.</span></div></div><div class="contact-panel"><h3>NOVAWORK 사업자 정보</h3><p>NOVAWORK는 대표 고찬휘가 직접 상담하고 프로젝트 범위를 정리합니다.</p><ul class="business-mini-list"><li><strong>대표</strong><span>고찬휘</span></li><li><strong>이메일</strong><span><a href="mailto:contact@novawork.kr">contact@novawork.kr</a></span></li><li><strong>전화</strong><span><a href="tel:01055286580">010-5528-6580</a></span></li><li><strong>사업자번호</strong><span>613 27 53241</span></li><li><strong>회신 기준</strong><span>24시간 내 1차 답변</span></li></ul></div><div class="contact-panel"><h3>이런 내용을 적어주시면 좋습니다</h3><p>필요한 결과물, 현재 문제, 참고 사이트/문서, 필요한 기능, 데이터 항목, 계정 권한, 원하는 일정과 예산 범위를 적어주십시오.</p></div></aside>
-<form accept-charset="UTF-8" action="https://script.google.com/macros/s/AKfycbywZAKl2NEXCXagcu_jZ7WgAfiHcgcelu-tjzROfymWeSiahVr3vkVusiD6TMwRsJx9Qw/exec" class="contact-form inquiry-form" id="inquiry-form" method="post" novalidate="" target="hidden_iframe"><div aria-label="작성 안내" class="form-utility"><span>작성 시간 1~2분</span><span>이름 · 연락수단 · 서비스 · 내용만 필수</span><span>예산/일정은 미정이어도 가능</span></div><div class="service-prep-guide" data-service-prep="" hidden="">
-<div class="service-prep-guide-head">
-<span class="service-prep-label">선택한 서비스 준비자료</span>
-<h3 data-service-prep-title="">접수 전 확인 항목</h3>
-<p data-service-prep-desc="">서비스별로 상담에 필요한 자료를 먼저 정리해드립니다.</p>
-</div>
-<ul data-service-prep-list=""></ul>
-</div><input name="form_name" type="hidden" value="NOVAWORK 서비스 접수"/><input name="recipient_email" type="hidden" value="contact@novawork.kr"/><input name="form_version" type="hidden" value="2026-06-07-v44-contact-response"/><input id="package-name" name="package_name" type="hidden" value=""/><input id="page-url" name="page_url" type="hidden" value=""/><input id="page-origin" name="page_origin" type="hidden" value=""/><input id="user-agent" name="user_agent" type="hidden" value=""/><input id="submitted-at-client" name="submitted_at_client" type="hidden" value=""/><input id="utm-source" name="utm_source" type="hidden" value=""/><input id="utm-medium" name="utm_medium" type="hidden" value=""/><input id="utm-campaign" name="utm_campaign" type="hidden" value=""/><input id="utm-term" name="utm_term" type="hidden" value=""/><input id="utm-content" name="utm_content" type="hidden" value=""/><div aria-hidden="true" class="honeypot-field"><label for="website">Website</label><input autocomplete="off" id="website" name="website" tabindex="-1" type="text"/></div>
+<main id="main" tabindex="-1"><section aria-label="접수 정보 입력" class="section contact-intake-section"><div class="container contact-intake-container"><div class="form-shell form-shell-single"><form accept-charset="UTF-8" action="https://script.google.com/macros/s/AKfycbywZAKl2NEXCXagcu_jZ7WgAfiHcgcelu-tjzROfymWeSiahVr3vkVusiD6TMwRsJx9Qw/exec" class="contact-form inquiry-form" id="inquiry-form" method="post" novalidate="" target="hidden_iframe"><input name="form_name" type="hidden" value="NOVAWORK 서비스 접수"/><input name="recipient_email" type="hidden" value="contact@novawork.kr"/><input name="form_version" type="hidden" value="2026-06-07-v44-contact-response"/><input id="package-name" name="package_name" type="hidden" value=""/><input id="page-url" name="page_url" type="hidden" value=""/><input id="page-title" name="page_title" type="hidden" value=""/><input id="page-origin" name="page_origin" type="hidden" value=""/><input id="user-agent" name="user_agent" type="hidden" value=""/><input id="submitted-at" name="submitted_at" type="hidden" value=""/><input id="submitted-at-client" name="submitted_at_client" type="hidden" value=""/><input id="utm-source" name="utm_source" type="hidden" value=""/><input id="utm-medium" name="utm_medium" type="hidden" value=""/><input id="utm-campaign" name="utm_campaign" type="hidden" value=""/><input id="utm-term" name="utm_term" type="hidden" value=""/><input id="utm-content" name="utm_content" type="hidden" value=""/><div aria-hidden="true" class="honeypot-field"><label for="website">Website</label><input autocomplete="off" id="website" name="website" tabindex="-1" type="text"/></div>
 <div class="form-section"><div class="form-heading"><span class="form-step">01</span><div><h2 class="form-title">기본 정보</h2><p class="form-text">상담을 위해 필요한 기본 정보를 입력해 주십시오.</p></div></div><div class="form-grid"><div class="field"><label class="field-label" for="company">회사명 / 업체명 <span class="field-optional">선택</span></label><input autocomplete="organization" id="company" maxlength="80" name="company" type="text"/></div><div class="field"><label class="field-label" for="name">담당자 이름 <span class="field-required">*</span></label><input autocomplete="name" id="name" maxlength="40" name="name" required="" type="text"/></div><div class="field"><label class="field-label" for="phone">담당자 연락처</label><input autocomplete="tel" id="phone" maxlength="30" name="phone" placeholder="010-1234-5678" type="tel"/><p class="field-help">전화 회신을 원하시면 입력해 주세요.</p></div><div class="field"><label class="field-label" for="email">이메일</label><input autocomplete="email" id="email" maxlength="120" name="email" placeholder="name@example.com" type="email"/><p class="field-help">연락처 또는 이메일 중 하나는 입력해 주세요.</p></div><div class="field is-full"><label class="field-label" for="homepage">현재 사이트 / 참고 URL</label><input id="homepage" maxlength="300" name="homepage" placeholder="https://example.com 또는 참고 사이트" type="url"/><p class="field-help">운영 중인 사이트, 참고 사이트, 수집 대상 사이트가 있다면 남겨주십시오.</p></div></div></div>
 <div class="form-section"><div class="form-heading"><span class="form-step">02</span><div><h2 class="form-title">필요한 서비스</h2><p class="form-text">해당되는 항목을 모두 선택해 주십시오. 복수 선택 가능합니다.</p></div></div><div class="check-grid" data-service-group=""><label><input name="service" type="checkbox" value="홈페이지·랜딩페이지 제작"/> 홈페이지·랜딩페이지 제작</label>
 <label><input name="service" type="checkbox" value="React·Firebase 관리자 웹시스템"/> React·Firebase 관리자 웹시스템</label>
@@ -535,7 +166,14 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 <label><input name="service" type="checkbox" value="웹 데이터 크롤링·엑셀 수집"/> 웹 데이터 크롤링·엑셀 수집</label>
 <label><input name="service" type="checkbox" value="패키지 조합 상담"/> 패키지 조합 상담</label>
 <label><input id="service-other-check" name="service" type="checkbox" value="기타"/> 기타</label></div><div class="field field-spaced is-full js-conditional-field" data-service-other-field="" hidden=""><label class="field-label" for="service-other">기타 서비스 내용</label><input id="service-other" maxlength="120" name="service_other" placeholder="예) 예약 시스템 고도화, API 연동, 기존 코드 점검, 대량 데이터 정리 등" type="text"/><p class="field-help">기타를 선택했다면 필요한 내용을 짧게 적어주세요.</p></div></div>
-<div class="form-section"><div class="form-heading"><span class="form-step">03</span><div><h2 class="form-title">프로젝트 내용</h2><p class="form-text">예산과 일정, 참고할 자료가 있다면 함께 적어주십시오.</p></div></div><div class="form-grid"><div class="field"><label class="field-label" for="budget">예산 <span class="field-optional">선택</span></label><select id="budget" name="budget"><option value="">예산 선택 또는 미정</option><option value="5만원 ~ 20만원">5만원 ~ 20만원</option><option value="20만원 ~ 70만원">20만원 ~ 70만원</option><option value="70만원 ~ 150만원">70만원 ~ 150만원</option><option value="150만원 ~ 300만원">150만원 ~ 300만원</option><option value="300만원 이상">300만원 이상</option><option value="미정">미정</option></select></div><div class="field"><label class="field-label" for="schedule">일정 <span class="field-optional">선택</span></label><select id="schedule" name="schedule"><option value="">일정 선택 또는 미정</option><option value="최대한 빠르게">최대한 빠르게</option><option value="1주 이내">1주 이내</option><option value="2주 이내">2주 이내</option><option value="1개월 이내">1개월 이내</option><option value="1개월 이상">1개월 이상</option><option value="일정 미정">일정 미정</option></select></div><div class="field is-full"><label class="field-label" for="reference">참고 자료 / 참고 사이트 URL</label><input id="reference" maxlength="600" name="reference" placeholder="참고 사이트, 문서, 수집 대상 URL 등을 적어주세요" type="text"/><p class="field-help">참고 자료가 여러 개라면 쉼표로 구분해 적어주세요.</p></div><div class="field is-full"><label class="field-label" for="details">프로젝트 상세 내용 <span class="field-required">*</span></label><textarea id="details" maxlength="2000" minlength="20" name="details" placeholder="예) 업종, 원하는 결과물, 필요한 기능, 저장해야 할 데이터, 수정할 오류, 추적하고 싶은 버튼, AI가 답해야 할 질문, 수집할 데이터 항목 등을 적어주세요." required=""></textarea><p class="field-help">최소 20자 이상 적어주세요. 상세할수록 더 정확한 안내가 가능합니다.</p><p class="text-counter" data-details-count="">0자</p></div></div></div>
+<div class="form-section"><div class="form-heading"><span class="form-step">03</span><div><h2 class="form-title">프로젝트 내용</h2><p class="form-text">예산과 일정, 참고할 자료가 있다면 함께 적어주십시오.</p></div></div><div class="form-grid"><div class="field"><label class="field-label" for="budget">예산 <span class="field-optional">선택</span></label><select id="budget" name="budget"><option value="">예산 선택 또는 미정</option><option value="5만원 ~ 20만원">5만원 ~ 20만원</option><option value="20만원 ~ 70만원">20만원 ~ 70만원</option><option value="70만원 ~ 150만원">70만원 ~ 150만원</option><option value="150만원 ~ 300만원">150만원 ~ 300만원</option><option value="300만원 이상">300만원 이상</option><option value="미정">미정</option></select></div><div class="field"><label class="field-label" for="schedule">일정 <span class="field-optional">선택</span></label><select id="schedule" name="schedule"><option value="">일정 선택 또는 미정</option><option value="최대한 빠르게">최대한 빠르게</option><option value="1주 이내">1주 이내</option><option value="2주 이내">2주 이내</option><option value="1개월 이내">1개월 이내</option><option value="1개월 이상">1개월 이상</option><option value="일정 미정">일정 미정</option></select></div><div class="field is-full"><label class="field-label" for="reference">참고 자료 / 참고 사이트 URL</label><input id="reference" maxlength="600" name="reference" placeholder="참고 사이트, 문서, 수집 대상 URL 등을 적어주세요" type="text"/><p class="field-help">참고 자료가 여러 개라면 쉼표로 구분해 적어주세요.</p></div><div class="field is-full"><label class="field-label" for="details">프로젝트 상세 내용 <span class="field-required">*</span></label><textarea id="details" maxlength="2000" minlength="20" name="details" placeholder="예)
+- 현재 사이트 URL:
+- 원하는 작업:
+- 참고 사이트:
+- 필요한 기능:
+- 희망 일정:
+- 예산 범위가 있다면:
+- 기타 요청:" required=""></textarea><p class="field-help">최소 20자 이상 적어주세요. 상세할수록 더 정확한 안내가 가능합니다.</p><p class="text-counter" data-details-count="">0자</p></div></div></div>
 <div class="form-section"><div class="form-heading"><span class="form-step">04</span><div><h2 class="form-title">상담 방식 및 유입 경로</h2><p class="form-text">원하시는 상담 방식과 유입 경로를 남겨주시면 응대와 마케팅 분석에 도움이 됩니다.</p></div></div><div class="radio-group"><label><input name="consulting" type="radio" value="전화상담"/> 전화상담</label><label><input name="consulting" type="radio" value="이메일상담"/> 이메일상담</label><label><input name="consulting" type="radio" value="둘 다 가능"/> 둘 다 가능</label></div><div class="field field-spaced"><label class="field-label" for="source">유입 경로</label><select id="source" name="source"><option value="">유입 경로 선택</option><option value="크몽">크몽</option><option value="구글 검색">구글 검색</option><option value="네이버 검색">네이버 검색</option><option value="SNS">SNS</option><option value="지인 소개">지인 소개</option><option value="기존 거래처">기존 거래처</option><option value="기타">기타</option></select></div><div class="field field-spaced js-conditional-field" data-source-detail-field="" hidden=""><label class="field-label" for="source-detail">유입 경로 상세</label><input id="source-detail" maxlength="120" name="source_detail" placeholder="예: 크몽 상품명, 인스타그램, 블로그, 소개자 성함 등" type="text"/><p class="field-help">SNS, 지인 소개, 기타를 선택했다면 가능하면 상세 내용을 적어주세요.</p></div></div>
 <div class="form-section consent-section"><div class="form-heading"><span class="form-step">05</span><div><h2 class="form-title">동의</h2><p class="form-text">접수와 회신을 위해 필요한 동의 항목입니다.</p></div></div><div class="radio-group"><label class="consent-item"><input name="privacy" required="" type="checkbox" value="동의"/><span class="consent-text">개인정보 수집 및 이용에 동의합니다. <a class="link-underline" href="privacy.html" rel="noopener" target="_blank">개인정보처리방침 보기</a> <em>(필수)</em></span></label></div><div class="form-submit-bar"><p class="form-submit-note">접수 후 24시간 내 1차 답변을 드립니다. 내용 확인 후 필요한 서비스, 예상 범위, 준비 자료, 다음 진행 방법을 안내드립니다.</p><div class="form-submit"><button class="btn btn-primary" type="submit">접수하기</button></div></div></div></form><iframe hidden="" id="form-response-frame" name="hidden_iframe" title="문의 접수 처리 프레임"></iframe></div></div></section></main>
 <footer class="footer">
@@ -557,7 +195,7 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 <a href="index.html">홈</a>
 <a href="about.html">회사소개</a>
 <a href="services.html">서비스</a>
-<a href="faq.html">FAQ</a>
+<a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
 <a href="contact.html">접수하기</a>
 <a href="privacy.html">개인정보처리방침</a>
 </nav>
@@ -568,7 +206,9 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
 </div>
 </div>
 </footer>
-<script src="./js/modules/inquiry-form.js?v=v44-contact-response-20260607"></script>
-<script src="./js/site-core.js?v=v43-cleanup-contact-20260607"></script>
+<script src="./js/modules/inquiry-form.js?v=v55-enhance-v11-20260609"></script>
+<script src="./js/site-core/01-core-ui.js?v=v55-enhance-v11-20260609"></script>
+<script src="./js/site-core/02-enhance-v7-smooth-scroll.js?v=v55-enhance-v11-20260609"></script>
+<script src="./js/site-core/03-enhance-v8-faq-search.js?v=v55-enhance-v11-20260609"></script>
 </body>
 </html>

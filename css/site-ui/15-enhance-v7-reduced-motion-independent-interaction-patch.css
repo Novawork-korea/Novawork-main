@@ -1,0 +1,73 @@
+/* ==================== EnhanceV7 smooth-scroll interaction patch ==================== */
+html.nw-smooth-wheel-v7-ready,
+html.nw-smooth-wheel-v7-ready body,
+html.nw-smooth-wheel-v7-active,
+html.nw-smooth-wheel-v7-active body {
+  scroll-behavior: auto !important;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .detail-accordion .detail-panel-body {
+    transition-property: height, opacity, transform !important;
+    transition-duration: 580ms, 420ms, 580ms !important;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1), ease, cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .detail-accordion-toggle,
+  .detail-accordion-toggle i {
+    transition-property: transform !important;
+    transition-duration: 300ms !important;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .nw-floating-actions,
+  .nw-floating-action {
+    transition-property: opacity, transform, background-color, color, border-color !important;
+    transition-duration: 420ms, 560ms, 180ms, 180ms, 180ms !important;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1), ease, ease, ease !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 768px) {
+  .mobile-menu::before,
+  .mobile-menu::after,
+  .mobile-menu-panel,
+  .mobile-menu-list li,
+  .mobile-menu-shortcuts,
+  .mobile-menu-cta {
+    transition-property: opacity, transform, clip-path !important;
+    transition-duration: 260ms, 360ms, 420ms !important;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  body > .mobile-menu.is-open::before,
+  .mobile-menu.is-open::before {
+    animation: nwMenuRailDrop 230ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  }
+
+  body > .mobile-menu.is-open::after,
+  .mobile-menu.is-open::after {
+    animation: nwMenuFillUp 340ms cubic-bezier(0.76, 0, 0.24, 1) 210ms both !important;
+  }
+
+  body > .mobile-menu.is-open .mobile-menu-panel,
+  .mobile-menu.is-open .mobile-menu-panel {
+    animation: nwMenuPanelReveal 240ms cubic-bezier(0.16, 1, 0.3, 1) 540ms both !important;
+  }
+
+  .mobile-menu.is-open .mobile-menu-list li,
+  .mobile-menu.is-open .mobile-menu-shortcuts,
+  .mobile-menu.is-open .mobile-menu-cta {
+    animation: nwMenuItemStagger 220ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  }
+
+  .mobile-menu.is-open .mobile-menu-list li:nth-child(1) { animation-delay: 570ms !important; }
+  .mobile-menu.is-open .mobile-menu-list li:nth-child(2) { animation-delay: 610ms !important; }
+  .mobile-menu.is-open .mobile-menu-list li:nth-child(3) { animation-delay: 650ms !important; }
+  .mobile-menu.is-open .mobile-menu-list li:nth-child(4) { animation-delay: 690ms !important; }
+  .mobile-menu.is-open .mobile-menu-shortcuts { animation-delay: 730ms !important; }
+  .mobile-menu.is-open .mobile-menu-cta { animation-delay: 770ms !important; }
+}
+
+

@@ -133,6 +133,7 @@ window.initInquiryForm = function initInquiryForm() {
   const DRAFT_KEY = "novawork_inquiry_draft_v43";
   const LEGACY_DRAFT_KEY = "novawork_inquiry_draft";
   let draftTimer = null;
+  let formStepper = null;
 
   const isDraftField = function (field) {
     if (!field || !field.name || field.type === "hidden") return false;
@@ -181,7 +182,7 @@ window.initInquiryForm = function initInquiryForm() {
       }
 
       window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
-        version: "v43",
+        version: "v54-enhance-v10",
         saved_at: new Date().toISOString(),
         fields: fields
       }));
@@ -486,9 +487,16 @@ window.initInquiryForm = function initInquiryForm() {
   const focusFirstError = function () {
     const firstErrorField = form.querySelector(".is-invalid");
 
+    if (firstErrorField && formStepper && typeof formStepper.goToField === "function") {
+      formStepper.goToField(firstErrorField);
+    }
+
     if (firstErrorField && typeof firstErrorField.focus === "function") {
-      firstErrorField.focus();
-      firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.setTimeout(function () {
+        try { firstErrorField.focus({ preventScroll: true }); }
+        catch (error) { firstErrorField.focus(); }
+        firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 40);
     }
   };
 
@@ -538,10 +546,13 @@ window.initInquiryForm = function initInquiryForm() {
       setHiddenValue("#" + name.replace(/_/g, "-"), value);
     });
 
+    const submittedAt = new Date().toISOString();
     setHiddenValue("#page-url", window.location.href);
+    setHiddenValue("#page-title", document.title || "");
     setHiddenValue("#page-origin", window.location.origin);
     setHiddenValue("#user-agent", window.navigator.userAgent);
-    setHiddenValue("#submitted-at-client", new Date().toISOString());
+    setHiddenValue("#submitted-at", submittedAt);
+    setHiddenValue("#submitted-at-client", submittedAt);
   };
 
   const finishSuccess = function (message, resetForm, force) {
@@ -784,6 +795,226 @@ window.initInquiryForm = function initInquiryForm() {
     return valid;
   };
 
+
+
+  const validateStepperStep = function (stepIndex) {
+    let valid = true;
+    clearErrors();
+    syncConditionalFields();
+
+    if (stepIndex === 0) {
+      if (nameField && !nameField.value.trim()) {
+        showFieldError(nameField, "담당자 이름을 입력해 주세요.");
+        valid = false;
+      }
+
+      const hasPhone = Boolean(phoneField && phoneField.value.trim());
+      const hasEmail = Boolean(emailField && emailField.value.trim());
+
+      if (!hasPhone && !hasEmail) {
+        showFieldError(phoneField || emailField, "연락처 또는 이메일 중 하나는 입력해 주세요.");
+        valid = false;
+      }
+
+      if (phoneField && hasPhone && !isValidPhone(phoneField.value)) {
+        showFieldError(phoneField, "연락처 형식을 다시 확인해 주세요.");
+        valid = false;
+      }
+
+      if (emailField && hasEmail && !isValidEmail(emailField.value)) {
+        showFieldError(emailField, "올바른 이메일 형식을 입력해 주세요.");
+        valid = false;
+      }
+    }
+
+    if (stepIndex === 1) {
+      if (serviceFields.length > 0 && !hasCheckedService()) {
+        appendErrorToGroup(serviceFields[0].closest(".check-grid"), "필요한 서비스를 하나 이상 선택해 주세요.");
+        valid = false;
+      }
+
+      if (serviceOtherCheck && serviceOtherCheck.checked && serviceOtherField && !serviceOtherField.value.trim()) {
+        showFieldError(serviceOtherField, "기타 서비스 내용을 입력해 주세요.");
+        valid = false;
+      }
+
+      if (detailsField && detailsField.value.trim().length < DETAILS_MIN_LENGTH) {
+        showFieldError(detailsField, "프로젝트 내용을 최소 " + DETAILS_MIN_LENGTH + "자 이상 입력해 주세요.");
+        valid = false;
+      }
+    }
+
+    if (stepIndex === 2) {
+      if (sourceField && sourceField.value === "기타" && sourceDetailField && !sourceDetailField.value.trim()) {
+        showFieldError(sourceDetailField, "기타 유입 경로를 입력해 주세요.");
+        valid = false;
+      }
+
+      if (privacyField && !privacyField.checked) {
+        showFieldError(privacyField, "개인정보 수집 및 이용 동의는 필수입니다.");
+        valid = false;
+      }
+    }
+
+    if (!valid) {
+      const statusBox = createStatusBox();
+      statusBox.className = "form-status is-error";
+      statusBox.textContent = "현재 단계의 입력 내용을 다시 확인해 주세요.";
+      focusFirstError();
+    }
+
+    return valid;
+  };
+
+  const initContactFormStepper = function () {
+    if (!document.body || !document.body.classList.contains("contact-static-page")) return null;
+    if (form.dataset.nwFormStepper === "ready") return formStepper;
+
+    const sections = Array.from(form.children).filter(function (child) {
+      return child instanceof HTMLElement && child.classList.contains("form-section");
+    });
+
+    if (sections.length < 5) return null;
+
+    form.dataset.nwFormStepper = "ready";
+    form.classList.add("nw-stepped-form");
+
+    const steps = [
+      { title: "기본 정보", desc: "연락 가능한 정보를 입력합니다.", sections: [sections[0]] },
+      { title: "서비스·내용", desc: "필요한 서비스와 작업 내용을 정리합니다.", sections: [sections[1], sections[2]] },
+      { title: "확인·접수", desc: "상담 방식과 동의 후 접수합니다.", sections: [sections[3], sections[4]] }
+    ];
+
+    const stepper = document.createElement("div");
+    stepper.className = "nw-form-stepper";
+    stepper.setAttribute("aria-label", "접수 단계");
+
+    const progress = document.createElement("div");
+    progress.className = "nw-form-stepper-progress";
+    progress.setAttribute("aria-hidden", "true");
+    progress.innerHTML = '<span class="nw-form-stepper-progress-bar"></span>';
+
+    const tabs = document.createElement("div");
+    tabs.className = "nw-form-stepper-tabs";
+
+    steps.forEach(function (step, index) {
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "nw-form-stepper-tab";
+      tab.dataset.stepIndex = String(index);
+      tab.innerHTML = '<span>0' + (index + 1) + '</span><strong>' + step.title + '</strong><em>' + step.desc + '</em>';
+      tabs.appendChild(tab);
+    });
+
+    stepper.appendChild(progress);
+    stepper.appendChild(tabs);
+    form.insertBefore(stepper, sections[0]);
+
+    const actions = document.createElement("div");
+    actions.className = "nw-form-step-actions";
+    const prevButton = document.createElement("button");
+    prevButton.type = "button";
+    prevButton.className = "btn btn-secondary nw-form-step-prev";
+    prevButton.textContent = "이전";
+    const nextButton = document.createElement("button");
+    nextButton.type = "button";
+    nextButton.className = "btn btn-primary nw-form-step-next";
+    nextButton.textContent = "다음";
+    actions.appendChild(prevButton);
+    actions.appendChild(nextButton);
+    form.appendChild(actions);
+
+    let activeStep = 0;
+    const tabButtons = Array.from(tabs.querySelectorAll("button"));
+    const progressBar = progress.querySelector(".nw-form-stepper-progress-bar");
+
+    steps.forEach(function (step, index) {
+      step.sections.forEach(function (section) {
+        section.dataset.nwStepIndex = String(index);
+      });
+    });
+
+    const setStep = function (index, options) {
+      const nextIndex = Math.max(0, Math.min(steps.length - 1, index));
+      activeStep = nextIndex;
+      form.dataset.nwActiveStep = String(activeStep + 1);
+
+      steps.forEach(function (step, stepIndex) {
+        const active = stepIndex === activeStep;
+        step.sections.forEach(function (section) {
+          section.classList.toggle("is-step-active", active);
+          section.hidden = !active;
+          section.setAttribute("aria-hidden", active ? "false" : "true");
+        });
+      });
+
+      tabButtons.forEach(function (button, buttonIndex) {
+        const active = buttonIndex === activeStep;
+        button.classList.toggle("is-active", active);
+        button.classList.toggle("is-complete", buttonIndex < activeStep);
+        button.setAttribute("aria-current", active ? "step" : "false");
+      });
+
+      prevButton.hidden = activeStep === 0;
+      nextButton.hidden = activeStep === steps.length - 1;
+      if (progressBar) progressBar.style.width = (((activeStep + 1) / steps.length) * 100) + "%";
+
+      if (!options || !options.silent) {
+        const isOnePageContact = document.body && document.body.classList.contains("contact-static-page");
+        if (!isOnePageContact) {
+          const shell = form.closest(".form-shell") || form;
+          try { shell.scrollIntoView({ behavior: "smooth", block: "start" }); }
+          catch (error) { shell.scrollIntoView(); }
+        }
+      }
+    };
+
+    const fieldToStep = function (field) {
+      const section = field && field.closest ? field.closest(".form-section") : null;
+      if (!section || typeof section.dataset.nwStepIndex === "undefined") return -1;
+      return Number(section.dataset.nwStepIndex);
+    };
+
+    prevButton.addEventListener("click", function () {
+      clearStatus();
+      setStep(activeStep - 1);
+    });
+
+    nextButton.addEventListener("click", function () {
+      if (!validateStepperStep(activeStep)) return;
+      setStep(activeStep + 1);
+    });
+
+    tabButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        const target = Number(button.dataset.stepIndex || "0");
+        if (target <= activeStep) {
+          clearStatus();
+          setStep(target);
+          return;
+        }
+
+        for (let step = activeStep; step < target; step += 1) {
+          if (!validateStepperStep(step)) return;
+        }
+        setStep(target);
+      });
+    });
+
+    const api = {
+      setStep: setStep,
+      goToField: function (field) {
+        const step = fieldToStep(field);
+        if (step >= 0) setStep(step, { silent: true });
+      }
+    };
+
+    formStepper = api;
+    setStep(0, { silent: true });
+    return api;
+  };
+
+
   form.addEventListener("submit", function (event) {
     const statusBox = createStatusBox();
 
@@ -962,5 +1193,6 @@ window.initInquiryForm = function initInquiryForm() {
   syncChoiceState();
   syncConditionalFields();
   updateServicePrepGuide();
+  initContactFormStepper();
   window.addEventListener("beforeunload", writeDraft);
 };

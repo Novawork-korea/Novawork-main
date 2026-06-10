@@ -568,3 +568,80 @@ body.nw-intro-lock {
 .nw-logo-scroll.is-intro-complete .nw-logo-aura {
   will-change: auto;
 }
+
+/* EnhanceV1: smoother CTA finish and stable final hero positioning. */
+.nw-hero-actions {
+  backface-visibility: hidden;
+  transition:
+    opacity 540ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nw-hero-actions .btn {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0) scale(0.985);
+  transition:
+    opacity 440ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 540ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.nw-hero-actions .btn:nth-child(2) {
+  transition-delay: 70ms;
+}
+
+.nw-hero-actions.is-armed .btn,
+.nw-hero-actions.is-visible .btn {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.nw-logo-scroll.is-intro-complete .nw-hero-actions.is-visible .btn {
+  animation: none !important;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-hero-actions,
+  .nw-hero-actions .btn {
+    transition: none !important;
+  }
+  .nw-hero-actions .btn {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* EnhanceV4 hero completion patch: stable CTA reveal and HUD coexistence. */
+.nw-logo-scroll.is-fit-ready .nw-logo-lockup {
+  transform-origin: center center;
+}
+
+.nw-hero-actions {
+  display: flex;
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(.992);
+}
+
+.nw-hero-actions.is-armed,
+.nw-hero-actions.is-visible,
+.nw-logo-scroll.is-intro-complete .nw-hero-actions {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.nw-logo-scroll.is-intro-playing .nw-hero-actions .btn,
+.nw-logo-scroll:not(.is-intro-complete) .nw-hero-actions:not(.is-armed) .btn {
+  pointer-events: none;
+}
+
+.nw-logo-scroll.is-intro-complete .nw-hero-actions .btn {
+  pointer-events: auto;
+}
+
+@media (max-width: 780px) {
+  .nw-hero-actions {
+    gap: 8px;
+  }
+}

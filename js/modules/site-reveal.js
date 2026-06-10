@@ -2,8 +2,8 @@
   "use strict";
 
   const root = document.documentElement;
-  if (root.dataset.nwRevealController === "v43") return;
-  root.dataset.nwRevealController = "v43";
+  if (root.dataset.nwRevealController === "v52-enhance-v8-directional") return;
+  root.dataset.nwRevealController = "v52-enhance-v8-directional";
 
   const isIndexLoaderPage = document.body && (document.body.classList.contains("home") || document.querySelector(".nw-logo-scroll"));
   const routeEntering = root.classList.contains("nw-route-entering") || window.__NW_ROUTE_ENTERING === true;
@@ -27,8 +27,8 @@
     if (introDispatched) return;
     introDispatched = true;
     window.__NW_REVEAL_DONE = true;
-    try { document.dispatchEvent(new CustomEvent("novawork:logo-intro-start", { detail: { source: "site-reveal-v43" } })); } catch (error) {}
-    try { window.dispatchEvent(new CustomEvent("novawork:logo-intro-start", { detail: { source: "site-reveal-v43" } })); } catch (error) {}
+    try { document.dispatchEvent(new CustomEvent("novawork:logo-intro-start", { detail: { source: "site-reveal-v52-enhance-v8-directional" } })); } catch (error) {}
+    try { window.dispatchEvent(new CustomEvent("novawork:logo-intro-start", { detail: { source: "site-reveal-v52-enhance-v8-directional" } })); } catch (error) {}
   };
 
   const loader = () => document.querySelector(".site-loader");

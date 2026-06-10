@@ -1,0 +1,257 @@
+/* ==================== EnhanceV5 priority interaction patch ==================== */
+/* Floating quick actions: two monochrome circular buttons, bottom-right, staggered rise. */
+.nw-floating-actions {
+  z-index: 2860 !important;
+  gap: 10px !important;
+  transform: translate3d(0, 44px, 0) scale(0.94) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition:
+    opacity 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body.nw-floating-actions-visible .nw-floating-actions {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+}
+
+.nw-floating-action {
+  border-radius: 50% !important;
+  border: 1px solid rgba(255,255,255,0.72) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.34) !important;
+}
+
+.nw-floating-action--kakao {
+  color: #fff !important;
+  background: #050505 !important;
+}
+
+.nw-floating-action--contact {
+  color: #050505 !important;
+  background: #fff !important;
+  border-color: rgba(0,0,0,0.18) !important;
+}
+
+@media (min-width: 769px) {
+  .nw-floating-action--contact {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .nw-floating-actions,
+  body.home .nw-floating-actions {
+    right: calc(14px + env(safe-area-inset-right, 0px)) !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    display: grid !important;
+    gap: 9px !important;
+  }
+
+  .nw-floating-action,
+  .nw-floating-action--contact,
+  body.contact-static-page .nw-floating-action--contact {
+    display: grid !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .nw-floating-action svg {
+    width: 23px !important;
+    height: 23px !important;
+  }
+
+  body.nw-floating-actions-visible .nw-floating-action {
+    animation: nwV5FloatingRise 520ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  }
+
+  body.nw-floating-actions-visible .nw-floating-action:nth-child(2) {
+    animation-delay: 92ms !important;
+  }
+}
+
+@keyframes nwV5FloatingRise {
+  from { opacity: 0; transform: translate3d(0, 26px, 0) scale(0.9); }
+  70% { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.01); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* Mobile menu V5: visible white expansion animation, black text, equal viewport gutters. */
+@media (max-width: 768px) {
+  body > .mobile-menu,
+  .mobile-menu {
+    inset: var(--header-height) 0 0 0 !important;
+    width: 100vw !important;
+    height: calc(100svh - var(--header-height)) !important;
+    max-height: calc(100svh - var(--header-height)) !important;
+    overflow: hidden !important;
+    color: #050505 !important;
+    background: transparent !important;
+    border-top: 1px solid rgba(0,0,0,0.12) !important;
+  }
+
+  body > .mobile-menu::before,
+  .mobile-menu::before {
+    background: #fff !important;
+    border-inline: 1px solid rgba(0,0,0,0.14) !important;
+  }
+
+  body > .mobile-menu::after,
+  .mobile-menu::after {
+    background:
+      radial-gradient(circle at 84% 16%, rgba(0,0,0,0.055), rgba(0,0,0,0) 38%),
+      #fff !important;
+  }
+
+  body > .mobile-menu.is-open::before,
+  .mobile-menu.is-open::before {
+    animation: nwMenuRailDrop 230ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  }
+
+  body > .mobile-menu.is-open::after,
+  .mobile-menu.is-open::after {
+    animation: nwMenuFillUp 340ms cubic-bezier(0.76, 0, 0.24, 1) 210ms both !important;
+  }
+
+  .mobile-menu-panel {
+    --nw-menu-gutter: clamp(12px, 4.1vw, 18px);
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    margin: 0 !important;
+    padding: var(--nw-menu-gutter) !important;
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) auto !important;
+    align-content: stretch !important;
+    gap: var(--nw-menu-gutter) !important;
+    color: #050505 !important;
+  }
+
+  .mobile-menu-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: var(--nw-menu-gutter) !important;
+    margin: 0 !important;
+  }
+
+  .mobile-menu-list a,
+  .mobile-menu-cta {
+    min-height: clamp(48px, 9svh, 64px) !important;
+    border: 1px solid rgba(0,0,0,0.16) !important;
+    color: #050505 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    font-weight: 900 !important;
+  }
+
+  .mobile-menu-list a[aria-current="page"] {
+    border-color: #050505 !important;
+    background: #f0f0f0 !important;
+    color: #050505 !important;
+  }
+
+  .mobile-menu-shortcuts {
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    min-height: 0 !important;
+    padding: var(--nw-menu-gutter) !important;
+    border: 1px solid rgba(0,0,0,0.14) !important;
+    color: #050505 !important;
+    background: #f7f7f7 !important;
+  }
+
+  .mobile-menu-shortcuts p {
+    color: rgba(0,0,0,0.56) !important;
+  }
+
+  .mobile-menu-shortcut-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-content: start !important;
+    gap: max(8px, calc(var(--nw-menu-gutter) * 0.72)) !important;
+  }
+
+  .mobile-menu-shortcut-grid a {
+    min-height: clamp(42px, 7svh, 54px) !important;
+    border: 1px solid rgba(0,0,0,0.14) !important;
+    color: #050505 !important;
+    background: #fff !important;
+    font-weight: 850 !important;
+  }
+
+  .mobile-menu-cta {
+    width: 100% !important;
+    justify-content: center !important;
+    color: #050505 !important;
+    background: #fff !important;
+  }
+}
+
+@media (max-width: 768px) and (max-height: 640px) {
+  .mobile-menu-panel {
+    --nw-menu-gutter: 10px;
+  }
+
+  .mobile-menu-list a,
+  .mobile-menu-cta {
+    min-height: 44px !important;
+  }
+
+  .mobile-menu-shortcut-grid a {
+    min-height: 38px !important;
+  }
+}
+
+/* Service detail accordion V5: smoother height + fade/slide expansion. */
+.detail-accordion .detail-panel-body {
+  transform: translate3d(0, -8px, 0);
+  transition:
+    height 580ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 420ms ease,
+    transform 580ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: height, opacity, transform;
+}
+
+.detail-accordion.is-open .detail-panel-body {
+  transform: translate3d(0, 0, 0);
+}
+
+.detail-accordion-toggle i {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-floating-actions,
+  .nw-floating-action,
+  body.nw-floating-actions-visible .nw-floating-action,
+  .detail-accordion .detail-panel-body,
+  .detail-accordion-toggle,
+  .detail-accordion-toggle i {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  body.nw-floating-actions-visible .nw-floating-action {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* EnhanceV5 mobile menu scroll/fill guard for short mobile viewports. */
+@media (max-width: 768px) {
+  body > .mobile-menu.is-opened,
+  .mobile-menu.is-opened {
+    overflow-y: auto !important;
+    background: #fff !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body > .mobile-menu.is-open:not(.is-opened),
+  .mobile-menu.is-open:not(.is-opened) {
+    overflow: hidden !important;
+  }
+}
+

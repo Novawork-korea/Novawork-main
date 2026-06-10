@@ -1,0 +1,723 @@
+/* ==================== v31-mobile-refactor.css ====================
+   Maintained refinement layer: hamburger menu, hard-edge UI,
+   service-detail overflow guard, and 404 page styling. */
+
+/* Hard-edge interface: square the components that read as boxes/cards. */
+:where(
+  .btn,
+  .menu-toggle,
+  .nav-link,
+  .mobile-menu-list a,
+  .mobile-menu-cta,
+  .mobile-menu-shortcuts,
+  .mobile-menu-shortcut-grid a,
+  .detail-mobile-jump a,
+  .section-label,
+  .breadcrumb a,
+  .service-tag,
+  .service-chip,
+  .hero-badge,
+  .page-hero-points span,
+  .form-utility span,
+  input,
+  textarea,
+  select,
+  .form-control,
+  .pricing-table-wrap,
+  .service-pricing-table,
+  .service-pricing-table tr,
+  [class*="-card"],
+  [class*="-box"],
+  [class*="-panel"],
+  [class*="-band"],
+  [class*="-frame"],
+  [class*="-visual"]
+) {
+  border-radius: 0 !important;
+}
+
+/* Decorative image frames were visually heavy with square corners; remove the box, keep the image. */
+:where(
+  .site-visual-frame,
+  .hero-visual,
+  .page-hero-visual,
+  .home-intro-visual,
+  .home-final-cta-visual,
+  .about-wide-visual,
+  .service-story-visual,
+  .service-detail-visual,
+  .service-detail-hero-image,
+  .image-card
+) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+:where(
+  .site-visual-frame,
+  .hero-visual,
+  .page-hero-visual,
+  .home-intro-visual,
+  .home-final-cta-visual,
+  .about-wide-visual,
+  .service-story-visual,
+  .service-detail-visual,
+  .service-detail-hero-image,
+  .image-card
+) img {
+  border-radius: 0 !important;
+}
+
+/* Some narrative wrappers work better without a visible card. */
+.home-intro-card,
+.home-intro-visual-stack,
+.home-output-collage,
+.about-process-copy {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Functional groupings remain boxed, but with straight edges. */
+:where(
+  .service-mini-card,
+  .service-index-card,
+  .service-map-box,
+  .service-story-card,
+  .detail-panel,
+  .detail-sidebar-box,
+  .contact-box,
+  .form-section,
+  .contact-panel,
+  .faq-item,
+  .faq-category,
+  .about-manifesto-main,
+  .about-stat-stack article,
+  .about-route-card,
+  .about-method-list article,
+  .about-lane-list a,
+  .about-boundary-card,
+  .about-stack-table > div,
+  .home-signal,
+  .home-decision-board,
+  .decision-row,
+  .home-process-step,
+  .package-principle-card,
+  .package-card,
+  .package-preview-band,
+  .package-preview-mini-grid a,
+  .package-route-row,
+  .package-process-card,
+  .kakao-channel-box,
+  .privacy-intro,
+  .privacy-card,
+  .notice-box,
+  .quote-criteria,
+  .criteria-card,
+  .not-found-card
+) {
+  border-radius: 0 !important;
+}
+
+
+/* Square residual utility rows/lists that do not use card/box/panel naming. */
+:where(
+  [class*="-flow"],
+  [class*="-flow"] a,
+  [class*="-table"],
+  [class*="-row"],
+  [class*="-badge"],
+  [class*="-chip"],
+  [class*="-pill"],
+  [class*="-list"] > li,
+  [class*="-list"] a,
+  [class*="-grid"] > a,
+  .quick-contact a,
+  .kakao-qr-link,
+  .process-visual-strip,
+  .service-mini-card--visual figure,
+  .service-index-visual,
+  .home-output-collage figure,
+  .about-process-layout figure
+) {
+  border-radius: 0 !important;
+}
+
+/* Service detail overflow guard. */
+@media (max-width: 1120px) {
+  .service-detail-hero-grid,
+  .detail-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .service-detail-copy,
+  .service-detail-summary,
+  .detail-main,
+  .detail-sidebar,
+  .detail-panel,
+  .pricing-table-wrap {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  .detail-sidebar,
+  .pricing-table-wrap {
+    width: 100% !important;
+  }
+}
+
+.detail-mobile-jump,
+.mobile-menu-shortcuts {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 66px;
+  }
+
+  html {
+    scroll-padding-top: calc(var(--header-height) + 18px);
+  }
+
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .header {
+    z-index: 2100 !important;
+  }
+
+  .header-inner {
+    min-height: var(--header-height) !important;
+    gap: 10px;
+  }
+
+  .logo img {
+    height: 29px !important;
+    max-width: min(48vw, 188px);
+    object-fit: contain;
+  }
+
+  .menu-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 46px !important;
+    height: 46px !important;
+    flex: 0 0 46px;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    background: #0d0d0d !important;
+    box-shadow: none !important;
+    touch-action: manipulation;
+  }
+
+  .menu-toggle span {
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    background-color: #fff !important;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  .mobile-menu {
+    position: fixed !important;
+    top: var(--header-height) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 2000 !important;
+    display: block !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, -8px, 0);
+    border-top: 1px solid rgba(255,255,255,0.12) !important;
+    background: rgba(5,5,5,0.985) !important;
+    box-shadow: none !important;
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 220ms step-end;
+  }
+
+  .mobile-menu.is-open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0);
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0ms step-start;
+  }
+
+  .mobile-menu-panel {
+    display: grid !important;
+    gap: 12px !important;
+    width: min(100%, 540px);
+    margin-inline: auto;
+    padding: 14px 14px calc(22px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .mobile-menu-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .mobile-menu-list a,
+  .mobile-menu-cta {
+    justify-content: center;
+    min-height: 52px !important;
+    padding: 0 12px;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    background: #111 !important;
+    color: #fff !important;
+    font-size: 0.92rem;
+    text-align: center;
+    touch-action: manipulation;
+  }
+
+  .mobile-menu-list a[aria-current="page"] {
+    border-color: rgba(255,255,255,0.34) !important;
+    background: #1a1a1a !important;
+  }
+
+  .mobile-menu-shortcuts {
+    display: block;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.105);
+    background: #0d0d0d;
+  }
+
+  .mobile-menu-shortcuts p {
+    margin: 0 0 10px;
+    color: rgba(255,255,255,0.52);
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+  }
+
+  .mobile-menu-shortcut-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .mobile-menu-shortcut-grid a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,0.115);
+    color: rgba(255,255,255,0.88);
+    background: #141414;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.18;
+    touch-action: manipulation;
+  }
+
+  .detail-mobile-jump {
+    position: sticky;
+    top: var(--header-height);
+    z-index: 820;
+    display: block;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: rgba(5,5,5,0.96);
+    box-shadow: none;
+  }
+
+  .detail-mobile-jump .container {
+    display: flex;
+    gap: 8px;
+    padding-block: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .detail-mobile-jump .container::-webkit-scrollbar,
+  .breadcrumb::-webkit-scrollbar {
+    display: none;
+  }
+
+  .detail-mobile-jump a {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 13px;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.88);
+    background: #121212;
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .breadcrumb {
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+
+  .service-detail-hero.service-detail-hero--clean {
+    padding-top: calc(var(--header-height) + 28px) !important;
+    padding-bottom: 42px !important;
+  }
+
+  .service-detail-hero--clean .breadcrumb {
+    margin-bottom: 22px !important;
+    font-size: 0.8rem;
+  }
+
+  .service-detail-hero--clean .service-detail-copy h1 {
+    font-size: clamp(2rem, 10.4vw, 3.15rem) !important;
+    line-height: 1.05;
+  }
+
+  .service-detail-lead {
+    font-size: 1rem !important;
+    line-height: 1.62;
+  }
+
+  .service-detail-summary {
+    font-size: 0.92rem;
+    line-height: 1.68;
+  }
+
+  .service-detail-actions {
+    gap: 9px;
+    margin-top: 22px;
+  }
+
+  .service-detail-actions .btn,
+  .contact-box .btn,
+  .detail-sidebar-box .btn {
+    min-height: 50px;
+  }
+
+  .service-story-card {
+    gap: 18px;
+  }
+
+  .service-story-copy h2 {
+    margin-top: 12px;
+    font-size: clamp(1.5rem, 7.2vw, 2.2rem);
+  }
+
+  .service-story-points li {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .detail-layout {
+    gap: 14px !important;
+  }
+
+  .detail-panel {
+    padding: 18px !important;
+    scroll-margin-top: calc(var(--header-height) + 58px);
+  }
+
+  .detail-section-head {
+    grid-template-columns: 1fr !important;
+    gap: 7px;
+    margin-bottom: 16px;
+  }
+
+  .detail-section-head span {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 28px;
+    align-items: center;
+    padding: 0 10px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: #151515;
+    font-size: 0.76rem;
+  }
+
+  .detail-section-head h2 {
+    font-size: clamp(1.22rem, 5.2vw, 1.58rem);
+  }
+
+  .detail-check-list,
+  .detail-step-list {
+    gap: 9px;
+  }
+
+  .detail-check-list li {
+    padding-left: 18px;
+    font-size: 0.91rem;
+    line-height: 1.64;
+  }
+
+  .detail-step-list li {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .detail-step-list p {
+    font-size: 0.9rem;
+    line-height: 1.58;
+  }
+
+  .detail-sidebar-box {
+    padding: 18px;
+  }
+
+  .detail-sidebar-box.muted {
+    display: none;
+  }
+
+  .detail-note {
+    margin-top: 12px;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .cta-band .section-title {
+    font-size: clamp(1.38rem, 6.4vw, 1.9rem);
+  }
+
+  input,
+  select,
+  textarea,
+  .inquiry-form textarea {
+    font-size: 16px !important;
+  }
+
+  .check-grid label,
+  .radio-group label,
+  .consent-item {
+    align-items: flex-start;
+    gap: 9px;
+  }
+
+  body.contact-static-page main > .section {
+    padding-top: 16px !important;
+  }
+
+  body.contact-static-page .form-section {
+    padding: 16px !important;
+  }
+
+  body.contact-static-page .form-submit,
+  body.contact-static-page .form-submit .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .pricing-table-wrap {
+    overflow: visible !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .service-pricing-table {
+    display: block;
+    width: 100%;
+    min-width: 0 !important;
+    border-collapse: separate;
+  }
+
+  .service-pricing-table thead {
+    display: none;
+  }
+
+  .service-pricing-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+
+  .service-pricing-table tr {
+    display: block;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: #0b0b0b;
+  }
+
+  .service-pricing-table tbody th,
+  .service-pricing-table td {
+    display: block;
+    width: 100%;
+    padding: 14px 16px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.09) !important;
+  }
+
+  .service-pricing-table tbody th {
+    color: #fff;
+    background: #121212;
+    font-size: 1rem;
+    line-height: 1.38;
+  }
+
+  .service-pricing-table tbody th span {
+    margin-bottom: 5px;
+    font-size: 0.72rem;
+  }
+
+  .service-pricing-table td {
+    color: rgba(255,255,255,0.78);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .service-pricing-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    color: rgba(255,255,255,0.46);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .service-pricing-table tr td:last-child {
+    border-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .mobile-menu-shortcut-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 769px) {
+  .detail-mobile-jump,
+  .mobile-menu-shortcuts {
+    display: none !important;
+  }
+}
+
+@supports not (overflow: clip) {
+  @media (max-width: 768px) {
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+}
+
+/* 404 page */
+.not-found-section {
+  min-height: calc(100svh - var(--header-height));
+  display: grid;
+  align-items: center;
+  padding: calc(var(--header-height) + 72px) 0 82px;
+}
+
+.not-found-card {
+  max-width: 860px;
+  padding: clamp(28px, 5vw, 58px);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: radial-gradient(circle at 84% 12%, rgba(255,255,255,0.085), transparent 20rem), rgba(15,15,15,0.94);
+  box-shadow: 0 28px 82px rgba(0,0,0,0.46);
+}
+
+.not-found-card .section-label {
+  margin-bottom: 16px;
+}
+
+.not-found-card h1 {
+  margin: 0 0 18px;
+  color: #fff;
+  font-size: clamp(2.3rem, 6vw, 5rem);
+  line-height: 1.02;
+  letter-spacing: -0.06em;
+}
+
+.not-found-card p {
+  max-width: 680px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.76;
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+@media (max-width: 768px) {
+  .not-found-section {
+    padding: calc(var(--header-height) + 44px) 0 56px;
+  }
+
+  .not-found-card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 560px) {
+  .not-found-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .not-found-actions .btn {
+    width: 100%;
+  }
+}
+
+
+/* v43 cleanup: duplicate scroll reveal block removed. */
+.form-status-with-actions {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.045);
+}
+.form-status-with-actions p { margin: 0; line-height: 1.6; }
+.form-status-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.form-status-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  background: #111;
+  font-size: .86rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.contact-panel,
+.nw-logo-scroll .nw-scroll-hint {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+
+/* v43 route curtain hard override: keep the transition overlay independent from page-content reveal selectors. */
+html.nw-route-transitioning body > .nw-route-curtain,
+html.nw-route-entering body > .nw-route-curtain,
+html.nw-route-leaving body > .nw-route-curtain {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+

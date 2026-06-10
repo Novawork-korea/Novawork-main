@@ -1,0 +1,556 @@
+/* ==================== EnhanceV11 one-page contact / readability patch ==================== */
+/* Contact: start directly with the step form and keep the page itself fixed to one viewport. */
+html:has(body.contact-static-page),
+body.contact-static-page {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100svh !important;
+  min-height: 100svh !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+body.contact-static-page .footer,
+body.contact-static-page .contact-intake-head,
+body.contact-static-page .nw-contact-guide,
+body.contact-static-page .nw-contact-checklist-section,
+body.contact-static-page .service-prep-guide {
+  display: none !important;
+}
+
+body.contact-static-page main,
+body.contact-static-page .contact-intake-section {
+  height: calc(100svh - var(--header-height, 84px)) !important;
+  min-height: calc(100svh - var(--header-height, 84px)) !important;
+  max-height: calc(100svh - var(--header-height, 84px)) !important;
+  overflow: hidden !important;
+}
+
+body.contact-static-page .contact-intake-section {
+  padding: clamp(8px, 1.2vw, 16px) 0 clamp(10px, 1.2vw, 16px) !important;
+}
+
+body.contact-static-page .contact-intake-container,
+body.contact-static-page .form-shell-single,
+body.contact-static-page .form-shell,
+body.contact-static-page .contact-form,
+body.contact-static-page .inquiry-form {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+body.contact-static-page .contact-intake-container {
+  display: block !important;
+}
+
+body.contact-static-page .form-shell-single,
+body.contact-static-page .form-shell {
+  width: min(1180px, calc(100% - clamp(20px, 3vw, 48px))) !important;
+  max-width: 1180px !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+}
+
+body.contact-static-page .nw-stepped-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(8px, 1.1vw, 14px) !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body.contact-static-page .honeypot-field,
+body.contact-static-page .nw-stepped-form > input[type="hidden"] {
+  display: none !important;
+}
+
+body.contact-static-page .nw-form-stepper {
+  flex: 0 0 auto !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+body.contact-static-page .nw-form-stepper-progress {
+  height: 3px !important;
+}
+
+body.contact-static-page .nw-form-stepper-tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+body.contact-static-page .nw-form-stepper-tab {
+  min-height: 48px !important;
+  padding: 8px 10px !important;
+  border-radius: 13px !important;
+}
+
+body.contact-static-page .nw-form-stepper-tab span {
+  display: inline-block !important;
+  margin: 0 6px 0 0 !important;
+  font-size: 0.66rem !important;
+}
+
+body.contact-static-page .nw-form-stepper-tab strong {
+  display: inline !important;
+  font-size: clamp(0.78rem, 1vw, 0.92rem) !important;
+  line-height: 1.1 !important;
+}
+
+body.contact-static-page .nw-form-stepper-tab em {
+  display: none !important;
+}
+
+body.contact-static-page .nw-stepped-form .form-section.is-step-active {
+  flex: 0 1 auto !important;
+  min-height: 0 !important;
+  padding: clamp(8px, 1.1vw, 14px) 0 !important;
+  overflow: hidden !important;
+}
+
+body.contact-static-page .nw-stepped-form[data-nw-active-step="2"] .form-section.is-step-active,
+body.contact-static-page .nw-stepped-form[data-nw-active-step="3"] .form-section.is-step-active {
+  padding-block: 6px !important;
+}
+
+body.contact-static-page .nw-stepped-form[data-nw-active-step="2"] .form-section[data-nw-step-index="1"],
+body.contact-static-page .nw-stepped-form[data-nw-active-step="3"] .form-section[data-nw-step-index="2"] {
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  gap: 8px !important;
+}
+
+body.contact-static-page .form-heading {
+  margin-bottom: 8px !important;
+  gap: 10px !important;
+}
+
+body.contact-static-page .form-step {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  font-size: 0.74rem !important;
+}
+
+body.contact-static-page .form-title {
+  font-size: clamp(1rem, 1.45vw, 1.22rem) !important;
+  line-height: 1.1 !important;
+}
+
+body.contact-static-page .form-text,
+body.contact-static-page .field-help,
+body.contact-static-page .form-submit-note {
+  display: none !important;
+}
+
+body.contact-static-page .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 9px 10px !important;
+}
+
+body.contact-static-page .field.is-full,
+body.contact-static-page .field-spaced.is-full {
+  grid-column: 1 / -1 !important;
+}
+
+body.contact-static-page .field-label {
+  margin-bottom: 4px !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.01em !important;
+}
+
+body.contact-static-page input:not([type="checkbox"]):not([type="radio"]),
+body.contact-static-page select {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 10px !important;
+  font-size: 0.9rem !important;
+}
+
+body.contact-static-page textarea#details {
+  min-height: clamp(76px, 12vh, 116px) !important;
+  max-height: clamp(76px, 12vh, 116px) !important;
+  padding: 10px !important;
+  font-size: 0.9rem !important;
+  line-height: 1.42 !important;
+}
+
+body.contact-static-page .check-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+}
+
+body.contact-static-page .check-grid label,
+body.contact-static-page .radio-group label,
+body.contact-static-page .consent-item {
+  min-height: 38px !important;
+  padding: 8px 9px !important;
+  border-radius: 12px !important;
+  font-size: 0.82rem !important;
+  line-height: 1.22 !important;
+}
+
+body.contact-static-page .radio-group {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+body.contact-static-page .consent-section .radio-group {
+  grid-template-columns: 1fr !important;
+}
+
+body.contact-static-page .text-counter {
+  margin-top: 3px !important;
+  font-size: 0.72rem !important;
+}
+
+body.contact-static-page .form-submit-bar {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  padding-top: 6px !important;
+}
+
+body.contact-static-page .form-submit .btn,
+body.contact-static-page .nw-form-step-actions .btn {
+  min-height: 42px !important;
+  padding: 0 18px !important;
+}
+
+body.contact-static-page .nw-form-step-actions {
+  flex: 0 0 auto !important;
+  padding: 0 !important;
+  align-items: end !important;
+}
+
+body.contact-static-page .form-status {
+  position: fixed !important;
+  left: 50% !important;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index: 5000 !important;
+  width: min(520px, calc(100vw - 28px)) !important;
+  transform: translateX(-50%) !important;
+}
+
+@media (min-width: 980px) {
+  body.contact-static-page .nw-stepped-form[data-nw-active-step="2"] .form-section[data-nw-step-index="1"],
+  body.contact-static-page .nw-stepped-form[data-nw-active-step="2"] .form-section[data-nw-step-index="1"] + .form-section[data-nw-step-index="1"] {
+    min-height: 0 !important;
+  }
+
+  body.contact-static-page .nw-stepped-form[data-nw-active-step="2"] .form-section[data-nw-step-index="1"] .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body.contact-static-page main,
+  body.contact-static-page .contact-intake-section {
+    height: calc(100svh - var(--header-height, 64px)) !important;
+    min-height: calc(100svh - var(--header-height, 64px)) !important;
+    max-height: calc(100svh - var(--header-height, 64px)) !important;
+  }
+
+  body.contact-static-page .contact-intake-section {
+    padding: 7px 0 calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  body.contact-static-page .form-shell-single,
+  body.contact-static-page .form-shell {
+    width: calc(100% - 18px) !important;
+  }
+
+  body.contact-static-page .nw-stepped-form {
+    gap: 7px !important;
+  }
+
+  body.contact-static-page .nw-form-stepper-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  body.contact-static-page .nw-form-stepper-tab {
+    min-height: 40px !important;
+    padding: 6px 6px !important;
+    text-align: center !important;
+  }
+
+  body.contact-static-page .nw-form-stepper-tab span {
+    display: block !important;
+    margin: 0 0 2px !important;
+    font-size: 0.58rem !important;
+  }
+
+  body.contact-static-page .nw-form-stepper-tab strong {
+    display: block !important;
+    font-size: 0.7rem !important;
+  }
+
+  body.contact-static-page .nw-stepped-form .form-section.is-step-active {
+    padding: 5px 0 !important;
+  }
+
+  body.contact-static-page .form-heading {
+    margin-bottom: 6px !important;
+  }
+
+  body.contact-static-page .form-step {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    font-size: 0.64rem !important;
+  }
+
+  body.contact-static-page .form-title {
+    font-size: 0.92rem !important;
+  }
+
+  body.contact-static-page .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body.contact-static-page .field-label {
+    margin-bottom: 2px !important;
+    font-size: 0.66rem !important;
+  }
+
+  body.contact-static-page input:not([type="checkbox"]):not([type="radio"]),
+  body.contact-static-page select {
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 0 8px !important;
+    font-size: 0.78rem !important;
+  }
+
+  body.contact-static-page textarea#details {
+    min-height: clamp(64px, 11svh, 90px) !important;
+    max-height: clamp(64px, 11svh, 90px) !important;
+    padding: 8px !important;
+    font-size: 0.78rem !important;
+  }
+
+  body.contact-static-page .check-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  body.contact-static-page .check-grid label,
+  body.contact-static-page .radio-group label,
+  body.contact-static-page .consent-item {
+    min-height: 32px !important;
+    padding: 6px 7px !important;
+    border-radius: 10px !important;
+    font-size: 0.68rem !important;
+  }
+
+  body.contact-static-page .radio-group {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  body.contact-static-page .consent-text {
+    font-size: 0.68rem !important;
+    line-height: 1.28 !important;
+  }
+
+  body.contact-static-page .text-counter {
+    display: none !important;
+  }
+
+  body.contact-static-page .form-submit .btn,
+  body.contact-static-page .nw-form-step-actions .btn {
+    min-height: 38px !important;
+    padding: 0 12px !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+@media (max-width: 380px), (max-height: 700px) {
+  body.contact-static-page .nw-form-stepper-progress,
+  body.contact-static-page .form-heading .form-step {
+    display: none !important;
+  }
+
+  body.contact-static-page .nw-form-stepper-tab {
+    min-height: 32px !important;
+  }
+
+  body.contact-static-page .form-heading {
+    margin-bottom: 4px !important;
+  }
+
+  body.contact-static-page .form-title {
+    font-size: 0.82rem !important;
+  }
+
+  body.contact-static-page .check-grid label,
+  body.contact-static-page .radio-group label,
+  body.contact-static-page .consent-item {
+    min-height: 29px !important;
+    font-size: 0.62rem !important;
+  }
+
+  body.contact-static-page input:not([type="checkbox"]):not([type="radio"]),
+  body.contact-static-page select {
+    min-height: 30px !important;
+    height: 30px !important;
+  }
+
+  body.contact-static-page textarea#details {
+    min-height: 56px !important;
+    max-height: 56px !important;
+  }
+}
+
+/* Services comparison: mobile table becomes full-width cards, no horizontal scrolling. */
+@media (max-width: 768px) {
+  body.service-hub-page .nw-compare-table-wrap {
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  body.service-hub-page .nw-compare-table {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  body.service-hub-page .nw-compare-table thead {
+    display: none !important;
+  }
+
+  body.service-hub-page .nw-compare-table tbody,
+  body.service-hub-page .nw-compare-table tr,
+  body.service-hub-page .nw-compare-table th,
+  body.service-hub-page .nw-compare-table td {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  body.service-hub-page .nw-compare-table tr {
+    margin-bottom: 10px !important;
+    padding: 12px !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 18px !important;
+    background: rgba(255,255,255,0.045) !important;
+  }
+
+  body.service-hub-page .nw-compare-table tbody th {
+    padding: 0 0 8px !important;
+    border: 0 !important;
+    color: #fff !important;
+    background: transparent !important;
+    font-size: 0.95rem !important;
+    line-height: 1.25 !important;
+  }
+
+  body.service-hub-page .nw-compare-table td {
+    display: grid !important;
+    grid-template-columns: 76px minmax(0, 1fr) !important;
+    gap: 8px !important;
+    align-items: start !important;
+    padding: 8px 0 !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.72) !important;
+    font-size: 0.78rem !important;
+    line-height: 1.45 !important;
+  }
+
+  body.service-hub-page .nw-compare-table td::before {
+    color: rgba(255,255,255,0.95) !important;
+    font-size: 0.7rem !important;
+    font-weight: 950 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+  }
+
+  body.service-hub-page .nw-compare-table td:nth-of-type(1)::before { content: "홈페이지"; }
+  body.service-hub-page .nw-compare-table td:nth-of-type(2)::before { content: "랜딩"; }
+  body.service-hub-page .nw-compare-table td:nth-of-type(3)::before { content: "웹시스템"; }
+}
+
+/* Site-wide visual compression: keep content in DOM, but reduce visible density. */
+body:not(.contact-static-page) .section {
+  padding-top: clamp(58px, 7vw, 104px) !important;
+  padding-bottom: clamp(58px, 7vw, 104px) !important;
+}
+
+body:not(.contact-static-page) .section-head,
+body:not(.contact-static-page) .compact-head {
+  max-width: 860px !important;
+  margin-bottom: clamp(22px, 3vw, 38px) !important;
+}
+
+body:not(.contact-static-page) .section-title {
+  max-width: 900px !important;
+  text-wrap: balance;
+}
+
+body:not(.contact-static-page) .section-desc,
+body:not(.contact-static-page) .page-hero p,
+body:not(.contact-static-page) .service-detail-lead,
+body:not(.contact-static-page) .service-detail-summary {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  max-width: 780px !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step) p,
+body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step) li,
+body:not(.contact-static-page) .service-index-body p,
+body:not(.contact-static-page) .package-card-head p {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step):hover p,
+  body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step):focus-within p,
+  body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step):hover li,
+  body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step):focus-within li {
+    -webkit-line-clamp: 5 !important;
+  }
+}
+
+body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step) {
+  padding: clamp(16px, 1.55vw, 24px) !important;
+}
+
+body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step) h3 {
+  margin-bottom: 8px !important;
+  line-height: 1.18 !important;
+}
+
+@media (max-width: 768px) {
+  body:not(.contact-static-page) .section {
+    padding-top: 46px !important;
+    padding-bottom: 46px !important;
+  }
+
+  body:not(.contact-static-page) .section-desc,
+  body:not(.contact-static-page) .page-hero p,
+  body:not(.contact-static-page) .service-detail-lead,
+  body:not(.contact-static-page) .service-detail-summary {
+    -webkit-line-clamp: 2 !important;
+  }
+
+  body:not(.contact-static-page) :is(.nw-fit-card,.nw-case-card,.nw-estimate-card,.nw-aftercare-card,.nw-situation-card,.nw-deliverable-card,.nw-portfolio-card,.service-index-card,.package-card,.package-principle-card,.service-story-card,.detail-panel,.detail-sidebar-box,.privacy-card,.about-route-card,.about-boundary-card,.home-signal,.home-process-step) {
+    padding: 14px !important;
+    border-radius: 18px !important;
+  }
+}

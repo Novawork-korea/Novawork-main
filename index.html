@@ -3,469 +3,10 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<script id="nw-route-transition-boot">
-(function () {
-  "use strict";
-  var VERSION = "v43";
-  var KEY = "novawork:route-transition";
-  var root = document.documentElement;
-  var leaving = false;
-  var entering = false;
-  var enterFinished = false;
-  var enterTimer = 0;
-  var coverTimer = 0;
-  var reduceMotion = false;
-  try { reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (error) {}
-
-  var COVER_MS = reduceMotion ? 420 : 860;
-  var REVEAL_MS = reduceMotion ? 520 : 920;
-  var CONTENT_MS = reduceMotion ? 420 : 820;
-  var EASE_COVER = "cubic-bezier(0.76, 0, 0.24, 1)";
-  var EASE_CONTENT = "cubic-bezier(0.16, 1, 0.3, 1)";
-
-  function storageGet() {
-    try { return window.sessionStorage ? window.sessionStorage.getItem(KEY) : null; } catch (error) { return null; }
-  }
-  function storageSet(value) {
-    try { if (window.sessionStorage) window.sessionStorage.setItem(KEY, value); } catch (error) {}
-  }
-  function storageRemove() {
-    try { if (window.sessionStorage) window.sessionStorage.removeItem(KEY); } catch (error) {}
-  }
-  function now() {
-    return Date.now ? Date.now() : new Date().getTime();
-  }
-  function getFreshEntry() {
-    var raw = storageGet();
-    if (!raw) return null;
-    try {
-      var data = JSON.parse(raw);
-      if (!data || !data.t || now() - Number(data.t) > 45000) {
-        storageRemove();
-        return null;
-      }
-      return data;
-    } catch (error) {
-      storageRemove();
-      return null;
-    }
-  }
-
-  if (getFreshEntry()) {
-    window.__NW_ROUTE_ENTERING = true;
-    root.classList.add("nw-route-transitioning", "nw-route-entering");
-    root.classList.remove("nw-route-leaving", "nw-route-ready");
-  }
-
-  function sameDocumentHashOnly(url) {
-    return url.protocol === window.location.protocol &&
-      url.host === window.location.host &&
-      url.pathname === window.location.pathname &&
-      url.search === window.location.search &&
-      !!url.hash;
-  }
-  function isInternalUrl(url) {
-    var loc = window.location;
-    if (url.protocol === "file:" && loc.protocol === "file:") return true;
-    if (url.origin && loc.origin && url.origin !== "null" && loc.origin !== "null") return url.origin === loc.origin;
-    return url.protocol === loc.protocol && url.host === loc.host;
-  }
-  function isHtmlRoute(url) {
-    var path = url.pathname || "/";
-    return path === "/" || /(?:\.html|\/)$/i.test(path);
-  }
-  function getTransitionUrl(link, event) {
-    if (!link || leaving) return null;
-    if (event) {
-      if (event.defaultPrevented) return null;
-      if (typeof event.button === "number" && event.button !== 0) return null;
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
-    }
-    if (link.hasAttribute("download") || link.closest("[data-no-transition]")) return null;
-    var target = (link.getAttribute("target") || "").toLowerCase();
-    if (target && target !== "_self") return null;
-    var href = link.getAttribute("href") || "";
-    if (!href || href.charAt(0) === "#") return null;
-    if (/^(tel:|mailto:|sms:|javascript:|data:|blob:)/i.test(href)) return null;
-    var url;
-    try { url = new URL(href, window.location.href); } catch (error) { return null; }
-    if (!isInternalUrl(url)) return null;
-    if (sameDocumentHashOnly(url)) return null;
-    if (url.href === window.location.href) return null;
-    if (!isHtmlRoute(url)) return null;
-    return url;
-  }
-
-  function setBaseStyle(el, styles) {
-    Object.keys(styles).forEach(function (key) { el.style[key] = styles[key]; });
-  }
-  function ensureCurtain(state) {
-    if (!document.body) return null;
-    var curtain = document.querySelector(".nw-route-curtain");
-    if (!curtain) {
-      curtain = document.createElement("div");
-      curtain.className = "nw-route-curtain";
-      curtain.setAttribute("aria-hidden", "true");
-      var panel = document.createElement("div");
-      panel.className = "nw-route-curtain__panel";
-      curtain.appendChild(panel);
-      document.body.appendChild(curtain);
-    }
-    curtain.dataset.state = state || "leave";
-    setBaseStyle(curtain, {
-      position: "fixed",
-      inset: "0",
-      zIndex: "2147483647",
-      overflow: "hidden",
-      pointerEvents: "auto",
-      contain: "layout paint style",
-      background: "transparent"
-    });
-    var panelEl = curtain.querySelector(".nw-route-curtain__panel");
-    if (panelEl) {
-      setBaseStyle(panelEl, {
-        position: "absolute",
-        left: "0",
-        right: "0",
-        top: "-1px",
-        bottom: "-1px",
-        background: "#000",
-        transform: state === "enter" ? "translate3d(0, 0, 0)" : "translate3d(0, 100%, 0)",
-        willChange: "transform",
-        backfaceVisibility: "hidden"
-      });
-    }
-    return curtain;
-  }
-  function removeCurtain() {
-    var curtain = document.querySelector(".nw-route-curtain");
-    if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain);
-  }
-  function animateElement(el, frames, options, done) {
-    var finished = false;
-    function finish() {
-      if (finished) return;
-      finished = true;
-      if (frames && frames.length && frames[frames.length - 1].transform) el.style.transform = frames[frames.length - 1].transform;
-      if (typeof done === "function") done();
-    }
-    if (el && typeof el.animate === "function") {
-      try {
-        var animation = el.animate(frames, options);
-        animation.onfinish = finish;
-        animation.oncancel = finish;
-        return animation;
-      } catch (error) {}
-    }
-    window.setTimeout(finish, Math.max(0, Number(options && options.duration) || 0));
-    return null;
-  }
-  function dispatch(name, detail) {
-    try { document.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
-    try { window.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
-  }
-  function closeOpenUi() {
-    if (!document.body) return;
-    document.body.classList.remove("menu-open");
-    var menu = document.querySelector(".mobile-menu");
-    var toggle = document.querySelector(".menu-toggle");
-    if (menu) {
-      menu.classList.remove("is-open");
-      menu.setAttribute("aria-hidden", "true");
-      menu.dataset.state = "closed";
-    }
-    if (toggle) {
-      toggle.classList.remove("is-open");
-      toggle.setAttribute("aria-expanded", "false");
-    }
-  }
-  function focusMainAfterRoute() {
-    var main = document.querySelector("main");
-    if (!main) return;
-    if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
-    try {
-      main.focus({ preventScroll: true });
-    } catch (error) {
-      try { main.focus(); } catch (innerError) {}
-    }
-  }
-  function startLeave(url) {
-    if (!url || leaving) return false;
-    leaving = true;
-    storageSet(JSON.stringify({ v: VERSION, t: now(), to: url.href, from: window.location.href }));
-    closeOpenUi();
-    root.classList.remove("nw-route-entering", "nw-route-ready");
-    root.classList.add("nw-route-transitioning", "nw-route-leaving", "nw-route-overlay-ready");
-    var curtain = ensureCurtain("leave");
-    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
-    dispatch("novawork:route-leave-start", { to: url.href, source: "route-" + VERSION });
-    var navigated = false;
-    function go() {
-      if (navigated) return;
-      navigated = true;
-      window.location.assign(url.href);
-    }
-    window.clearTimeout(coverTimer);
-    coverTimer = window.setTimeout(go, COVER_MS + 260);
-    if (!panel) {
-      window.setTimeout(go, 40);
-      return true;
-    }
-    panel.getBoundingClientRect();
-    window.requestAnimationFrame(function () {
-      animateElement(panel, [
-        { transform: "translate3d(0, 100%, 0)" },
-        { transform: "translate3d(0, 0, 0)" }
-      ], { duration: COVER_MS, easing: EASE_COVER, fill: "forwards" }, go);
-    });
-    return true;
-  }
-  function finishEnter() {
-    if (enterFinished) return;
-    enterFinished = true;
-    window.clearTimeout(enterTimer);
-    root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
-    window.__NW_ROUTE_ENTERING = false;
-    entering = false;
-    removeCurtain();
-    focusMainAfterRoute();
-    dispatch("novawork:route-enter-done", { source: "route-" + VERSION });
-  }
-  function startEnter() {
-    if (entering || enterFinished) return;
-    var entry = getFreshEntry();
-    var shouldEnter = !!entry || root.classList.contains("nw-route-entering") || window.__NW_ROUTE_ENTERING === true;
-    if (!shouldEnter) return;
-    entering = true;
-    storageRemove();
-    window.__NW_ROUTE_ENTERING = true;
-    root.classList.add("nw-route-transitioning", "nw-route-entering");
-    root.classList.remove("nw-route-leaving", "nw-route-ready");
-    var curtain = ensureCurtain("enter");
-    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
-    root.classList.add("nw-route-overlay-ready");
-    if (curtain) curtain.getBoundingClientRect();
-    dispatch("novawork:route-enter-start", { from: entry && entry.from, source: "route-" + VERSION });
-    window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(function () {
-        root.classList.add("nw-route-ready");
-        window.clearTimeout(enterTimer);
-        enterTimer = window.setTimeout(finishEnter, Math.max(REVEAL_MS + CONTENT_MS, 1200));
-        if (!panel) return;
-        animateElement(panel, [
-          { transform: "translate3d(0, 0, 0)" },
-          { transform: "translate3d(0, -100%, 0)" }
-        ], { duration: REVEAL_MS, easing: EASE_COVER, fill: "forwards", delay: 90 }, finishEnter);
-      });
-    });
-  }
-
-  document.addEventListener("click", function (event) {
-    var target = event.target;
-    if (!target || !target.closest) return;
-    var link = target.closest("a[href]");
-    var url = getTransitionUrl(link, event);
-    if (!url) return;
-    event.preventDefault();
-    startLeave(url);
-  }, true);
-
-  document.addEventListener("DOMContentLoaded", startEnter, { once: true });
-  window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-      leaving = false;
-      entering = false;
-      enterFinished = false;
-      storageRemove();
-      root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
-      removeCurtain();
-      window.__NW_ROUTE_ENTERING = false;
-      return;
-    }
-    startEnter();
-  }, { passive: true });
-  if (document.readyState !== "loading") startEnter();
-
-  window.NOVAWORKRouteTransition = {
-    version: VERSION,
-    start: function (href) {
-      var url;
-      try { url = new URL(href, window.location.href); } catch (error) { return false; }
-      return startLeave(url);
-    }
-  };
-})();
-</script>
-<style id="nw-route-transition-critical">
-html.nw-route-transitioning,
-html.nw-route-entering,
-html.nw-route-leaving { background: #000; scroll-behavior: auto !important; }
-html.nw-route-transitioning *,
-html.nw-route-entering *,
-html.nw-route-leaving * { scroll-behavior: auto !important; }
-html.nw-route-entering body,
-html.nw-route-leaving body { background: #000; }
-html.nw-route-entering::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 2147483646;
-  background: #000;
-  pointer-events: auto;
-  opacity: 1;
-}
-html.nw-route-entering.nw-route-overlay-ready::before {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 80ms linear, visibility 80ms step-end;
-}
-html.nw-route-entering .site-loader { display: none !important; }
-html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript),
-html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  will-change: opacity, transform;
-}
-html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  opacity: 0 !important;
-  transform: translate3d(0, 34px, 0) !important;
-}
-html.nw-route-entering.nw-route-ready body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
-  opacity: 1 !important;
-  transform: translate3d(0, 0, 0) !important;
-  transition: opacity 760ms cubic-bezier(0.16, 1, 0.3, 1) 160ms, transform 860ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
-}
-html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
-  opacity: .72;
-  transform: translate3d(0, -16px, 0);
-  transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1), transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.nw-route-curtain {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  overflow: hidden;
-  pointer-events: auto;
-  contain: layout paint style;
-}
-.nw-route-curtain__panel {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -1px;
-  bottom: -1px;
-  background: #000;
-  transform: translate3d(0, 100%, 0);
-  will-change: transform;
-  backface-visibility: hidden;
-}
-</style>
-
-<script id="nw-reveal-boot">
-(function () {
-  var root = document.documentElement;
-  var routeEntering = root.classList.contains('nw-route-entering') || window.__NW_ROUTE_ENTERING === true;
-  window.__NW_REVEAL_BOOT = (window.performance && performance.now) ? performance.now() : Date.now();
-
-  if (routeEntering) {
-    root.classList.remove('site-is-loading', 'site-is-revealing');
-    root.classList.add('site-is-ready', 'site-reveal-done');
-    window.__NW_REVEAL_DONE = false;
-    return;
-  }
-
-  root.classList.add('site-is-loading');
-  root.classList.remove('site-is-ready', 'site-is-revealing', 'site-reveal-done');
-  window.__NW_REVEAL_FAILSAFE = window.setTimeout(function () {
-    root.classList.remove('site-is-loading', 'site-is-revealing');
-    root.classList.add('site-is-ready', 'site-reveal-done');
-    window.__NW_REVEAL_DONE = true;
-    var loader = document.querySelector('.site-loader');
-    if (loader) loader.setAttribute('hidden', '');
-    try {
-      document.dispatchEvent(new CustomEvent('novawork:logo-intro-start'));
-      window.dispatchEvent(new CustomEvent('novawork:logo-intro-start'));
-    } catch (error) {}
-  }, 3000);
-})();
-</script>
-<style id="nw-loading-critical">
-:root { background: #050505; }
-html.site-is-loading,
-html.site-is-revealing { overflow: hidden; }
-html.site-is-loading body,
-html.site-is-revealing body { overflow: hidden; background: #050505; }
-body > .header,
-body > main,
-body > .footer {
-  transition:
-    opacity 520ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-}
-html.site-is-loading body > :not(.site-loader) {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transform: translate3d(0, 24px, 0) !important;
-}
-html.site-is-loading body > .header {
-  transform: translate3d(0, -24px, 0) !important;
-}
-html.site-is-ready body > .header,
-html.site-is-ready body > main,
-html.site-is-ready body > .footer {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-.site-loader {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  display: grid;
-  place-items: center;
-  min-height: 100dvh;
-  background:
-    radial-gradient(circle at 50% 46%, rgba(255,255,255,0.10), transparent 18rem),
-    radial-gradient(circle at 50% 110%, rgba(255,255,255,0.05), transparent 26rem),
-    #050505;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    opacity 520ms cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 520ms step-end;
-}
-html.site-is-loading .site-loader {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-html.site-is-revealing .site-loader,
-html.site-is-ready .site-loader {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: auto;
-}
-html.site-reveal-done .site-loader { display: none !important; }
-.site-loader-inner {
-  display: grid;
-  place-items: center;
-  gap: 0;
-  color: #fff;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-.site-loader-inner img {
-  width: clamp(118px, 18vw, 190px);
-  height: auto;
-  border-radius: 0;
-  box-shadow: none;
-  filter: none;
-  opacity: .96;
-}
-</style>
-
+<script id="nw-route-transition-boot" src="./js/boot/route-transition-boot.js?v=v55-enhance-v11-20260609"></script>
+<link href="./css/critical/route-transition.css?v=v55-enhance-v11-20260609" id="nw-route-transition-critical" rel="stylesheet"/>
+<script id="nw-reveal-boot" src="./js/boot/reveal-boot.js?v=v55-enhance-v11-20260609"></script>
+<link href="./css/critical/site-loader.css?v=v55-enhance-v11-20260609" id="nw-loading-critical" rel="stylesheet"/>
 <!-- Google Tag Manager -->
 <script>
 (function(w,d,l,i){
@@ -489,8 +30,8 @@ html.site-reveal-done .site-loader { display: none !important; }
 </script>
 <!-- End Google Tag Manager -->
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link rel="preload" href="./js/modules/logo-scroll-hero.js?v=v43-cleanup-contact-20260607" as="script"/>
-<link rel="preload" href="./assets/logo-symbol.png" as="image" fetchpriority="high"/>
+<link as="script" href="./js/modules/logo-scroll-hero.js?v=v55-enhance-v11-20260609" rel="preload"/>
+<link as="image" fetchpriority="high" href="./assets/logo-symbol.png" rel="preload"/>
 <title>NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작</title>
 <meta content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다." name="description"/>
 <meta content="index,follow" name="robots"/>
@@ -574,12 +115,12 @@ html.site-reveal-done .site-loader { display: none !important; }
   }
 }
 </script>
-<link href="./css/site-base.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
-<link href="./css/hero-logo-scroll.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v43-cleanup-contact-20260607" rel="stylesheet"/>
+<link href="./css/site-base.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
+<link href="./css/hero-logo-scroll.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
+<link href="./css/site-ui.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
 </head>
-<body class="home has-mobile-quick-cta">
-<div class="site-loader" aria-hidden="true">
+<body class="home">
+<div aria-hidden="true" class="site-loader">
 <div class="site-loader-inner">
 <img alt="" decoding="async" height="500" src="./assets/logo-symbol.png" width="751"/>
 </div>
@@ -596,10 +137,9 @@ html.site-reveal-done .site-loader { display: none !important; }
 <a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></a>
 <nav aria-label="주요 메뉴" class="nav">
 <ul class="nav-list">
-<li><a class="nav-link" href="index.html">홈</a></li>
 <li><a class="nav-link" href="about.html">회사소개</a></li>
 <li><a class="nav-link" href="services.html">서비스</a></li>
-<li><a class="nav-link" href="faq.html">FAQ</a></li>
+<li><a class="nav-link" href="portfolio.html">포트폴리오</a></li><li><a class="nav-link" href="faq.html">FAQ</a></li>
 </ul>
 </nav>
 <div class="header-actions">
@@ -614,13 +154,8 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 <div aria-label="모바일 메뉴" aria-modal="true" class="mobile-menu" id="mobile-menu" role="dialog">
 <div class="mobile-menu-panel">
-<ul class="mobile-menu-list">
-<li><a href="index.html">홈</a></li>
-<li><a href="about.html">회사소개</a></li>
-<li><a href="services.html">서비스</a></li>
-<li><a href="faq.html">FAQ</a></li>
-</ul>
-<div class="mobile-menu-shortcuts" aria-label="대표 서비스 바로가기">
+<ul class="mobile-menu-list"><li><a href="about.html">회사소개</a></li><li><a href="services.html">서비스</a></li><li><a href="portfolio.html">포트폴리오</a></li><li><a href="faq.html">FAQ</a></li></ul>
+<div aria-label="대표 서비스 바로가기" class="mobile-menu-shortcuts">
 <p>대표 서비스</p>
 <div class="mobile-menu-shortcut-grid">
 <a href="service-homepage-landing.html">홈페이지</a>
@@ -635,256 +170,60 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </header>
-<main id="main" tabindex="-1"><section class="nw-logo-scroll" aria-label="NOVAWORK 로고 스크롤 조립 애니메이션">
-          <div class="nw-sticky-stage">
-            <div class="nw-stage-copy">
-              <p class="nw-eyebrow">NOVAWORK</p>
-              <h1>브랜드의 첫 인상을 설계하고 문의로 연결합니다</h1>
-            </div>
-
-            <div class="nw-logo-lockup">
-              <div class="nw-logo-aura" aria-hidden="true"></div>
-
-              <svg
-                class="nw-logo-svg"
-                viewBox="285 305 730 610"
-                role="img"
-                aria-labelledby="nwLogoTitle nwLogoDesc"
-              >
-                <title id="nwLogoTitle">NOVAWORK Logo</title>
-                <desc id="nwLogoDesc">
+<main id="main" tabindex="-1"><section aria-label="NOVAWORK 로고 스크롤 조립 애니메이션" class="nw-logo-scroll">
+<div class="nw-sticky-stage">
+<div class="nw-stage-copy">
+<p class="nw-eyebrow">NOVAWORK</p>
+<h1>브랜드의 첫 인상을 설계하고 문의로 연결합니다</h1>
+</div>
+<div class="nw-logo-lockup">
+<div aria-hidden="true" class="nw-logo-aura"></div>
+<svg aria-labelledby="nwLogoTitle nwLogoDesc" class="nw-logo-svg" role="img" viewbox="285 305 730 610">
+<title id="nwLogoTitle">NOVAWORK Logo</title>
+<desc id="nwLogoDesc">
                   스크롤에 따라 여러 SVG 조각이 중앙으로 모이며 완성되는 NOVAWORK 로고입니다.
                 </desc>
-
-                <g class="nw-symbol" fill="currentColor">
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="left-solid-slab"
-                    data-start="0"
-                    data-end="0.70"
-                    data-x="-820"
-                    data-y="-420"
-                    data-r="-18"
-                    data-s="0.78"
-                    d="M315 326 L450 721 L491 600 L398 326 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="center-top-bar"
-                    data-start="0.08"
-                    data-end="0.52"
-                    data-x="-120"
-                    data-y="-620"
-                    data-r="9"
-                    data-s="0.92"
-                    d="M599 327 L691 328 L684 337 L606 336 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="center-left-diagonal"
-                    data-start="0.12"
-                    data-end="0.58"
-                    data-x="-720"
-                    data-y="420"
-                    data-r="15"
-                    data-s="0.86"
-                    d="M599 327 L448 752 L462 743 L606 336 Z M448 752 L531 752 L525 741 L462 743 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="center-inner-diagonal"
-                    data-start="0.18"
-                    data-end="0.64"
-                    data-x="260"
-                    data-y="640"
-                    data-r="-16"
-                    data-s="0.88"
-                    d="M531 752 L643 445 L644 415 L525 741 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="center-inner-return"
-                    data-start="0.23"
-                    data-end="0.68"
-                    data-x="80"
-                    data-y="680"
-                    data-r="12"
-                    data-s="0.9"
-                    d="M643 445 L746 751 L753 742 L644 415 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="center-right-diagonal"
-                    data-start="0.16"
-                    data-end="0.62"
-                    data-x="520"
-                    data-y="-460"
-                    data-r="-13"
-                    data-s="0.88"
-                    d="M691 328 L786 611 L785 641 L684 337 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="right-inner-diagonal"
-                    data-start="0.28"
-                    data-end="0.74"
-                    data-x="760"
-                    data-y="280"
-                    data-r="18"
-                    data-s="0.84"
-                    d="M786 611 L887 327 L894 337 L785 641 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="right-top-bar"
-                    data-start="0.32"
-                    data-end="0.76"
-                    data-x="640"
-                    data-y="-620"
-                    data-r="10"
-                    data-s="0.94"
-                    d="M887 327 L979 327 L965 337 L894 337 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-symbol-piece"
-                    data-piece="right-outer-diagonal"
-                    data-start="0.36"
-                    data-end="0.82"
-                    data-x="860"
-                    data-y="-260"
-                    data-r="-16"
-                    data-s="0.86"
-                    d="M979 327 L822 752 L815 743 L965 337 Z M822 752 L746 751 L753 742 L815 743 Z"
-                  />
-                </g>
-
-                <g class="nw-wordmark" fill="currentColor">
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-n"
-                    data-start="0.70"
-                    data-end="0.84"
-                    data-x="-220"
-                    data-y="140"
-                    data-r="-8"
-                    data-s="0.92"
-                    d="M325 827 L325 881 L333 881 L334 842 L365 881 L372 881 L372 827 L364 828 L363 866 L335 831 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-o-1"
-                    data-start="0.72"
-                    data-end="0.86"
-                    data-x="-180"
-                    data-y="170"
-                    data-r="7"
-                    data-s="0.91"
-                    fill-rule="evenodd"
-                    d="M434 826 L425 828 L414 836 L409 846 L408 856 L412 869 L419 877 L431 882 L440 882 L450 879 L460 869 L463 862 L463 847 L452 831 Z M432 833 L445 835 L452 841 L455 847 L455 861 L452 867 L441 875 L431 875 L423 871 L416 858 L419 842 L425 836 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-v"
-                    data-start="0.74"
-                    data-end="0.88"
-                    data-x="-120"
-                    data-y="180"
-                    data-r="-7"
-                    data-s="0.92"
-                    d="M493 827 L514 881 L521 881 L542 827 L534 828 L518 868 L501 827 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-a"
-                    data-start="0.76"
-                    data-end="0.90"
-                    data-x="-50"
-                    data-y="190"
-                    data-r="6"
-                    data-s="0.92"
-                    fill-rule="evenodd"
-                    d="M592 827 L569 881 L577 881 L583 867 L606 867 L612 881 L620 881 L599 828 Z M595 838 L604 859 L603 861 L587 861 L586 860 L586 858 L592 845 L593 840 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-w"
-                    data-start="0.78"
-                    data-end="0.92"
-                    data-x="50"
-                    data-y="190"
-                    data-r="-5"
-                    data-s="0.92"
-                    d="M647 827 L664 881 L672 880 L684 841 L697 881 L705 880 L721 827 L713 827 L701 867 L688 827 L680 828 L668 867 L656 828 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-o-2"
-                    data-start="0.80"
-                    data-end="0.94"
-                    data-x="120"
-                    data-y="170"
-                    data-r="7"
-                    data-s="0.91"
-                    fill-rule="evenodd"
-                    d="M770 827 L761 831 L753 840 L750 848 L751 864 L757 874 L766 880 L787 881 L795 877 L802 869 L805 861 L805 847 L801 838 L792 830 L779 826 Z M774 833 L787 835 L793 840 L797 848 L797 860 L794 867 L789 872 L782 875 L772 875 L766 872 L758 860 L760 843 L767 836 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-r"
-                    data-start="0.82"
-                    data-end="0.96"
-                    data-x="180"
-                    data-y="150"
-                    data-r="-6"
-                    data-s="0.92"
-                    fill-rule="evenodd"
-                    d="M839 827 L839 881 L847 881 L848 859 L856 859 L870 881 L879 881 L865 859 L875 851 L875 835 L862 827 Z M847 834 L848 833 L860 833 L865 835 L869 840 L868 848 L865 851 L860 853 L848 852 L847 851 Z"
-                  />
-
-                  <path
-                    class="nw-logo-piece nw-letter"
-                    data-piece="letter-k"
-                    data-start="0.84"
-                    data-end="0.98"
-                    data-x="230"
-                    data-y="130"
-                    data-r="8"
-                    data-s="0.92"
-                    d="M911 827 L911 881 L918 881 L919 855 L942 881 L952 881 L928 854 L951 827 L942 827 L920 851 L918 827 Z"
-                  />
-                </g>
-              </svg>
-
-              <p class="nw-brand-copy">
+<g class="nw-symbol" fill="currentColor">
+<path class="nw-logo-piece nw-symbol-piece" d="M315 326 L450 721 L491 600 L398 326 Z" data-end="0.70" data-piece="left-solid-slab" data-r="-18" data-s="0.78" data-start="0" data-x="-820" data-y="-420"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M599 327 L691 328 L684 337 L606 336 Z" data-end="0.52" data-piece="center-top-bar" data-r="9" data-s="0.92" data-start="0.08" data-x="-120" data-y="-620"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M599 327 L448 752 L462 743 L606 336 Z M448 752 L531 752 L525 741 L462 743 Z" data-end="0.58" data-piece="center-left-diagonal" data-r="15" data-s="0.86" data-start="0.12" data-x="-720" data-y="420"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M531 752 L643 445 L644 415 L525 741 Z" data-end="0.64" data-piece="center-inner-diagonal" data-r="-16" data-s="0.88" data-start="0.18" data-x="260" data-y="640"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M643 445 L746 751 L753 742 L644 415 Z" data-end="0.68" data-piece="center-inner-return" data-r="12" data-s="0.9" data-start="0.23" data-x="80" data-y="680"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M691 328 L786 611 L785 641 L684 337 Z" data-end="0.62" data-piece="center-right-diagonal" data-r="-13" data-s="0.88" data-start="0.16" data-x="520" data-y="-460"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M786 611 L887 327 L894 337 L785 641 Z" data-end="0.74" data-piece="right-inner-diagonal" data-r="18" data-s="0.84" data-start="0.28" data-x="760" data-y="280"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M887 327 L979 327 L965 337 L894 337 Z" data-end="0.76" data-piece="right-top-bar" data-r="10" data-s="0.94" data-start="0.32" data-x="640" data-y="-620"></path>
+<path class="nw-logo-piece nw-symbol-piece" d="M979 327 L822 752 L815 743 L965 337 Z M822 752 L746 751 L753 742 L815 743 Z" data-end="0.82" data-piece="right-outer-diagonal" data-r="-16" data-s="0.86" data-start="0.36" data-x="860" data-y="-260"></path>
+</g>
+<g class="nw-wordmark" fill="currentColor">
+<path class="nw-logo-piece nw-letter" d="M325 827 L325 881 L333 881 L334 842 L365 881 L372 881 L372 827 L364 828 L363 866 L335 831 Z" data-end="0.84" data-piece="letter-n" data-r="-8" data-s="0.92" data-start="0.70" data-x="-220" data-y="140"></path>
+<path class="nw-logo-piece nw-letter" d="M434 826 L425 828 L414 836 L409 846 L408 856 L412 869 L419 877 L431 882 L440 882 L450 879 L460 869 L463 862 L463 847 L452 831 Z M432 833 L445 835 L452 841 L455 847 L455 861 L452 867 L441 875 L431 875 L423 871 L416 858 L419 842 L425 836 Z" data-end="0.86" data-piece="letter-o-1" data-r="7" data-s="0.91" data-start="0.72" data-x="-180" data-y="170" fill-rule="evenodd"></path>
+<path class="nw-logo-piece nw-letter" d="M493 827 L514 881 L521 881 L542 827 L534 828 L518 868 L501 827 Z" data-end="0.88" data-piece="letter-v" data-r="-7" data-s="0.92" data-start="0.74" data-x="-120" data-y="180"></path>
+<path class="nw-logo-piece nw-letter" d="M592 827 L569 881 L577 881 L583 867 L606 867 L612 881 L620 881 L599 828 Z M595 838 L604 859 L603 861 L587 861 L586 860 L586 858 L592 845 L593 840 Z" data-end="0.90" data-piece="letter-a" data-r="6" data-s="0.92" data-start="0.76" data-x="-50" data-y="190" fill-rule="evenodd"></path>
+<path class="nw-logo-piece nw-letter" d="M647 827 L664 881 L672 880 L684 841 L697 881 L705 880 L721 827 L713 827 L701 867 L688 827 L680 828 L668 867 L656 828 Z" data-end="0.92" data-piece="letter-w" data-r="-5" data-s="0.92" data-start="0.78" data-x="50" data-y="190"></path>
+<path class="nw-logo-piece nw-letter" d="M770 827 L761 831 L753 840 L750 848 L751 864 L757 874 L766 880 L787 881 L795 877 L802 869 L805 861 L805 847 L801 838 L792 830 L779 826 Z M774 833 L787 835 L793 840 L797 848 L797 860 L794 867 L789 872 L782 875 L772 875 L766 872 L758 860 L760 843 L767 836 Z" data-end="0.94" data-piece="letter-o-2" data-r="7" data-s="0.91" data-start="0.80" data-x="120" data-y="170" fill-rule="evenodd"></path>
+<path class="nw-logo-piece nw-letter" d="M839 827 L839 881 L847 881 L848 859 L856 859 L870 881 L879 881 L865 859 L875 851 L875 835 L862 827 Z M847 834 L848 833 L860 833 L865 835 L869 840 L868 848 L865 851 L860 853 L848 852 L847 851 Z" data-end="0.96" data-piece="letter-r" data-r="-6" data-s="0.92" data-start="0.82" data-x="180" data-y="150" fill-rule="evenodd"></path>
+<path class="nw-logo-piece nw-letter" d="M911 827 L911 881 L918 881 L919 855 L942 881 L952 881 L928 854 L951 827 L942 827 L920 851 L918 827 Z" data-end="0.98" data-piece="letter-k" data-r="8" data-s="0.92" data-start="0.84" data-x="230" data-y="130"></path>
+</g>
+</svg>
+<p class="nw-brand-copy">
                 웹사이트 제작 · 랜딩페이지 · 유지관리까지, 사업에 필요한 온라인 접점을 명확하게 만듭니다.
               </p>
-
-              <div class="nw-hero-actions" aria-label="주요 상담 동선">
-                <a href="contact.html" class="btn btn-primary">프로젝트 접수하기</a>
-                <a href="services.html" class="btn btn-secondary">서비스 보기</a>
-              </div>
-            </div>
-
-            <a class="nw-scroll-hint" href="#about" aria-label="아래 내용 보기">
-              <span class="nw-scroll-hint__arrow" aria-hidden="true"></span>
-            </a>
-          </div>
-        </section>
-
+<div aria-label="주요 상담 동선" class="nw-hero-actions">
+<a class="btn btn-primary" href="contact.html">프로젝트 접수하기</a>
+<a class="btn btn-secondary" href="services.html">서비스 보기</a>
+</div>
+</div>
+<div aria-label="로고 조립 진행률" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="nw-hero-progress" role="progressbar">
+<span class="nw-hero-progress__label">ASSEMBLY</span>
+<strong class="nw-hero-progress__value">0%</strong>
+<i aria-hidden="true" class="nw-hero-progress__track"><b></b></i>
+</div>
+<a aria-label="아래 내용 보기" class="nw-scroll-hint" href="#about">
+<span aria-hidden="true" class="nw-scroll-hint__mouse"></span>
+<span class="nw-scroll-hint__text">SCROLL</span>
+</a>
+</div>
+</section>
 <section class="section home-intro-section" id="about">
 <div class="container">
 <div class="home-intro-card">
@@ -896,17 +235,44 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 <div class="home-intro-visual-stack">
 <figure class="home-intro-visual site-visual-frame">
-<img alt="NOVAWORK 통합 디지털 서비스 구성 화면" decoding="async" loading="lazy" src="./assets/visual-integrated-services.webp" width="1440" height="810"/>
+<img alt="NOVAWORK 통합 디지털 서비스 구성 화면" decoding="async" height="810" loading="lazy" src="./assets/visual-integrated-services.webp" width="1440"/>
 </figure>
-<div class="home-signal-stack" aria-label="NOVAWORK 작업 구분">
+<div aria-label="NOVAWORK 작업 구분" class="home-signal-stack">
 <div class="home-signal"><span>01</span><div><strong>보여주는 화면</strong><p>홈페이지·랜딩페이지처럼 고객에게 정보를 전달하고 문의로 연결하는 구조입니다.</p></div></div>
 <div class="home-signal"><span>02</span><div><strong>운영하는 시스템</strong><p>신청·예약·고객 데이터를 저장하고 관리자가 처리하는 웹시스템입니다.</p></div></div>
 <div class="home-signal"><span>03</span><div><strong>측정·AI·데이터</strong><p>GA4/GTM, GPT 챗봇, 웹 데이터 수집처럼 운영 판단을 돕는 작업입니다.</p></div></div>
 </div>
 </div>
 </div>
+</div></section><section aria-labelledby="nw-proof-title" class="section nw-proof-section">
+<div class="container">
+<div class="section-head nw-proof-head">
+<p class="section-label">WORK STANDARD</p>
+<h2 class="section-title" id="nw-proof-title">보여주는 페이지에서 끝나지 않도록 만듭니다.</h2>
+<p class="section-desc">홈페이지·랜딩페이지·관리자 시스템·GA4/GTM·AI 챗봇까지, 작은 비즈니스가 바로 쓸 수 있는 웹 구조를 작업 범위에 맞춰 설계합니다.</p>
+</div>
+<div class="nw-proof-badge-grid">
+<span>직접 코딩 기반 가능</span><span>PC / 모바일 반응형</span><span>문의 CTA 검수</span><span>GA4/GTM 연동 가능</span><span>소스 파일 전달 가능</span><span>작업 범위 사전 확정</span><span>작업 후 오류 확인</span><span>카카오톡 상담 연결</span>
+</div>
+</div>
+</section><section aria-labelledby="nw-fit-title" class="section nw-fit-section">
+<div class="container">
+<div class="section-head">
+<p class="section-label">FIT CHECK</p>
+<h2 class="section-title" id="nw-fit-title">NOVAWORK가 맞는 경우</h2>
+<p class="section-desc">서비스명을 정확히 몰라도 괜찮습니다. 현재 상황을 기준으로 필요한 웹 작업을 먼저 나눕니다.</p>
+</div>
+<div class="nw-fit-grid">
+<article class="nw-fit-card"><span>01</span><h3>방식부터 정리가 필요한 경우</h3><p>홈페이지가 필요한지, 랜딩페이지가 맞는지, 웹시스템이 필요한지 먼저 구분합니다.</p></article>
+<article class="nw-fit-card"><span>02</span><h3>대표 링크가 필요한 경우</h3><p>명함, 인스타그램, 광고에 연결할 반응형 웹사이트 또는 원페이지를 구성합니다.</p></article>
+<article class="nw-fit-card"><span>03</span><h3>문의 클릭을 확인하고 싶은 경우</h3><p>전화, 카카오톡, 이메일, 문의폼 CTA 클릭을 GA4/GTM 기준으로 정리할 수 있습니다.</p></article>
+<article class="nw-fit-card"><span>04</span><h3>기존 사이트가 불안정한 경우</h3><p>모바일 깨짐, 버튼 오류, 레이아웃 문제, 링크 누락을 수정 범위로 나눠 확인합니다.</p></article>
+<article class="nw-fit-card"><span>05</span><h3>데이터 저장이 필요한 경우</h3><p>신청·예약·문의 데이터를 저장하고 관리자 화면에서 확인하는 구조를 설계합니다.</p></article>
+<article class="nw-fit-card"><span>06</span><h3>반복 문의를 줄이고 싶은 경우</h3><p>자주 묻는 질문과 문서를 기준으로 AI 챗봇 답변 범위와 상담 연결 조건을 정리합니다.</p></article>
+</div>
+<div class="nw-section-actions"><a class="btn btn-secondary" href="services.html">서비스 보기</a><a class="btn btn-primary" href="contact.html">프로젝트 접수하기</a></div>
+</div>
 </section>
-
 <section class="section home-services-showcase service-compact-section" id="services">
 <div class="container">
 <div class="section-head compact-head">
@@ -916,33 +282,61 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 <div class="service-mini-grid service-mini-grid--visual home-service-mini-grid">
 <a class="service-mini-card service-mini-card--visual" href="service-homepage-landing.html">
-<figure><img alt="홈페이지 랜딩페이지 서비스 이미지" decoding="async" loading="lazy" src="./assets/service-visual-homepage.webp" width="1450" height="1085"/></figure>
+<figure><img alt="홈페이지 랜딩페이지 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-homepage.webp" width="1450"/></figure>
 <span class="service-mini-body"><i class="service-mini-kicker">웹 제작</i><strong>홈페이지·랜딩페이지</strong><em class="service-mini-note">처음 방문한 고객이 사업을 이해하고 문의까지 이동하도록 구성합니다.</em></span>
 </a>
 <a class="service-mini-card service-mini-card--visual" href="service-react-firebase-admin.html">
-<figure><img alt="React Firebase 웹시스템 서비스 이미지" decoding="async" loading="lazy" src="./assets/service-visual-admin-system.webp" width="1450" height="1085"/></figure>
+<figure><img alt="React Firebase 웹시스템 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-admin-system.webp" width="1450"/></figure>
 <span class="service-mini-body"><i class="service-mini-kicker">웹시스템</i><strong>React·Firebase 웹시스템</strong><em class="service-mini-note">신청폼, DB 저장, 로그인, 관리자 페이지처럼 운영 기능을 구현합니다.</em></span>
 </a>
 <a class="service-mini-card service-mini-card--visual" href="service-homepage-fix.html">
-<figure><img alt="홈페이지 오류 수정 서비스 이미지" decoding="async" loading="lazy" src="./assets/service-visual-homepage-fix.webp" width="1450" height="1085"/></figure>
+<figure><img alt="홈페이지 오류 수정 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-homepage-fix.webp" width="1450"/></figure>
 <span class="service-mini-body"><i class="service-mini-kicker">수정·유지보수</i><strong>홈페이지 오류 수정</strong><em class="service-mini-note">모바일 깨짐, 버튼 미작동, 문구·이미지·링크 변경을 정리합니다.</em></span>
 </a>
 <a class="service-mini-card service-mini-card--visual" href="service-ga4-gtm.html">
-<figure><img alt="GA4 GTM 추적 세팅 서비스 이미지" decoding="async" loading="lazy" src="./assets/service-visual-ga4-gtm.webp" width="1450" height="1085"/></figure>
+<figure><img alt="GA4 GTM 추적 세팅 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-ga4-gtm.webp" width="1450"/></figure>
 <span class="service-mini-body"><i class="service-mini-kicker">측정 세팅</i><strong>GA4·GTM 추적 세팅</strong><em class="service-mini-note">전화, 카카오톡, 문의폼, CTA 버튼 클릭이 측정되도록 세팅합니다.</em></span>
 </a>
 <a class="service-mini-card service-mini-card--visual" href="service-gpt-ai-chatbot.html">
-<figure><img alt="GPT AI 챗봇 서비스 이미지" decoding="async" loading="lazy" src="./assets/service-visual-ai-chatbot.webp" width="1450" height="1085"/></figure>
+<figure><img alt="GPT AI 챗봇 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-ai-chatbot.webp" width="1450"/></figure>
 <span class="service-mini-body"><i class="service-mini-kicker">AI 챗봇</i><strong>GPT·AI 챗봇</strong><em class="service-mini-note">FAQ, 반복 문의, 문서 기반 답변 흐름과 사람 연결 기준을 설계합니다.</em></span>
 </a>
 <a class="service-mini-card service-mini-card--visual" href="service-web-crawling.html">
-<figure><img alt="웹 데이터 크롤링 서비스 이미지" decoding="async" loading="lazy" src="./assets/service-visual-web-crawling.webp" width="1450" height="1085"/></figure>
+<figure><img alt="웹 데이터 크롤링 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-web-crawling.webp" width="1450"/></figure>
 <span class="service-mini-body"><i class="service-mini-kicker">데이터 수집</i><strong>웹 데이터 크롤링</strong><em class="service-mini-note">공개 웹페이지 데이터를 수집하고 중복·형식을 정리해 엑셀/CSV로 제공합니다.</em></span>
 </a>
 </div>
 </div>
+</section><section aria-labelledby="nw-case-title" class="section nw-case-section">
+<div class="container">
+<div class="section-head">
+<p class="section-label">EXAMPLE SCOPE</p>
+<h2 class="section-title" id="nw-case-title">작업 유형 예시</h2>
+<p class="section-desc">아래 내용은 실제 고객명이나 성과 수치를 공개한 사례가 아니라, 진행 가능한 대표 작업 범위를 문제·작업·전달물 기준으로 정리한 예시입니다.</p>
+</div>
+<div class="nw-case-grid">
+<article class="nw-case-card"><p class="nw-case-kicker">소상공인 원페이지 홈페이지</p><h3>대표 링크 구축</h3><dl><dt>목적</dt><dd>명함, 인스타그램, 광고에 연결할 대표 링크 구축</dd><dt>작업</dt><dd>원페이지 홈페이지, 카카오톡 CTA, 문의 버튼 연결, 기본 SEO</dd><dt>전달물</dt><dd>PC/모바일 반응형 페이지, 소스 파일, 링크 점검</dd></dl></article>
+<article class="nw-case-card"><p class="nw-case-kicker">랜딩페이지 제작</p><h3>광고·이벤트 문의 전환</h3><dl><dt>목적</dt><dd>특정 광고나 이벤트 문의 행동 유도</dd><dt>작업</dt><dd>핵심 메시지, CTA 배치, 문의 동선, GA4/GTM 이벤트</dd><dt>전달물</dt><dd>랜딩페이지, 버튼 클릭 추적 기준, 검수 링크</dd></dl></article>
+<article class="nw-case-card"><p class="nw-case-kicker">기존 사이트 모바일 오류 수정</p><h3>깨짐과 버튼 오류 정리</h3><dl><dt>목적</dt><dd>모바일 화면 깨짐, 버튼 오류, 레이아웃 문제 해결</dd><dt>작업</dt><dd>CSS 구조 정리, 반응형 보정, 주요 링크 점검</dd><dt>전달물</dt><dd>수정 파일, 변경 내역, 검수 체크리스트</dd></dl></article>
+<article class="nw-case-card"><p class="nw-case-kicker">GA4/GTM 전환 추적</p><h3>문의 행동 확인</h3><dl><dt>목적</dt><dd>전화, 카카오톡, 문의폼 클릭 확인</dd><dt>작업</dt><dd>이벤트명 정의, 태그/트리거 세팅, 테스트</dd><dt>전달물</dt><dd>이벤트 목록, 확인 방법, 테스트 결과</dd></dl></article>
+<article class="nw-case-card"><p class="nw-case-kicker">React/Firebase 관리자 페이지</p><h3>신청 데이터 관리</h3><dl><dt>목적</dt><dd>신청/예약/문의 데이터를 관리자 화면에서 확인</dd><dt>작업</dt><dd>데이터 구조, 관리자 목록, 상태 관리, 엑셀 다운로드 여부 검토</dd><dt>전달물</dt><dd>관리자 화면, DB 구조 기준, 기본 운영 안내</dd></dl></article>
+<article class="nw-case-card"><p class="nw-case-kicker">AI 챗봇 / 데이터 자동화</p><h3>반복 업무 줄이기</h3><dl><dt>목적</dt><dd>반복 문의 응대 또는 공개 데이터 정리 자동화</dd><dt>작업</dt><dd>답변 범위 설계, 데이터 항목 정리, 자동화 흐름 구성</dd><dt>전달물</dt><dd>챗봇 또는 자동화 스크립트, 사용 안내</dd></dl></article>
+</div>
+<div class="nw-section-actions"><a class="btn btn-secondary" href="portfolio.html">포트폴리오 보기</a><a class="btn btn-primary" href="contact.html">내 작업 범위 문의하기</a></div>
+</div>
+</section><section aria-labelledby="nw-estimate-title" class="section nw-estimate-section">
+<div class="container">
+<div class="section-head"><p class="section-label">ESTIMATE LOGIC</p><h2 class="section-title" id="nw-estimate-title">같은 홈페이지라도 가격이 다른 이유</h2><p class="section-desc">가격은 단순 페이지 수만으로 정하지 않습니다. 화면 수, 기능 수, 자료 준비 상태, 반응형 난이도, 추적/운영 범위에 따라 작업량이 달라집니다.</p></div>
+<div class="nw-estimate-grid">
+<article class="nw-estimate-card"><h3>화면 수</h3><p>메인 1페이지인지, 서브 페이지가 포함되는지에 따라 작업량이 달라집니다.</p></article>
+<article class="nw-estimate-card"><h3>기능 수</h3><p>문의폼, 예약폼, 관리자 화면, 로그인, 파일 업로드, 외부 API 연동 여부를 확인합니다.</p></article>
+<article class="nw-estimate-card"><h3>자료 준비 상태</h3><p>문구, 이미지, 로고, 참고 사이트, 계정 권한이 준비되어 있으면 일정이 짧아집니다.</p></article>
+<article class="nw-estimate-card"><h3>반응형 난이도</h3><p>PC와 모바일에서 같은 정보가 자연스럽게 보여야 하므로 화면 구조에 따라 작업량이 달라집니다.</p></article>
+<article class="nw-estimate-card"><h3>추적 / 운영 범위</h3><p>전화, 카카오톡, 문의폼, CTA 클릭을 GA4/GTM으로 확인해야 하는 경우 별도 세팅이 필요할 수 있습니다.</p></article>
+</div>
+<div class="nw-section-actions"><a class="btn btn-primary" href="contact.html">내 작업 범위 문의하기</a></div>
+</div>
 </section>
-
 <section class="section home-decision-section">
 <div class="container">
 <div class="home-decision-board">
@@ -962,7 +356,6 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </section>
-
 <section class="section home-package-section">
 <div class="container">
 <div class="package-preview-band">
@@ -980,14 +373,13 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </section>
-
 <section class="section home-work-preview-section">
 <div class="container">
 <div class="home-work-preview-grid">
-<div class="home-preview-collage" aria-label="NOVAWORK 서비스 이미지 미리보기">
-<figure><img alt="홈페이지 제작 이미지" decoding="async" loading="lazy" src="./assets/service-visual-homepage.webp" width="1450" height="1085"/></figure>
-<figure><img alt="관리자 웹시스템 이미지" decoding="async" loading="lazy" src="./assets/service-visual-admin-system.webp" width="1450" height="1085"/></figure>
-<figure><img alt="AI 챗봇 구축 이미지" decoding="async" loading="lazy" src="./assets/service-visual-ai-chatbot.webp" width="1450" height="1085"/></figure>
+<div aria-label="NOVAWORK 서비스 이미지 미리보기" class="home-preview-collage">
+<figure><img alt="홈페이지 제작 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-homepage.webp" width="1450"/></figure>
+<figure><img alt="관리자 웹시스템 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-admin-system.webp" width="1450"/></figure>
+<figure><img alt="AI 챗봇 구축 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-ai-chatbot.webp" width="1450"/></figure>
 </div>
 <div class="section-head">
 <span class="section-label">OUTPUT</span>
@@ -1002,7 +394,6 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </section>
-
 <section class="section home-process-section">
 <div class="container">
 <div class="section-head compact-head">
@@ -1011,7 +402,7 @@ html.site-reveal-done .site-loader { display: none !important; }
 <p class="section-desc">상담 단계에서 범위를 과하게 키우지 않고, 현재 필요한 결과물부터 먼저 정리합니다.</p>
 </div>
 <figure class="process-visual-strip site-visual-frame">
-<img alt="리서치부터 런칭까지 이어지는 NOVAWORK 작업 프로세스" decoding="async" loading="lazy" src="./assets/visual-process-flow.webp" width="1440" height="810"/>
+<img alt="리서치부터 런칭까지 이어지는 NOVAWORK 작업 프로세스" decoding="async" height="810" loading="lazy" src="./assets/visual-process-flow.webp" width="1440"/>
 </figure>
 <div class="home-process-band">
 <article class="home-process-step"><span>STEP 01</span><h3>문제와 목적 분리</h3><p>대표 링크, 관리자 시스템, 기존 사이트 수정, 측정, AI 챗봇, 데이터 수집 중 어디에 해당하는지 먼저 나눕니다.</p></article>
@@ -1020,8 +411,16 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </section>
-
-<section class="section contact home-final-cta">
+<section aria-labelledby="nw-aftercare-title" class="section nw-aftercare-section">
+<div class="container">
+<div class="section-head"><p class="section-label">AFTERCARE</p><h2 class="section-title" id="nw-aftercare-title">제작 후에도 이어갈 수 있는 작업</h2><p class="section-desc">공개 후 문구, 이미지, 링크, 전환 추적, 챗봇 답변 범위처럼 운영하면서 바뀌는 항목을 작업 범위에 따라 이어갈 수 있습니다.</p></div>
+<div class="nw-aftercare-grid">
+<article class="nw-aftercare-card"><h3>단건 수정</h3><p>가끔 수정이 필요한 경우에 적합합니다.</p><ul><li>문구 / 이미지 교체</li><li>버튼 링크 변경</li><li>간단한 CSS 수정</li></ul></article>
+<article class="nw-aftercare-card"><h3>월간 관리</h3><p>매달 콘텐츠가 바뀌는 경우에 적합합니다.</p><ul><li>공지 또는 이벤트 섹션 추가</li><li>버튼 / 폼 점검</li><li>작은 오류 대응</li></ul></article>
+<article class="nw-aftercare-card"><h3>성과 개선</h3><p>광고나 문의 전환을 보고 개선하는 경우에 적합합니다.</p><ul><li>GA4/GTM 이벤트 추가</li><li>CTA 문구/위치 개선</li><li>랜딩 섹션 수정</li></ul></article>
+</div>
+</div>
+</section><section class="section contact home-final-cta">
 <div class="container">
 <div class="contact-box cta-band">
 <div class="section-head">
@@ -1031,17 +430,12 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 <a class="btn btn-primary" href="contact.html">프로젝트 접수하기</a>
 <figure class="home-final-cta-visual site-visual-frame">
-<img alt="문의 접수와 상담 화면을 보여주는 NOVAWORK 컨택트 이미지" decoding="async" loading="lazy" src="./assets/visual-contact-cta.webp" width="1440" height="810"/>
+<img alt="문의 접수와 상담 화면을 보여주는 NOVAWORK 컨택트 이미지" decoding="async" height="810" loading="lazy" src="./assets/visual-contact-cta.webp" width="1440"/>
 </figure>
 </div>
 </div>
 </section>
-
 </main>
-<nav class="mobile-quick-cta" aria-label="모바일 빠른 문의">
-  <a class="mobile-quick-cta__item" data-mobile-cta="kakao" href="https://pf.kakao.com/_xhDLjX?from=mobile-quick" target="_blank" rel="noopener noreferrer" aria-label="NOVAWORK 카카오톡 채널로 문의하기"><span>카카오톡</span></a>
-  <a class="mobile-quick-cta__item mobile-quick-cta__primary" data-mobile-cta="contact" href="contact.html" aria-label="NOVAWORK 프로젝트 접수하기"><span>접수하기</span></a>
-</nav>
 <footer class="footer">
 <div class="container">
 <div class="footer-top">
@@ -1061,7 +455,7 @@ html.site-reveal-done .site-loader { display: none !important; }
 <a href="index.html">홈</a>
 <a href="about.html">회사소개</a>
 <a href="services.html">서비스</a>
-<a href="faq.html">FAQ</a>
+<a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
 <a href="contact.html">접수하기</a>
 <a href="privacy.html">개인정보처리방침</a>
 </nav>
@@ -1072,8 +466,10 @@ html.site-reveal-done .site-loader { display: none !important; }
 </div>
 </div>
 </footer>
-<script src="./js/modules/logo-scroll-hero.js?v=v43-cleanup-contact-20260607"></script>
-<script src="./js/modules/site-reveal.js?v=v43-cleanup-contact-20260607"></script>
-<script src="./js/site-core.js?v=v43-cleanup-contact-20260607"></script>
+<script src="./js/modules/logo-scroll-hero.js?v=v55-enhance-v11-20260609"></script>
+<script src="./js/modules/site-reveal.js?v=v55-enhance-v11-20260609"></script>
+<script src="./js/site-core/01-core-ui.js?v=v55-enhance-v11-20260609"></script>
+<script src="./js/site-core/02-enhance-v7-smooth-scroll.js?v=v55-enhance-v11-20260609"></script>
+<script src="./js/site-core/03-enhance-v8-faq-search.js?v=v55-enhance-v11-20260609"></script>
 </body>
 </html>
