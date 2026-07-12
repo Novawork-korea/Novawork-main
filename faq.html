@@ -1,509 +1,1113 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="ko">
-<head>
-<meta charset="utf-8"/>
-<script id="nw-route-transition-boot" src="./js/boot/route-transition-boot.js?v=v55-enhance-v11-20260609"></script>
-<link href="./css/critical/route-transition.css?v=v55-enhance-v11-20260609" id="nw-route-transition-critical" rel="stylesheet"/>
-<!-- Google Tag Manager -->
-<script>
-(function(w,d,l,i){
-  w[l]=w[l]||[];
-  w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-  var loaded=false;
-  function loadGTM(){
-    if(loaded) return;
-    loaded=true;
-    var f=d.getElementsByTagName('script')[0];
-    var j=d.createElement('script');
-    j.async=true;
-    j.src='https://www.googletagmanager.com/gtm.js?id='+i;
-    f.parentNode.insertBefore(j,f);
-  }
-  if('requestIdleCallback' in w){w.requestIdleCallback(loadGTM,{timeout:3200});}
-  else{w.setTimeout(loadGTM,2200);}
-  w.addEventListener('pointerdown',loadGTM,{once:true,passive:true});
-  w.addEventListener('keydown',loadGTM,{once:true});
-})(window,document,'dataLayer','GTM-MSVM26W9');
-</script>
-<!-- End Google Tag Manager -->
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>FAQ | NOVAWORK</title>
-<meta content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다." name="description"/>
-<meta content="index,follow" name="robots"/>
-<meta content="#050505" name="theme-color"/>
-<link href="https://novawork.kr/faq.html" rel="canonical"/>
-<link href="./assets/favicon.png" rel="icon" type="image/png"/>
-<link href="./assets/favicon-180.png" rel="apple-touch-icon"/>
-<meta content="website" property="og:type"/>
-<meta content="ko_KR" property="og:locale"/>
-<meta content="NOVAWORK" property="og:site_name"/>
-<meta content="FAQ | NOVAWORK" property="og:title"/>
-<meta content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다." property="og:description"/>
-<meta content="https://novawork.kr/faq.html" property="og:url"/>
-<meta content="https://novawork.kr/assets/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="image/png" property="og:image:type"/>
-<meta content="summary_large_image" name="twitter:card"/>
-<meta content="FAQ | NOVAWORK" name="twitter:title"/>
-<meta content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다." name="twitter:description"/>
-<meta content="https://novawork.kr/assets/og-image.png" name="twitter:image"/>
-<script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "어떤 서비스로 접수해야 할지 모르겠으면 어떻게 하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "정확한 서비스명을 고르지 않아도 됩니다. 현재 문제, 원하는 결과, 운영 중인 사이트 URL, 참고 자료를 남겨주시면 홈페이지 제작, 랜딩페이지, 웹시스템, 수정, GA4/GTM, AI 챗봇, 데이터 수집 중 맞는 범위로 정리해드립니다."
+  <head>
+    <meta charset="utf-8" />
+    <script
+      id="nw-route-transition-boot"
+      src="./js/boot/route-transition-boot.js?v=v90-motion-full-20260712"
+    ></script>
+    <link
+      href="./css/critical/route-transition.css?v=v90-motion-full-20260712"
+      id="nw-route-transition-critical"
+      rel="stylesheet"
+    />
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var loaded = false;
+        function loadGTM() {
+          if (loaded) return;
+          loaded = true;
+          var f = d.getElementsByTagName("script")[0];
+          var j = d.createElement("script");
+          j.async = true;
+          j.src = "https://www.googletagmanager.com/gtm.js?id=" + i;
+          f.parentNode.insertBefore(j, f);
+        }
+        if ("requestIdleCallback" in w) {
+          w.requestIdleCallback(loadGTM, { timeout: 3200 });
+        } else {
+          w.setTimeout(loadGTM, 2200);
+        }
+        w.addEventListener("pointerdown", loadGTM, {
+          once: true,
+          passive: true,
+        });
+        w.addEventListener("keydown", loadGTM, { once: true });
+      })(window, document, "dataLayer", "GTM-MSVM26W9");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>FAQ | NOVAWORK</title>
+    <meta
+      content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다."
+      name="description"
+    />
+    <meta content="index,follow" name="robots" />
+    <meta content="#050505" name="theme-color" />
+    <link href="https://novawork.kr/faq.html" rel="canonical" />
+    <link href="./assets/favicon.png" rel="icon" type="image/png" />
+    <link href="./assets/favicon-180.png" rel="apple-touch-icon" />
+    <meta content="website" property="og:type" />
+    <meta content="ko_KR" property="og:locale" />
+    <meta content="NOVAWORK" property="og:site_name" />
+    <meta content="FAQ | NOVAWORK" property="og:title" />
+    <meta
+      content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다."
+      property="og:description"
+    />
+    <meta content="https://novawork.kr/faq.html" property="og:url" />
+    <meta
+      content="https://novawork.kr/assets/og-image.png"
+      property="og:image"
+    />
+    <meta content="1200" property="og:image:width" />
+    <meta content="630" property="og:image:height" />
+    <meta content="image/png" property="og:image:type" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="FAQ | NOVAWORK" name="twitter:title" />
+    <meta
+      content="NOVAWORK의 홈페이지 제작, React·Firebase 웹시스템, 유지보수, GA4/GTM, GPT 챗봇, 웹 데이터 수집 FAQ입니다."
+      name="twitter:description"
+    />
+    <meta
+      content="https://novawork.kr/assets/og-image.png"
+      name="twitter:image"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "어떤 서비스로 접수해야 할지 모르겠으면 어떻게 하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "정확한 서비스명을 고르지 않아도 됩니다. 현재 문제, 원하는 결과, 운영 중인 사이트 URL, 참고 자료를 남겨주시면 홈페이지 제작, 랜딩페이지, 웹시스템, 수정, GA4/GTM, AI 챗봇, 데이터 수집 중 맞는 범위로 정리해드립니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "기획이 아직 정리되지 않았어도 접수할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 처음에는 목표, 대상 고객, 필요한 화면, 문의 동선부터 정리합니다. 다만 실제 착수 전에는 화면 수, 기능 범위, 준비 자료, 완료 기준을 확정해야 일정과 비용이 안정적입니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "작업은 어떤 순서로 진행되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "접수 내용을 확인한 뒤 범위와 가능 여부를 먼저 안내합니다. 이후 자료 확인, 견적·일정 확정, 제작 또는 수정, 중간 확인, 최종 검수, 배포 또는 파일 전달 순서로 진행합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "저렴한 템플릿 제작과 NOVAWORK 작업은 무엇이 다른가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "템플릿 제작은 빠르게 공개하는 데 유리하지만 구조 변경과 추적 세팅에 제한이 있을 수 있습니다. NOVAWORK는 작업 범위에 따라 직접 코딩, 기존 사이트 수정, 문의 동선, GA4/GTM 이벤트, 운영 기준까지 구분해 안내합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "제작 후 제가 직접 수정할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "정적 코드 기반 결과물은 직접 수정이 가능하지만 HTML/CSS 이해가 필요합니다. 직접 수정이 필요한 경우 작업 전 운영 방식에 맞춰 안내드립니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "소스 파일은 받을 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "직접 제작한 정적 페이지와 합의된 산출물은 전달 가능합니다. 외부 빌더, 유료 테마, 플러그인, API 계정은 각 서비스 정책에 따라 전달 범위가 달라집니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "기존 사이트를 보고 개선점만 진단받을 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 모바일 깨짐, 문의 동선, CTA, 속도, GA4/GTM, SEO 기초 항목을 기준으로 점검 범위를 나눌 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "디자인 시안도 먼저 볼 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "작업 범위에 따라 와이어프레임, 섹션 구조안, 이미지 시안, 테스트 링크 중 적합한 방식으로 공유합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "광고 성과나 검색 순위를 보장하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "광고 성과와 검색 순위는 보장하지 않습니다. 다만 문의 동선, 페이지 구조, 기본 SEO, 전환 추적처럼 성과를 확인하고 개선하기 위한 기반은 작업 범위에 따라 구축할 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "작업 전에 꼭 준비해야 하는 자료가 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "현재 사이트 URL, 원하는 결과, 참고 사이트, 로고와 이미지, 주요 문구, 도메인/호스팅 정보, 측정하고 싶은 버튼 목록이 있으면 견적과 일정 확인이 빨라집니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "견적은 어떤 기준으로 달라지나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "페이지 수, 섹션 수, 입력폼·로그인·관리자 기능, 외부 서비스 연동, 데이터 구조, 자료 준비 상태, 긴급 여부에 따라 달라집니다. 단순 수정과 신규 웹시스템 개발은 산정 기준이 다릅니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "정확한 견적을 받으려면 무엇을 보내야 하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "현재 사이트 또는 참고 사이트 URL, 필요한 기능, 원하는 페이지 수, 준비된 로고·이미지·문구, 희망 일정, 예산 범위를 보내주시면 견적 범위를 더 빠르게 좁힐 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "예산이 정해져 있지 않아도 문의할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 예산이 미정이면 필수 기능과 선택 기능을 나누고, 우선 제작해야 할 범위부터 제안합니다. 단, 확정 견적은 실제 작업 범위가 정리된 뒤 안내드립니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "작업 기간은 보통 얼마나 걸리나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "간단한 문구·링크·반응형 수정은 범위 확인 후 빠르게 처리할 수 있습니다. 홈페이지·랜딩페이지는 화면 수와 자료 준비 상태에 따라 달라지며, React·Firebase 웹시스템은 데이터 구조와 관리자 기능 확정 후 일정을 안내합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "급한 작업도 가능한가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능 여부를 먼저 확인합니다. 긴급 작업은 범위를 작게 나누어 핵심 문제부터 처리하는 방식이 안정적입니다. 기존 코드 구조나 계정 권한 확인이 필요한 경우 즉시 착수가 어려울 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "자료 전달이 늦어지면 일정은 어떻게 되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "필수 자료가 늦어지면 제작 일정도 함께 조정될 수 있습니다. 일정이 중요한 작업은 착수 전에 필요한 문구, 이미지, 계정 권한, 참고 자료를 먼저 정리하는 것을 권장합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "홈페이지 제작에는 무엇이 포함되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "메인 메시지, 서비스 소개 섹션, 문의 버튼, PC·모바일 반응형, 기본 메타태그, 공유 이미지 설정, 폼 또는 외부 문의 동선 연결처럼 방문자가 정보를 보고 문의하기까지 필요한 흐름을 구성합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "디자인 시안 없이도 제작이 가능한가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 참고 사이트, 브랜드 색감, 필요한 섹션, 문구 방향을 기준으로 화면 구조를 잡습니다. 이미 보유한 Figma, 이미지 시안, 브랜드 가이드가 있다면 그 기준에 맞춰 구현할 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "기존 사이트를 유지하면서 일부만 개선할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 다만 기존 코드 구조, 사용 중인 빌더·테마·플러그인, 배포 방식에 따라 수정 가능 범위가 달라집니다. 먼저 파일 구조와 권한 확인이 필요합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "랜딩페이지는 홈페이지와 무엇이 다른가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "랜딩페이지는 특정 광고, 상품, 이벤트, 상담 접수처럼 하나의 전환 목표에 집중합니다. 메뉴가 많은 일반 홈페이지보다 메시지, 혜택, 신뢰 요소, 문의 버튼 흐름을 더 압축적으로 설계합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "랜딩페이지에 문의폼이나 카카오톡 버튼을 넣을 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 문의폼, 전화, 이메일, 카카오톡 채널, 외부 예약 링크 등 필요한 전환 동선을 연결할 수 있습니다. 폼 저장 방식이나 수신 방식은 착수 전에 확인합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "광고용 랜딩페이지 전환 추적도 같이 가능한가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "작업 범위에 포함하면 GA4/GTM 이벤트, 전화·카카오톡·폼 제출 클릭 추적, 광고 계정 연동 준비를 함께 점검할 수 있습니다. 광고 성과나 검색 순위 자체를 보장하지는 않습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "유지보수만 따로 맡길 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 기존 사이트 구조를 확인한 뒤 정기 유지관리와 단발성 수정 중 적합한 방식으로 안내합니다. 외부 빌더나 테마 기반 사이트는 수정 가능 범위 확인이 먼저 필요합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "유지관리에는 어떤 작업이 포함될 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "문구·이미지 교체, 버튼 링크 수정, 섹션 추가, 간단한 스타일 조정, 반응형 깨짐 확인, 추적 코드 점검, 문의 동선 확인 등이 포함될 수 있습니다. 신규 기능 개발은 별도 범위입니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "운영 중 오류가 발생하면 바로 수정할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "사이트 내부 코드나 설정 문제는 확인할 수 있습니다. 다만 호스팅 장애, 외부 API 장애, 카카오·Google 같은 타사 서비스 장애는 직접 수정이 아니라 원인 분리와 대응 안내 중심으로 진행됩니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "수정 요청은 어디까지 포함되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "합의된 작업 범위 안에서 오탈자, 여백, 문구, 이미지 교체, 버튼 링크, 반응형 깨짐 같은 항목은 검수 단계에서 반영합니다. 새로운 페이지나 기능 추가는 별도 범위로 판단합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "작업 완료 후 오류 확인 기간이 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "홈페이지 제작, 수정, GA4/GTM, AI 챗봇, 크롤링은 보통 납품 후 7일 이내 작업 범위 내 오류를 확인합니다. React·Firebase 웹시스템은 최종 납품 후 14일 이내 기능 오류 확인을 기준으로 안내합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "검수는 어떤 기준으로 하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "PC와 모바일 화면, 주요 버튼 링크, 문의폼 제출 흐름, 반응형 깨짐, 콘솔 오류, 이미지 경로, 메타 정보, 합의된 기능 동작을 중심으로 확인합니다. 브라우저 범위는 작업 전 협의합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "작업을 빨리 시작하려면 어떤 자료가 필요하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "운영 중인 사이트 URL, 원하는 결과, 참고 사이트, 로고·이미지·문구, 도메인·호스팅·관리자 계정 권한, 문의폼 수신 방식, 측정하려는 버튼 목록을 준비하면 확인 속도가 빨라집니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "문구를 직접 작성하지 못해도 되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "기본 방향과 핵심 정보가 있으면 문구 구조를 함께 정리할 수 있습니다. 다만 업종별 법적 고지, 가격, 정책, 전문 용어의 최종 정확성은 의뢰인이 확인해야 합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "이미지나 로고가 없으면 어떻게 하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "보유 자료가 없으면 텍스트 중심 구조로 먼저 제작하거나, 사용 가능한 기본 이미지 방향을 제안할 수 있습니다. 유료 이미지 구매, 촬영, 일러스트 제작은 별도 범위입니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "도메인·호스팅·배포도 같이 진행할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능한 범위 안에서 안내할 수 있습니다. 도메인 소유권, 호스팅 계정, DNS, 외부 플랫폼 권한은 의뢰인 계정 기준으로 진행하며 필요한 권한을 먼저 확인해야 합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "기존 도메인을 새 사이트에 연결할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "대부분 가능합니다. 다만 현재 도메인이 어디에서 관리되는지, DNS 권한이 있는지, 기존 메일이나 다른 서비스와 연결되어 있는지 확인해야 안전하게 이전할 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "호스팅은 어떤 것을 사용하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "정적 홈페이지, React 앱, Firebase 기반 시스템, 기존 호스팅 수정 등 작업 구조에 따라 다릅니다. 유지 비용, 배포 방식, 관리자 접근 권한을 고려해 적합한 방식을 안내합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "SEO도 같이 되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "기본 메타태그, 제목 구조, 설명 문구, OG 이미지, 사이트맵, robots.txt 같은 기초 항목은 작업 범위에 따라 반영할 수 있습니다. 검색 순위 보장이나 대규모 콘텐츠 SEO 운영은 별도 영역입니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "네이버나 구글 검색에 바로 노출되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "사이트가 공개되고 검색 엔진이 수집할 수 있는 구조라면 노출 준비를 할 수 있습니다. 다만 실제 색인 시점과 검색 순위는 검색 엔진 정책, 콘텐츠 품질, 도메인 상태에 영향을 받습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "기존 사이트의 검색 노출이 떨어지지 않게 할 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "URL 구조, 제목, 설명, 기존 페이지 삭제 여부, 리디렉션, 사이트맵을 확인해 위험을 줄일 수 있습니다. 다만 개편 후 검색 성과 변동을 완전히 보장할 수는 없습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "계약이나 결제는 언제 진행하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "작업 범위, 일정, 산출물, 검수 기준을 확인한 뒤 진행합니다. 소규모 수정과 신규 제작은 진행 방식이 다를 수 있으며, 확정 전에는 비용과 포함 범위를 먼저 안내합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "작업 중 범위가 늘어나면 어떻게 하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "처음 합의한 범위를 기준으로 진행합니다. 새로운 페이지, 기능, 외부 연동, 추가 검수 범위가 생기면 일정과 비용을 별도로 안내한 뒤 반영 여부를 결정합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "세금계산서나 증빙 발행이 가능한가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "거래 방식에 따라 가능한 증빙을 안내합니다. 필요한 증빙 종류, 사업자 정보, 결제 일정을 접수 단계에서 함께 남겨주시면 확인이 빠릅니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "진행이 어려운 작업도 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "불법 수집, 개인정보·민감정보 무단 처리, 캡차·차단 우회, 타사 서비스 정책 위반, 저작권 침해 가능성이 있는 작업, 계정 권한이 확인되지 않는 작업은 진행하지 않습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "웹 데이터 크롤링은 모든 사이트가 가능한가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "아닙니다. 공개 웹페이지의 구조화된 목록 데이터가 대상입니다. 로그인 필요 데이터, 유료 데이터, 개인정보·민감정보, 캡차·봇 차단 우회, 사이트 정책 위반 가능성이 있는 수집은 진행하지 않습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "AI 챗봇 답변의 정확도는 보장되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "AI는 상담 응답 보조 도구이므로 100% 정확도를 보장하지 않습니다. 답변 범위, 금지 답변, 사람에게 넘길 조건, 검수 기준을 설계해 운영 리스크를 줄이는 방향으로 진행합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "접수 후 언제 연락을 받을 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "접수 내용을 확인한 뒤 24시간 내 1차 답변을 기준으로 안내합니다. 내용이 부족하면 추가 질문을 먼저 드리고, 범위가 명확하면 예상 일정과 다음 단계를 안내합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "접수 후 바로 결제가 필요한가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "바로 결제부터 진행하지 않습니다. 먼저 가능 여부, 작업 범위, 필요한 자료, 일정, 비용을 확인합니다. 이후 진행 방식이 확정되면 계약 또는 결제 절차를 안내합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "접수 내용을 수정하거나 추가 자료를 보낼 수 있나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "가능합니다. 접수 후 추가 자료가 생기면 이메일, 카카오톡, 기존 상담 채널로 보내주시면 됩니다. 단, 추가 자료로 작업 범위가 커지는 경우 일정과 비용이 조정될 수 있습니다."
+            }
+          }
+        ]
       }
-    },
-    {
-      "@type": "Question",
-      "name": "기획이 아직 정리되지 않았어도 접수할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 처음에는 목표, 대상 고객, 필요한 화면, 문의 동선부터 정리합니다. 다만 실제 착수 전에는 화면 수, 기능 범위, 준비 자료, 완료 기준을 확정해야 일정과 비용이 안정적입니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "작업은 어떤 순서로 진행되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "접수 내용을 확인한 뒤 범위와 가능 여부를 먼저 안내합니다. 이후 자료 확인, 견적·일정 확정, 제작 또는 수정, 중간 확인, 최종 검수, 배포 또는 파일 전달 순서로 진행합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "저렴한 템플릿 제작과 NOVAWORK 작업은 무엇이 다른가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "템플릿 제작은 빠르게 공개하는 데 유리하지만 구조 변경과 추적 세팅에 제한이 있을 수 있습니다. NOVAWORK는 작업 범위에 따라 직접 코딩, 기존 사이트 수정, 문의 동선, GA4/GTM 이벤트, 운영 기준까지 구분해 안내합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "제작 후 제가 직접 수정할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "정적 코드 기반 결과물은 직접 수정이 가능하지만 HTML/CSS 이해가 필요합니다. 직접 수정이 필요한 경우 작업 전 운영 방식에 맞춰 안내드립니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "소스 파일은 받을 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "직접 제작한 정적 페이지와 합의된 산출물은 전달 가능합니다. 외부 빌더, 유료 테마, 플러그인, API 계정은 각 서비스 정책에 따라 전달 범위가 달라집니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "기존 사이트를 보고 개선점만 진단받을 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 모바일 깨짐, 문의 동선, CTA, 속도, GA4/GTM, SEO 기초 항목을 기준으로 점검 범위를 나눌 수 있습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "디자인 시안도 먼저 볼 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "작업 범위에 따라 와이어프레임, 섹션 구조안, 이미지 시안, 테스트 링크 중 적합한 방식으로 공유합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "광고 성과나 검색 순위를 보장하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "광고 성과와 검색 순위는 보장하지 않습니다. 다만 문의 동선, 페이지 구조, 기본 SEO, 전환 추적처럼 성과를 확인하고 개선하기 위한 기반은 작업 범위에 따라 구축할 수 있습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "작업 전에 꼭 준비해야 하는 자료가 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "현재 사이트 URL, 원하는 결과, 참고 사이트, 로고와 이미지, 주요 문구, 도메인/호스팅 정보, 측정하고 싶은 버튼 목록이 있으면 견적과 일정 확인이 빨라집니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "견적은 어떤 기준으로 달라지나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "페이지 수, 섹션 수, 입력폼·로그인·관리자 기능, 외부 서비스 연동, 데이터 구조, 자료 준비 상태, 긴급 여부에 따라 달라집니다. 단순 수정과 신규 웹시스템 개발은 산정 기준이 다릅니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "정확한 견적을 받으려면 무엇을 보내야 하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "현재 사이트 또는 참고 사이트 URL, 필요한 기능, 원하는 페이지 수, 준비된 로고·이미지·문구, 희망 일정, 예산 범위를 보내주시면 견적 범위를 더 빠르게 좁힐 수 있습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "예산이 정해져 있지 않아도 문의할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 예산이 미정이면 필수 기능과 선택 기능을 나누고, 우선 제작해야 할 범위부터 제안합니다. 단, 확정 견적은 실제 작업 범위가 정리된 뒤 안내드립니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "작업 기간은 보통 얼마나 걸리나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "간단한 문구·링크·반응형 수정은 범위 확인 후 빠르게 처리할 수 있습니다. 홈페이지·랜딩페이지는 화면 수와 자료 준비 상태에 따라 달라지며, React·Firebase 웹시스템은 데이터 구조와 관리자 기능 확정 후 일정을 안내합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "급한 작업도 가능한가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능 여부를 먼저 확인합니다. 긴급 작업은 범위를 작게 나누어 핵심 문제부터 처리하는 방식이 안정적입니다. 기존 코드 구조나 계정 권한 확인이 필요한 경우 즉시 착수가 어려울 수 있습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "자료 전달이 늦어지면 일정은 어떻게 되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "필수 자료가 늦어지면 제작 일정도 함께 조정될 수 있습니다. 일정이 중요한 작업은 착수 전에 필요한 문구, 이미지, 계정 권한, 참고 자료를 먼저 정리하는 것을 권장합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "홈페이지 제작에는 무엇이 포함되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "메인 메시지, 서비스 소개 섹션, 문의 버튼, PC·모바일 반응형, 기본 메타태그, 공유 이미지 설정, 폼 또는 외부 문의 동선 연결처럼 방문자가 정보를 보고 문의하기까지 필요한 흐름을 구성합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "디자인 시안 없이도 제작이 가능한가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 참고 사이트, 브랜드 색감, 필요한 섹션, 문구 방향을 기준으로 화면 구조를 잡습니다. 이미 보유한 Figma, 이미지 시안, 브랜드 가이드가 있다면 그 기준에 맞춰 구현할 수 있습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "기존 사이트를 유지하면서 일부만 개선할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 다만 기존 코드 구조, 사용 중인 빌더·테마·플러그인, 배포 방식에 따라 수정 가능 범위가 달라집니다. 먼저 파일 구조와 권한 확인이 필요합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "랜딩페이지는 홈페이지와 무엇이 다른가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "랜딩페이지는 특정 광고, 상품, 이벤트, 상담 접수처럼 하나의 전환 목표에 집중합니다. 메뉴가 많은 일반 홈페이지보다 메시지, 혜택, 신뢰 요소, 문의 버튼 흐름을 더 압축적으로 설계합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "랜딩페이지에 문의폼이나 카카오톡 버튼을 넣을 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 문의폼, 전화, 이메일, 카카오톡 채널, 외부 예약 링크 등 필요한 전환 동선을 연결할 수 있습니다. 폼 저장 방식이나 수신 방식은 착수 전에 확인합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "광고용 랜딩페이지 전환 추적도 같이 가능한가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "작업 범위에 포함하면 GA4/GTM 이벤트, 전화·카카오톡·폼 제출 클릭 추적, 광고 계정 연동 준비를 함께 점검할 수 있습니다. 광고 성과나 검색 순위 자체를 보장하지는 않습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "유지보수만 따로 맡길 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 기존 사이트 구조를 확인한 뒤 정기 유지관리와 단발성 수정 중 적합한 방식으로 안내합니다. 외부 빌더나 테마 기반 사이트는 수정 가능 범위 확인이 먼저 필요합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "유지관리에는 어떤 작업이 포함될 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "문구·이미지 교체, 버튼 링크 수정, 섹션 추가, 간단한 스타일 조정, 반응형 깨짐 확인, 추적 코드 점검, 문의 동선 확인 등이 포함될 수 있습니다. 신규 기능 개발은 별도 범위입니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "운영 중 오류가 발생하면 바로 수정할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "사이트 내부 코드나 설정 문제는 확인할 수 있습니다. 다만 호스팅 장애, 외부 API 장애, 카카오·Google 같은 타사 서비스 장애는 직접 수정이 아니라 원인 분리와 대응 안내 중심으로 진행됩니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "수정 요청은 어디까지 포함되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "합의된 작업 범위 안에서 오탈자, 여백, 문구, 이미지 교체, 버튼 링크, 반응형 깨짐 같은 항목은 검수 단계에서 반영합니다. 새로운 페이지나 기능 추가는 별도 범위로 판단합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "작업 완료 후 오류 확인 기간이 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "홈페이지 제작, 수정, GA4/GTM, AI 챗봇, 크롤링은 보통 납품 후 7일 이내 작업 범위 내 오류를 확인합니다. React·Firebase 웹시스템은 최종 납품 후 14일 이내 기능 오류 확인을 기준으로 안내합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "검수는 어떤 기준으로 하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "PC와 모바일 화면, 주요 버튼 링크, 문의폼 제출 흐름, 반응형 깨짐, 콘솔 오류, 이미지 경로, 메타 정보, 합의된 기능 동작을 중심으로 확인합니다. 브라우저 범위는 작업 전 협의합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "작업을 빨리 시작하려면 어떤 자료가 필요하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "운영 중인 사이트 URL, 원하는 결과, 참고 사이트, 로고·이미지·문구, 도메인·호스팅·관리자 계정 권한, 문의폼 수신 방식, 측정하려는 버튼 목록을 준비하면 확인 속도가 빨라집니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "문구를 직접 작성하지 못해도 되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "기본 방향과 핵심 정보가 있으면 문구 구조를 함께 정리할 수 있습니다. 다만 업종별 법적 고지, 가격, 정책, 전문 용어의 최종 정확성은 의뢰인이 확인해야 합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "이미지나 로고가 없으면 어떻게 하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "보유 자료가 없으면 텍스트 중심 구조로 먼저 제작하거나, 사용 가능한 기본 이미지 방향을 제안할 수 있습니다. 유료 이미지 구매, 촬영, 일러스트 제작은 별도 범위입니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "도메인·호스팅·배포도 같이 진행할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능한 범위 안에서 안내할 수 있습니다. 도메인 소유권, 호스팅 계정, DNS, 외부 플랫폼 권한은 의뢰인 계정 기준으로 진행하며 필요한 권한을 먼저 확인해야 합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "기존 도메인을 새 사이트에 연결할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "대부분 가능합니다. 다만 현재 도메인이 어디에서 관리되는지, DNS 권한이 있는지, 기존 메일이나 다른 서비스와 연결되어 있는지 확인해야 안전하게 이전할 수 있습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "호스팅은 어떤 것을 사용하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "정적 홈페이지, React 앱, Firebase 기반 시스템, 기존 호스팅 수정 등 작업 구조에 따라 다릅니다. 유지 비용, 배포 방식, 관리자 접근 권한을 고려해 적합한 방식을 안내합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "SEO도 같이 되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "기본 메타태그, 제목 구조, 설명 문구, OG 이미지, 사이트맵, robots.txt 같은 기초 항목은 작업 범위에 따라 반영할 수 있습니다. 검색 순위 보장이나 대규모 콘텐츠 SEO 운영은 별도 영역입니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "네이버나 구글 검색에 바로 노출되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "사이트가 공개되고 검색 엔진이 수집할 수 있는 구조라면 노출 준비를 할 수 있습니다. 다만 실제 색인 시점과 검색 순위는 검색 엔진 정책, 콘텐츠 품질, 도메인 상태에 영향을 받습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "기존 사이트의 검색 노출이 떨어지지 않게 할 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "URL 구조, 제목, 설명, 기존 페이지 삭제 여부, 리디렉션, 사이트맵을 확인해 위험을 줄일 수 있습니다. 다만 개편 후 검색 성과 변동을 완전히 보장할 수는 없습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "계약이나 결제는 언제 진행하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "작업 범위, 일정, 산출물, 검수 기준을 확인한 뒤 진행합니다. 소규모 수정과 신규 제작은 진행 방식이 다를 수 있으며, 확정 전에는 비용과 포함 범위를 먼저 안내합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "작업 중 범위가 늘어나면 어떻게 하나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "처음 합의한 범위를 기준으로 진행합니다. 새로운 페이지, 기능, 외부 연동, 추가 검수 범위가 생기면 일정과 비용을 별도로 안내한 뒤 반영 여부를 결정합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "세금계산서나 증빙 발행이 가능한가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "거래 방식에 따라 가능한 증빙을 안내합니다. 필요한 증빙 종류, 사업자 정보, 결제 일정을 접수 단계에서 함께 남겨주시면 확인이 빠릅니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "진행이 어려운 작업도 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "불법 수집, 개인정보·민감정보 무단 처리, 캡차·차단 우회, 타사 서비스 정책 위반, 저작권 침해 가능성이 있는 작업, 계정 권한이 확인되지 않는 작업은 진행하지 않습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "웹 데이터 크롤링은 모든 사이트가 가능한가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "아닙니다. 공개 웹페이지의 구조화된 목록 데이터가 대상입니다. 로그인 필요 데이터, 유료 데이터, 개인정보·민감정보, 캡차·봇 차단 우회, 사이트 정책 위반 가능성이 있는 수집은 진행하지 않습니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "AI 챗봇 답변의 정확도는 보장되나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "AI는 상담 응답 보조 도구이므로 100% 정확도를 보장하지 않습니다. 답변 범위, 금지 답변, 사람에게 넘길 조건, 검수 기준을 설계해 운영 리스크를 줄이는 방향으로 진행합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "접수 후 언제 연락을 받을 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "접수 내용을 확인한 뒤 24시간 내 1차 답변을 기준으로 안내합니다. 내용이 부족하면 추가 질문을 먼저 드리고, 범위가 명확하면 예상 일정과 다음 단계를 안내합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "접수 후 바로 결제가 필요한가요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "바로 결제부터 진행하지 않습니다. 먼저 가능 여부, 작업 범위, 필요한 자료, 일정, 비용을 확인합니다. 이후 진행 방식이 확정되면 계약 또는 결제 절차를 안내합니다."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "접수 내용을 수정하거나 추가 자료를 보낼 수 있나요?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "가능합니다. 접수 후 추가 자료가 생기면 이메일, 카카오톡, 기존 상담 채널로 보내주시면 됩니다. 단, 추가 자료로 작업 범위가 커지는 경우 일정과 비용이 조정될 수 있습니다."
-      }
-    }
-  ]
-}</script>
-<link href="./css/site-base.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
-</head>
-<body class="faq-static-page">
-<!-- Google Tag Manager (noscript) -->
-<noscript>
-<iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-MSVM26W9" style="display:none;visibility:hidden" width="0"></iframe>
-</noscript>
-<!-- End Google Tag Manager (noscript) -->
-<a class="skip-link" href="#main">본문 바로가기</a>
-<header class="header">
-<div class="container">
-<div class="header-inner">
-<a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></a>
-<nav aria-label="주요 메뉴" class="nav">
-<ul class="nav-list">
-<li><a class="nav-link" href="about.html">회사소개</a></li>
-<li><a class="nav-link" href="services.html">서비스</a></li>
-<li><a class="nav-link" href="portfolio.html">포트폴리오</a></li><li><a class="nav-link" href="faq.html">FAQ</a></li>
-</ul>
-</nav>
-<div class="header-actions">
-<a class="btn btn-small btn-secondary header-cta" href="contact.html">접수하기</a>
-<button aria-controls="mobile-menu" aria-expanded="false" aria-label="모바일 메뉴 열기" class="menu-toggle" type="button">
-<span></span>
-<span></span>
-<span></span>
-</button>
-</div>
-</div>
-</div>
-<div aria-label="모바일 메뉴" aria-modal="true" class="mobile-menu" id="mobile-menu" role="dialog">
-<div class="mobile-menu-panel">
-<ul class="mobile-menu-list"><li><a href="about.html">회사소개</a></li><li><a href="services.html">서비스</a></li><li><a href="portfolio.html">포트폴리오</a></li><li><a href="faq.html">FAQ</a></li></ul>
-<div aria-label="대표 서비스 바로가기" class="mobile-menu-shortcuts">
-<p>대표 서비스</p>
-<div class="mobile-menu-shortcut-grid">
-<a href="service-homepage-landing.html">홈페이지</a>
-<a href="service-react-firebase-admin.html">웹시스템</a>
-<a href="service-homepage-fix.html">오류 수정</a>
-<a href="service-ga4-gtm.html">GA4/GTM</a>
-<a href="service-gpt-ai-chatbot.html">AI 챗봇</a>
-<a href="service-web-crawling.html">크롤링</a>
-</div>
-</div><a class="btn btn-primary mobile-menu-cta" href="contact.html">접수하기</a>
-</div>
-</div>
-</header>
-<main id="main" tabindex="-1">
-<section class="page-hero page-hero-with-visual"><div class="container"><div class="page-hero-grid"><div class="section-head"><p class="section-label">FAQ</p><h1 class="section-title">서비스 선택 전에 헷갈리는 부분을 먼저 정리했습니다.</h1><p class="section-desc">각 서비스는 작업 목적, 준비 자료, 수정 기준, 제외 범위가 다릅니다. 문의 전 자주 묻는 내용을 기준으로 확인해 보세요.</p><div aria-label="FAQ 안내" class="page-hero-points"><span>서비스 선택</span><span>비용·일정</span><span>수정·오류 확인</span></div></div><figure class="page-hero-visual"><img alt="리서치부터 런칭까지 이어지는 흑백 작업 프로세스 이미지" class="photo-real" decoding="async" fetchpriority="high" height="810" loading="eager" src="./assets/visual-process-flow.webp" width="1440"/></figure></div></div></section>
-<section class="section faq-section"><div class="container"><div class="section-head faq-category-head"><p class="section-label">PROCESS</p><h2 class="faq-category-title">기본 진행 방식</h2></div><div class="faq-list"><details class="faq-item" open=""><summary>어떤 서비스로 접수해야 할지 모르겠으면 어떻게 하나요?</summary><p>정확한 서비스명을 고르지 않아도 됩니다. 현재 문제, 원하는 결과, 운영 중인 사이트 URL, 참고 자료를 남겨주시면 홈페이지 제작, 랜딩페이지, 웹시스템, 수정, GA4/GTM, AI 챗봇, 데이터 수집 중 맞는 범위로 정리해드립니다.</p></details><details class="faq-item"><summary>기획이 아직 정리되지 않았어도 접수할 수 있나요?</summary><p>가능합니다. 처음에는 목표, 대상 고객, 필요한 화면, 문의 동선부터 정리합니다. 다만 실제 착수 전에는 화면 수, 기능 범위, 준비 자료, 완료 기준을 확정해야 일정과 비용이 안정적입니다.</p></details><details class="faq-item"><summary>작업은 어떤 순서로 진행되나요?</summary><p>접수 내용을 확인한 뒤 범위와 가능 여부를 먼저 안내합니다. 이후 자료 확인, 견적·일정 확정, 제작 또는 수정, 중간 확인, 최종 검수, 배포 또는 파일 전달 순서로 진행합니다.</p></details><details class="faq-item"><summary>저렴한 템플릿 제작과 NOVAWORK 작업은 무엇이 다른가요?</summary><p>템플릿 제작은 빠르게 공개하는 데 유리하지만 구조 변경과 추적 세팅에 제한이 있을 수 있습니다. NOVAWORK는 작업 범위에 따라 직접 코딩, 기존 사이트 수정, 문의 동선, GA4/GTM 이벤트, 운영 기준까지 구분해 안내합니다.</p></details><details class="faq-item"><summary>제작 후 제가 직접 수정할 수 있나요?</summary><p>정적 코드 기반 결과물은 직접 수정이 가능하지만 HTML/CSS 이해가 필요합니다. 직접 수정이 필요한 경우 작업 전 운영 방식에 맞춰 안내드립니다.</p></details><details class="faq-item"><summary>소스 파일은 받을 수 있나요?</summary><p>직접 제작한 정적 페이지와 합의된 산출물은 전달 가능합니다. 외부 빌더, 유료 테마, 플러그인, API 계정은 각 서비스 정책에 따라 전달 범위가 달라집니다.</p></details><details class="faq-item"><summary>기존 사이트를 보고 개선점만 진단받을 수 있나요?</summary><p>가능합니다. 모바일 깨짐, 문의 동선, CTA, 속도, GA4/GTM, SEO 기초 항목을 기준으로 점검 범위를 나눌 수 있습니다.</p></details><details class="faq-item"><summary>디자인 시안도 먼저 볼 수 있나요?</summary><p>작업 범위에 따라 와이어프레임, 섹션 구조안, 이미지 시안, 테스트 링크 중 적합한 방식으로 공유합니다.</p></details><details class="faq-item"><summary>광고 성과나 검색 순위를 보장하나요?</summary><p>광고 성과와 검색 순위는 보장하지 않습니다. 다만 문의 동선, 페이지 구조, 기본 SEO, 전환 추적처럼 성과를 확인하고 개선하기 위한 기반은 작업 범위에 따라 구축할 수 있습니다.</p></details><details class="faq-item"><summary>작업 전에 꼭 준비해야 하는 자료가 있나요?</summary><p>현재 사이트 URL, 원하는 결과, 참고 사이트, 로고와 이미지, 주요 문구, 도메인/호스팅 정보, 측정하고 싶은 버튼 목록이 있으면 견적과 일정 확인이 빨라집니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">ESTIMATE</p><h2 class="faq-category-title">비용 / 견적</h2></div><div class="faq-list"><details class="faq-item"><summary>견적은 어떤 기준으로 달라지나요?</summary><p>페이지 수, 섹션 수, 입력폼·로그인·관리자 기능, 외부 서비스 연동, 데이터 구조, 자료 준비 상태, 긴급 여부에 따라 달라집니다. 단순 수정과 신규 웹시스템 개발은 산정 기준이 다릅니다.</p></details><details class="faq-item"><summary>정확한 견적을 받으려면 무엇을 보내야 하나요?</summary><p>현재 사이트 또는 참고 사이트 URL, 필요한 기능, 원하는 페이지 수, 준비된 로고·이미지·문구, 희망 일정, 예산 범위를 보내주시면 견적 범위를 더 빠르게 좁힐 수 있습니다.</p></details><details class="faq-item"><summary>예산이 정해져 있지 않아도 문의할 수 있나요?</summary><p>가능합니다. 예산이 미정이면 필수 기능과 선택 기능을 나누고, 우선 제작해야 할 범위부터 제안합니다. 단, 확정 견적은 실제 작업 범위가 정리된 뒤 안내드립니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">SCHEDULE</p><h2 class="faq-category-title">제작 기간</h2></div><div class="faq-list"><details class="faq-item"><summary>작업 기간은 보통 얼마나 걸리나요?</summary><p>간단한 문구·링크·반응형 수정은 범위 확인 후 빠르게 처리할 수 있습니다. 홈페이지·랜딩페이지는 화면 수와 자료 준비 상태에 따라 달라지며, React·Firebase 웹시스템은 데이터 구조와 관리자 기능 확정 후 일정을 안내합니다.</p></details><details class="faq-item"><summary>급한 작업도 가능한가요?</summary><p>가능 여부를 먼저 확인합니다. 긴급 작업은 범위를 작게 나누어 핵심 문제부터 처리하는 방식이 안정적입니다. 기존 코드 구조나 계정 권한 확인이 필요한 경우 즉시 착수가 어려울 수 있습니다.</p></details><details class="faq-item"><summary>자료 전달이 늦어지면 일정은 어떻게 되나요?</summary><p>필수 자료가 늦어지면 제작 일정도 함께 조정될 수 있습니다. 일정이 중요한 작업은 착수 전에 필요한 문구, 이미지, 계정 권한, 참고 자료를 먼저 정리하는 것을 권장합니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">WEBSITE</p><h2 class="faq-category-title">웹사이트 제작</h2></div><div class="faq-list"><details class="faq-item"><summary>홈페이지 제작에는 무엇이 포함되나요?</summary><p>메인 메시지, 서비스 소개 섹션, 문의 버튼, PC·모바일 반응형, 기본 메타태그, 공유 이미지 설정, 폼 또는 외부 문의 동선 연결처럼 방문자가 정보를 보고 문의하기까지 필요한 흐름을 구성합니다.</p></details><details class="faq-item"><summary>디자인 시안 없이도 제작이 가능한가요?</summary><p>가능합니다. 참고 사이트, 브랜드 색감, 필요한 섹션, 문구 방향을 기준으로 화면 구조를 잡습니다. 이미 보유한 Figma, 이미지 시안, 브랜드 가이드가 있다면 그 기준에 맞춰 구현할 수 있습니다.</p></details><details class="faq-item"><summary>기존 사이트를 유지하면서 일부만 개선할 수 있나요?</summary><p>가능합니다. 다만 기존 코드 구조, 사용 중인 빌더·테마·플러그인, 배포 방식에 따라 수정 가능 범위가 달라집니다. 먼저 파일 구조와 권한 확인이 필요합니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">LANDING</p><h2 class="faq-category-title">랜딩페이지 제작</h2></div><div class="faq-list"><details class="faq-item"><summary>랜딩페이지는 홈페이지와 무엇이 다른가요?</summary><p>랜딩페이지는 특정 광고, 상품, 이벤트, 상담 접수처럼 하나의 전환 목표에 집중합니다. 메뉴가 많은 일반 홈페이지보다 메시지, 혜택, 신뢰 요소, 문의 버튼 흐름을 더 압축적으로 설계합니다.</p></details><details class="faq-item"><summary>랜딩페이지에 문의폼이나 카카오톡 버튼을 넣을 수 있나요?</summary><p>가능합니다. 문의폼, 전화, 이메일, 카카오톡 채널, 외부 예약 링크 등 필요한 전환 동선을 연결할 수 있습니다. 폼 저장 방식이나 수신 방식은 착수 전에 확인합니다.</p></details><details class="faq-item"><summary>광고용 랜딩페이지 전환 추적도 같이 가능한가요?</summary><p>작업 범위에 포함하면 GA4/GTM 이벤트, 전화·카카오톡·폼 제출 클릭 추적, 광고 계정 연동 준비를 함께 점검할 수 있습니다. 광고 성과나 검색 순위 자체를 보장하지는 않습니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">MAINTENANCE</p><h2 class="faq-category-title">유지관리</h2></div><div class="faq-list"><details class="faq-item"><summary>유지보수만 따로 맡길 수 있나요?</summary><p>가능합니다. 기존 사이트 구조를 확인한 뒤 정기 유지관리와 단발성 수정 중 적합한 방식으로 안내합니다. 외부 빌더나 테마 기반 사이트는 수정 가능 범위 확인이 먼저 필요합니다.</p></details><details class="faq-item"><summary>유지관리에는 어떤 작업이 포함될 수 있나요?</summary><p>문구·이미지 교체, 버튼 링크 수정, 섹션 추가, 간단한 스타일 조정, 반응형 깨짐 확인, 추적 코드 점검, 문의 동선 확인 등이 포함될 수 있습니다. 신규 기능 개발은 별도 범위입니다.</p></details><details class="faq-item"><summary>운영 중 오류가 발생하면 바로 수정할 수 있나요?</summary><p>사이트 내부 코드나 설정 문제는 확인할 수 있습니다. 다만 호스팅 장애, 외부 API 장애, 카카오·Google 같은 타사 서비스 장애는 직접 수정이 아니라 원인 분리와 대응 안내 중심으로 진행됩니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">REVIEW</p><h2 class="faq-category-title">수정 / 검수</h2></div><div class="faq-list"><details class="faq-item"><summary>수정 요청은 어디까지 포함되나요?</summary><p>합의된 작업 범위 안에서 오탈자, 여백, 문구, 이미지 교체, 버튼 링크, 반응형 깨짐 같은 항목은 검수 단계에서 반영합니다. 새로운 페이지나 기능 추가는 별도 범위로 판단합니다.</p></details><details class="faq-item"><summary>작업 완료 후 오류 확인 기간이 있나요?</summary><p>홈페이지 제작, 수정, GA4/GTM, AI 챗봇, 크롤링은 보통 납품 후 7일 이내 작업 범위 내 오류를 확인합니다. React·Firebase 웹시스템은 최종 납품 후 14일 이내 기능 오류 확인을 기준으로 안내합니다.</p></details><details class="faq-item"><summary>검수는 어떤 기준으로 하나요?</summary><p>PC와 모바일 화면, 주요 버튼 링크, 문의폼 제출 흐름, 반응형 깨짐, 콘솔 오류, 이미지 경로, 메타 정보, 합의된 기능 동작을 중심으로 확인합니다. 브라우저 범위는 작업 전 협의합니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">MATERIALS</p><h2 class="faq-category-title">자료 전달</h2></div><div class="faq-list"><details class="faq-item"><summary>작업을 빨리 시작하려면 어떤 자료가 필요하나요?</summary><p>운영 중인 사이트 URL, 원하는 결과, 참고 사이트, 로고·이미지·문구, 도메인·호스팅·관리자 계정 권한, 문의폼 수신 방식, 측정하려는 버튼 목록을 준비하면 확인 속도가 빨라집니다.</p></details><details class="faq-item"><summary>문구를 직접 작성하지 못해도 되나요?</summary><p>기본 방향과 핵심 정보가 있으면 문구 구조를 함께 정리할 수 있습니다. 다만 업종별 법적 고지, 가격, 정책, 전문 용어의 최종 정확성은 의뢰인이 확인해야 합니다.</p></details><details class="faq-item"><summary>이미지나 로고가 없으면 어떻게 하나요?</summary><p>보유 자료가 없으면 텍스트 중심 구조로 먼저 제작하거나, 사용 가능한 기본 이미지 방향을 제안할 수 있습니다. 유료 이미지 구매, 촬영, 일러스트 제작은 별도 범위입니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">DOMAIN</p><h2 class="faq-category-title">도메인 / 호스팅</h2></div><div class="faq-list"><details class="faq-item"><summary>도메인·호스팅·배포도 같이 진행할 수 있나요?</summary><p>가능한 범위 안에서 안내할 수 있습니다. 도메인 소유권, 호스팅 계정, DNS, 외부 플랫폼 권한은 의뢰인 계정 기준으로 진행하며 필요한 권한을 먼저 확인해야 합니다.</p></details><details class="faq-item"><summary>기존 도메인을 새 사이트에 연결할 수 있나요?</summary><p>대부분 가능합니다. 다만 현재 도메인이 어디에서 관리되는지, DNS 권한이 있는지, 기존 메일이나 다른 서비스와 연결되어 있는지 확인해야 안전하게 이전할 수 있습니다.</p></details><details class="faq-item"><summary>호스팅은 어떤 것을 사용하나요?</summary><p>정적 홈페이지, React 앱, Firebase 기반 시스템, 기존 호스팅 수정 등 작업 구조에 따라 다릅니다. 유지 비용, 배포 방식, 관리자 접근 권한을 고려해 적합한 방식을 안내합니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">SEO</p><h2 class="faq-category-title">SEO / 검색 노출</h2></div><div class="faq-list"><details class="faq-item"><summary>SEO도 같이 되나요?</summary><p>기본 메타태그, 제목 구조, 설명 문구, OG 이미지, 사이트맵, robots.txt 같은 기초 항목은 작업 범위에 따라 반영할 수 있습니다. 검색 순위 보장이나 대규모 콘텐츠 SEO 운영은 별도 영역입니다.</p></details><details class="faq-item"><summary>네이버나 구글 검색에 바로 노출되나요?</summary><p>사이트가 공개되고 검색 엔진이 수집할 수 있는 구조라면 노출 준비를 할 수 있습니다. 다만 실제 색인 시점과 검색 순위는 검색 엔진 정책, 콘텐츠 품질, 도메인 상태에 영향을 받습니다.</p></details><details class="faq-item"><summary>기존 사이트의 검색 노출이 떨어지지 않게 할 수 있나요?</summary><p>URL 구조, 제목, 설명, 기존 페이지 삭제 여부, 리디렉션, 사이트맵을 확인해 위험을 줄일 수 있습니다. 다만 개편 후 검색 성과 변동을 완전히 보장할 수는 없습니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">CONTRACT</p><h2 class="faq-category-title">결제 / 계약</h2></div><div class="faq-list"><details class="faq-item"><summary>계약이나 결제는 언제 진행하나요?</summary><p>작업 범위, 일정, 산출물, 검수 기준을 확인한 뒤 진행합니다. 소규모 수정과 신규 제작은 진행 방식이 다를 수 있으며, 확정 전에는 비용과 포함 범위를 먼저 안내합니다.</p></details><details class="faq-item"><summary>작업 중 범위가 늘어나면 어떻게 하나요?</summary><p>처음 합의한 범위를 기준으로 진행합니다. 새로운 페이지, 기능, 외부 연동, 추가 검수 범위가 생기면 일정과 비용을 별도로 안내한 뒤 반영 여부를 결정합니다.</p></details><details class="faq-item"><summary>세금계산서나 증빙 발행이 가능한가요?</summary><p>거래 방식에 따라 가능한 증빙을 안내합니다. 필요한 증빙 종류, 사업자 정보, 결제 일정을 접수 단계에서 함께 남겨주시면 확인이 빠릅니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">EXCLUSION</p><h2 class="faq-category-title">작업 제외 범위</h2></div><div class="faq-list"><details class="faq-item"><summary>진행이 어려운 작업도 있나요?</summary><p>불법 수집, 개인정보·민감정보 무단 처리, 캡차·차단 우회, 타사 서비스 정책 위반, 저작권 침해 가능성이 있는 작업, 계정 권한이 확인되지 않는 작업은 진행하지 않습니다.</p></details><details class="faq-item"><summary>웹 데이터 크롤링은 모든 사이트가 가능한가요?</summary><p>아닙니다. 공개 웹페이지의 구조화된 목록 데이터가 대상입니다. 로그인 필요 데이터, 유료 데이터, 개인정보·민감정보, 캡차·봇 차단 우회, 사이트 정책 위반 가능성이 있는 수집은 진행하지 않습니다.</p></details><details class="faq-item"><summary>AI 챗봇 답변의 정확도는 보장되나요?</summary><p>AI는 상담 응답 보조 도구이므로 100% 정확도를 보장하지 않습니다. 답변 범위, 금지 답변, 사람에게 넘길 조건, 검수 기준을 설계해 운영 리스크를 줄이는 방향으로 진행합니다.</p></details></div><div class="section-head faq-category-head"><p class="section-label">AFTER</p><h2 class="faq-category-title">접수 후 진행 절차</h2></div><div class="faq-list"><details class="faq-item"><summary>접수 후 언제 연락을 받을 수 있나요?</summary><p>접수 내용을 확인한 뒤 24시간 내 1차 답변을 기준으로 안내합니다. 내용이 부족하면 추가 질문을 먼저 드리고, 범위가 명확하면 예상 일정과 다음 단계를 안내합니다.</p></details><details class="faq-item"><summary>접수 후 바로 결제가 필요한가요?</summary><p>바로 결제부터 진행하지 않습니다. 먼저 가능 여부, 작업 범위, 필요한 자료, 일정, 비용을 확인합니다. 이후 진행 방식이 확정되면 계약 또는 결제 절차를 안내합니다.</p></details><details class="faq-item"><summary>접수 내용을 수정하거나 추가 자료를 보낼 수 있나요?</summary><p>가능합니다. 접수 후 추가 자료가 생기면 이메일, 카카오톡, 기존 상담 채널로 보내주시면 됩니다. 단, 추가 자료로 작업 범위가 커지는 경우 일정과 비용이 조정될 수 있습니다.</p></details></div></div></section><section class="section contact"><div class="container"><div class="contact-box cta-band"><div class="section-head"><p class="section-label">CONTACT</p><h2 class="section-title">답변을 확인했다면 현재 상황을 접수해 주세요</h2><p class="section-desc">정확한 견적과 일정은 서비스 유형, 기능 수, 데이터 구조, 계정 권한, 자료 준비 상태를 확인한 뒤 안내드립니다.</p></div><a class="btn btn-primary" href="contact.html">접수하기</a></div></div></section>
-</main>
-<footer class="footer">
-<div class="container">
-<div class="footer-top">
-<div>
-<p class="footer-logo"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></p>
-<p class="footer-text">홈페이지·랜딩페이지 제작 · 관리자 웹시스템 · GA4/GTM · GPT 챗봇 · 데이터 수집</p>
-<ul aria-label="사업자 정보" class="footer-business">
-<li>대표: 고찬휘</li>
-<li>사업자등록번호: 613 27 53241</li>
-<li>이메일: <a href="mailto:contact@novawork.kr">contact@novawork.kr</a></li>
-<li>전화: <a href="tel:01055286580">010-5528-6580</a></li>
-<li>회신: 24시간 내 1차 답변</li>
-<li>서비스 지역: 전국 온라인 상담 가능</li>
-</ul>
-</div>
-<nav aria-label="하단 메뉴" class="footer-nav">
-<a href="index.html">홈</a>
-<a href="about.html">회사소개</a>
-<a href="services.html">서비스</a>
-<a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
-<a href="contact.html">접수하기</a>
-<a href="privacy.html">개인정보처리방침</a>
-</nav>
-</div>
-<div class="footer-bottom">
-<p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
-<p class="footer-note">접수는 <a href="contact.html">접수 페이지</a> 또는 <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내 확인합니다.</p>
-</div>
-</div>
-</footer>
-<script src="./js/site-core/01-core-ui.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/02-enhance-v7-smooth-scroll.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/03-enhance-v8-faq-search.js?v=v55-enhance-v11-20260609"></script>
-</body>
+    </script>
+    <link href="./css/site.css?v=v90-motion-full-20260712" rel="stylesheet" />
+  </head>
+  <body class="nw-subpage-v2 faq-static-page">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        title="Google Tag Manager"
+        height="0"
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MSVM26W9"
+        style="display: none; visibility: hidden"
+        width="0"
+      ></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="header">
+      <div class="container">
+        <div class="header-inner">
+          <a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"
+            ><img
+              alt="NOVAWORK"
+              decoding="async"
+              height="286"
+              src="./assets/logo-horizontal.png"
+              width="1273"
+          /></a>
+          <nav aria-label="주요 메뉴" class="nav">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="about.html">회사소개</a></li>
+              <li><a class="nav-link" href="services.html">서비스</a></li>
+              <li><a class="nav-link" href="portfolio.html">포트폴리오</a></li>
+              <li><a class="nav-link" href="faq.html">FAQ</a></li>
+            </ul>
+          </nav>
+          <div class="header-actions">
+            <a
+              class="btn btn-small btn-secondary header-cta"
+              href="contact.html"
+              >접수하기</a
+            >
+            <button
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              aria-label="모바일 메뉴 열기"
+              class="menu-toggle"
+              type="button"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="모바일 메뉴"
+        aria-modal="true"
+        class="mobile-menu"
+        id="mobile-menu"
+        role="dialog"
+      >
+        <div class="mobile-menu-panel">
+          <ul class="mobile-menu-list">
+            <li><a href="about.html">회사소개</a></li>
+            <li><a href="services.html">서비스</a></li>
+            <li><a href="portfolio.html">포트폴리오</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+          <div
+            aria-label="대표 서비스 바로가기"
+            class="mobile-menu-shortcuts"
+            role="group"
+          >
+            <p>대표 서비스</p>
+            <div class="mobile-menu-shortcut-grid">
+              <a href="service-homepage-landing.html">홈페이지</a>
+              <a href="service-react-firebase-admin.html">웹시스템</a>
+              <a href="service-homepage-fix.html">오류 수정</a>
+              <a href="service-ga4-gtm.html">GA4/GTM</a>
+              <a href="service-gpt-ai-chatbot.html">AI 챗봇</a>
+              <a href="service-web-crawling.html">크롤링</a>
+            </div>
+          </div>
+          <a class="btn btn-primary mobile-menu-cta" href="contact.html"
+            >접수하기</a
+          >
+        </div>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section class="page-hero page-hero-with-visual">
+        <div class="container">
+          <div class="page-hero-grid">
+            <div class="section-head">
+              <p class="section-label">FAQ</p>
+              <h1 class="section-title">
+                서비스 선택 전에 헷갈리는 부분을 먼저 정리했습니다.
+              </h1>
+              <p class="section-desc">
+                각 서비스는 작업 목적, 준비 자료, 수정 기준, 제외 범위가
+                다릅니다. 문의 전 자주 묻는 내용을 기준으로 확인해 보세요.
+              </p>
+              <div aria-label="FAQ 안내" class="page-hero-points">
+                <span>서비스 선택</span><span>비용·일정</span
+                ><span>수정·오류 확인</span>
+              </div>
+            </div>
+            <figure class="page-hero-visual">
+              <img
+                alt="리서치부터 런칭까지 이어지는 흑백 작업 프로세스 이미지"
+                class="photo-real"
+                decoding="async"
+                fetchpriority="high"
+                height="810"
+                loading="eager"
+                src="./assets/visual-process-flow.webp"
+                width="1440"
+              />
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section class="section faq-section">
+        <div class="container">
+          <div class="section-head faq-category-head">
+            <p class="section-label">PROCESS</p>
+            <h2 class="faq-category-title">기본 진행 방식</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item" open="">
+              <summary>
+                어떤 서비스로 접수해야 할지 모르겠으면 어떻게 하나요?
+              </summary>
+              <p>
+                정확한 서비스명을 고르지 않아도 됩니다. 현재 문제, 원하는 결과,
+                운영 중인 사이트 URL, 참고 자료를 남겨주시면 홈페이지 제작,
+                랜딩페이지, 웹시스템, 수정, GA4/GTM, AI 챗봇, 데이터 수집 중
+                맞는 범위로 정리해드립니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>기획이 아직 정리되지 않았어도 접수할 수 있나요?</summary>
+              <p>
+                가능합니다. 처음에는 목표, 대상 고객, 필요한 화면, 문의 동선부터
+                정리합니다. 다만 실제 착수 전에는 화면 수, 기능 범위, 준비 자료,
+                완료 기준을 확정해야 일정과 비용이 안정적입니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>작업은 어떤 순서로 진행되나요?</summary>
+              <p>
+                접수 내용을 확인한 뒤 범위와 가능 여부를 먼저 안내합니다. 이후
+                자료 확인, 견적·일정 확정, 제작 또는 수정, 중간 확인, 최종 검수,
+                배포 또는 파일 전달 순서로 진행합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>
+                저렴한 템플릿 제작과 NOVAWORK 작업은 무엇이 다른가요?
+              </summary>
+              <p>
+                템플릿 제작은 빠르게 공개하는 데 유리하지만 구조 변경과 추적
+                세팅에 제한이 있을 수 있습니다. NOVAWORK는 작업 범위에 따라 직접
+                코딩, 기존 사이트 수정, 문의 동선, GA4/GTM 이벤트, 운영 기준까지
+                구분해 안내합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>제작 후 제가 직접 수정할 수 있나요?</summary>
+              <p>
+                정적 코드 기반 결과물은 직접 수정이 가능하지만 HTML/CSS 이해가
+                필요합니다. 직접 수정이 필요한 경우 작업 전 운영 방식에 맞춰
+                안내드립니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>소스 파일은 받을 수 있나요?</summary>
+              <p>
+                직접 제작한 정적 페이지와 합의된 산출물은 전달 가능합니다. 외부
+                빌더, 유료 테마, 플러그인, API 계정은 각 서비스 정책에 따라 전달
+                범위가 달라집니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>기존 사이트를 보고 개선점만 진단받을 수 있나요?</summary>
+              <p>
+                가능합니다. 모바일 깨짐, 문의 동선, CTA, 속도, GA4/GTM, SEO 기초
+                항목을 기준으로 점검 범위를 나눌 수 있습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>디자인 시안도 먼저 볼 수 있나요?</summary>
+              <p>
+                작업 범위에 따라 와이어프레임, 섹션 구조안, 이미지 시안, 테스트
+                링크 중 적합한 방식으로 공유합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>광고 성과나 검색 순위를 보장하나요?</summary>
+              <p>
+                광고 성과와 검색 순위는 보장하지 않습니다. 다만 문의 동선,
+                페이지 구조, 기본 SEO, 전환 추적처럼 성과를 확인하고 개선하기
+                위한 기반은 작업 범위에 따라 구축할 수 있습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>작업 전에 꼭 준비해야 하는 자료가 있나요?</summary>
+              <p>
+                현재 사이트 URL, 원하는 결과, 참고 사이트, 로고와 이미지, 주요
+                문구, 도메인/호스팅 정보, 측정하고 싶은 버튼 목록이 있으면
+                견적과 일정 확인이 빨라집니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">ESTIMATE</p>
+            <h2 class="faq-category-title">비용 / 견적</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>견적은 어떤 기준으로 달라지나요?</summary>
+              <p>
+                페이지 수, 섹션 수, 입력폼·로그인·관리자 기능, 외부 서비스 연동,
+                데이터 구조, 자료 준비 상태, 긴급 여부에 따라 달라집니다. 단순
+                수정과 신규 웹시스템 개발은 산정 기준이 다릅니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>정확한 견적을 받으려면 무엇을 보내야 하나요?</summary>
+              <p>
+                현재 사이트 또는 참고 사이트 URL, 필요한 기능, 원하는 페이지 수,
+                준비된 로고·이미지·문구, 희망 일정, 예산 범위를 보내주시면 견적
+                범위를 더 빠르게 좁힐 수 있습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>예산이 정해져 있지 않아도 문의할 수 있나요?</summary>
+              <p>
+                가능합니다. 예산이 미정이면 필수 기능과 선택 기능을 나누고, 우선
+                제작해야 할 범위부터 제안합니다. 단, 확정 견적은 실제 작업
+                범위가 정리된 뒤 안내드립니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">SCHEDULE</p>
+            <h2 class="faq-category-title">제작 기간</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>작업 기간은 보통 얼마나 걸리나요?</summary>
+              <p>
+                간단한 문구·링크·반응형 수정은 범위 확인 후 빠르게 처리할 수
+                있습니다. 홈페이지·랜딩페이지는 화면 수와 자료 준비 상태에 따라
+                달라지며, React·Firebase 웹시스템은 데이터 구조와 관리자 기능
+                확정 후 일정을 안내합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>급한 작업도 가능한가요?</summary>
+              <p>
+                가능 여부를 먼저 확인합니다. 긴급 작업은 범위를 작게 나누어 핵심
+                문제부터 처리하는 방식이 안정적입니다. 기존 코드 구조나 계정
+                권한 확인이 필요한 경우 즉시 착수가 어려울 수 있습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>자료 전달이 늦어지면 일정은 어떻게 되나요?</summary>
+              <p>
+                필수 자료가 늦어지면 제작 일정도 함께 조정될 수 있습니다. 일정이
+                중요한 작업은 착수 전에 필요한 문구, 이미지, 계정 권한, 참고
+                자료를 먼저 정리하는 것을 권장합니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">WEBSITE</p>
+            <h2 class="faq-category-title">웹사이트 제작</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>홈페이지 제작에는 무엇이 포함되나요?</summary>
+              <p>
+                메인 메시지, 서비스 소개 섹션, 문의 버튼, PC·모바일 반응형, 기본
+                메타태그, 공유 이미지 설정, 폼 또는 외부 문의 동선 연결처럼
+                방문자가 정보를 보고 문의하기까지 필요한 흐름을 구성합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>디자인 시안 없이도 제작이 가능한가요?</summary>
+              <p>
+                가능합니다. 참고 사이트, 브랜드 색감, 필요한 섹션, 문구 방향을
+                기준으로 화면 구조를 잡습니다. 이미 보유한 Figma, 이미지 시안,
+                브랜드 가이드가 있다면 그 기준에 맞춰 구현할 수 있습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>
+                기존 사이트를 유지하면서 일부만 개선할 수 있나요?
+              </summary>
+              <p>
+                가능합니다. 다만 기존 코드 구조, 사용 중인 빌더·테마·플러그인,
+                배포 방식에 따라 수정 가능 범위가 달라집니다. 먼저 파일 구조와
+                권한 확인이 필요합니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">LANDING</p>
+            <h2 class="faq-category-title">랜딩페이지 제작</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>랜딩페이지는 홈페이지와 무엇이 다른가요?</summary>
+              <p>
+                랜딩페이지는 특정 광고, 상품, 이벤트, 상담 접수처럼 하나의 전환
+                목표에 집중합니다. 메뉴가 많은 일반 홈페이지보다 메시지, 혜택,
+                신뢰 요소, 문의 버튼 흐름을 더 압축적으로 설계합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>
+                랜딩페이지에 문의폼이나 카카오톡 버튼을 넣을 수 있나요?
+              </summary>
+              <p>
+                가능합니다. 문의폼, 전화, 이메일, 카카오톡 채널, 외부 예약 링크
+                등 필요한 전환 동선을 연결할 수 있습니다. 폼 저장 방식이나 수신
+                방식은 착수 전에 확인합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>광고용 랜딩페이지 전환 추적도 같이 가능한가요?</summary>
+              <p>
+                작업 범위에 포함하면 GA4/GTM 이벤트, 전화·카카오톡·폼 제출 클릭
+                추적, 광고 계정 연동 준비를 함께 점검할 수 있습니다. 광고 성과나
+                검색 순위 자체를 보장하지는 않습니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">MAINTENANCE</p>
+            <h2 class="faq-category-title">유지관리</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>유지보수만 따로 맡길 수 있나요?</summary>
+              <p>
+                가능합니다. 기존 사이트 구조를 확인한 뒤 정기 유지관리와 단발성
+                수정 중 적합한 방식으로 안내합니다. 외부 빌더나 테마 기반
+                사이트는 수정 가능 범위 확인이 먼저 필요합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>유지관리에는 어떤 작업이 포함될 수 있나요?</summary>
+              <p>
+                문구·이미지 교체, 버튼 링크 수정, 섹션 추가, 간단한 스타일 조정,
+                반응형 깨짐 확인, 추적 코드 점검, 문의 동선 확인 등이 포함될 수
+                있습니다. 신규 기능 개발은 별도 범위입니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>운영 중 오류가 발생하면 바로 수정할 수 있나요?</summary>
+              <p>
+                사이트 내부 코드나 설정 문제는 확인할 수 있습니다. 다만 호스팅
+                장애, 외부 API 장애, 카카오·Google 같은 타사 서비스 장애는 직접
+                수정이 아니라 원인 분리와 대응 안내 중심으로 진행됩니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">REVIEW</p>
+            <h2 class="faq-category-title">수정 / 검수</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>수정 요청은 어디까지 포함되나요?</summary>
+              <p>
+                합의된 작업 범위 안에서 오탈자, 여백, 문구, 이미지 교체, 버튼
+                링크, 반응형 깨짐 같은 항목은 검수 단계에서 반영합니다. 새로운
+                페이지나 기능 추가는 별도 범위로 판단합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>작업 완료 후 오류 확인 기간이 있나요?</summary>
+              <p>
+                홈페이지 제작, 수정, GA4/GTM, AI 챗봇, 크롤링은 보통 납품 후 7일
+                이내 작업 범위 내 오류를 확인합니다. React·Firebase 웹시스템은
+                최종 납품 후 14일 이내 기능 오류 확인을 기준으로 안내합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>검수는 어떤 기준으로 하나요?</summary>
+              <p>
+                PC와 모바일 화면, 주요 버튼 링크, 문의폼 제출 흐름, 반응형 깨짐,
+                콘솔 오류, 이미지 경로, 메타 정보, 합의된 기능 동작을 중심으로
+                확인합니다. 브라우저 범위는 작업 전 협의합니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">MATERIALS</p>
+            <h2 class="faq-category-title">자료 전달</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>작업을 빨리 시작하려면 어떤 자료가 필요하나요?</summary>
+              <p>
+                운영 중인 사이트 URL, 원하는 결과, 참고 사이트,
+                로고·이미지·문구, 도메인·호스팅·관리자 계정 권한, 문의폼 수신
+                방식, 측정하려는 버튼 목록을 준비하면 확인 속도가 빨라집니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>문구를 직접 작성하지 못해도 되나요?</summary>
+              <p>
+                기본 방향과 핵심 정보가 있으면 문구 구조를 함께 정리할 수
+                있습니다. 다만 업종별 법적 고지, 가격, 정책, 전문 용어의 최종
+                정확성은 의뢰인이 확인해야 합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>이미지나 로고가 없으면 어떻게 하나요?</summary>
+              <p>
+                보유 자료가 없으면 텍스트 중심 구조로 먼저 제작하거나, 사용
+                가능한 기본 이미지 방향을 제안할 수 있습니다. 유료 이미지 구매,
+                촬영, 일러스트 제작은 별도 범위입니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">DOMAIN</p>
+            <h2 class="faq-category-title">도메인 / 호스팅</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>도메인·호스팅·배포도 같이 진행할 수 있나요?</summary>
+              <p>
+                가능한 범위 안에서 안내할 수 있습니다. 도메인 소유권, 호스팅
+                계정, DNS, 외부 플랫폼 권한은 의뢰인 계정 기준으로 진행하며
+                필요한 권한을 먼저 확인해야 합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>기존 도메인을 새 사이트에 연결할 수 있나요?</summary>
+              <p>
+                대부분 가능합니다. 다만 현재 도메인이 어디에서 관리되는지, DNS
+                권한이 있는지, 기존 메일이나 다른 서비스와 연결되어 있는지
+                확인해야 안전하게 이전할 수 있습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>호스팅은 어떤 것을 사용하나요?</summary>
+              <p>
+                정적 홈페이지, React 앱, Firebase 기반 시스템, 기존 호스팅 수정
+                등 작업 구조에 따라 다릅니다. 유지 비용, 배포 방식, 관리자 접근
+                권한을 고려해 적합한 방식을 안내합니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">SEO</p>
+            <h2 class="faq-category-title">SEO / 검색 노출</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>SEO도 같이 되나요?</summary>
+              <p>
+                기본 메타태그, 제목 구조, 설명 문구, OG 이미지, 사이트맵,
+                robots.txt 같은 기초 항목은 작업 범위에 따라 반영할 수 있습니다.
+                검색 순위 보장이나 대규모 콘텐츠 SEO 운영은 별도 영역입니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>네이버나 구글 검색에 바로 노출되나요?</summary>
+              <p>
+                사이트가 공개되고 검색 엔진이 수집할 수 있는 구조라면 노출
+                준비를 할 수 있습니다. 다만 실제 색인 시점과 검색 순위는 검색
+                엔진 정책, 콘텐츠 품질, 도메인 상태에 영향을 받습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>
+                기존 사이트의 검색 노출이 떨어지지 않게 할 수 있나요?
+              </summary>
+              <p>
+                URL 구조, 제목, 설명, 기존 페이지 삭제 여부, 리디렉션,
+                사이트맵을 확인해 위험을 줄일 수 있습니다. 다만 개편 후 검색
+                성과 변동을 완전히 보장할 수는 없습니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">CONTRACT</p>
+            <h2 class="faq-category-title">결제 / 계약</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>계약이나 결제는 언제 진행하나요?</summary>
+              <p>
+                작업 범위, 일정, 산출물, 검수 기준을 확인한 뒤 진행합니다.
+                소규모 수정과 신규 제작은 진행 방식이 다를 수 있으며, 확정
+                전에는 비용과 포함 범위를 먼저 안내합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>작업 중 범위가 늘어나면 어떻게 하나요?</summary>
+              <p>
+                처음 합의한 범위를 기준으로 진행합니다. 새로운 페이지, 기능,
+                외부 연동, 추가 검수 범위가 생기면 일정과 비용을 별도로 안내한
+                뒤 반영 여부를 결정합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>세금계산서나 증빙 발행이 가능한가요?</summary>
+              <p>
+                거래 방식에 따라 가능한 증빙을 안내합니다. 필요한 증빙 종류,
+                사업자 정보, 결제 일정을 접수 단계에서 함께 남겨주시면 확인이
+                빠릅니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">EXCLUSION</p>
+            <h2 class="faq-category-title">작업 제외 범위</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>진행이 어려운 작업도 있나요?</summary>
+              <p>
+                불법 수집, 개인정보·민감정보 무단 처리, 캡차·차단 우회, 타사
+                서비스 정책 위반, 저작권 침해 가능성이 있는 작업, 계정 권한이
+                확인되지 않는 작업은 진행하지 않습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>웹 데이터 크롤링은 모든 사이트가 가능한가요?</summary>
+              <p>
+                아닙니다. 공개 웹페이지의 구조화된 목록 데이터가 대상입니다.
+                로그인 필요 데이터, 유료 데이터, 개인정보·민감정보, 캡차·봇 차단
+                우회, 사이트 정책 위반 가능성이 있는 수집은 진행하지 않습니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>AI 챗봇 답변의 정확도는 보장되나요?</summary>
+              <p>
+                AI는 상담 응답 보조 도구이므로 100% 정확도를 보장하지 않습니다.
+                답변 범위, 금지 답변, 사람에게 넘길 조건, 검수 기준을 설계해
+                운영 리스크를 줄이는 방향으로 진행합니다.
+              </p>
+            </details>
+          </div>
+          <div class="section-head faq-category-head">
+            <p class="section-label">AFTER</p>
+            <h2 class="faq-category-title">접수 후 진행 절차</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>접수 후 언제 연락을 받을 수 있나요?</summary>
+              <p>
+                접수 내용을 확인한 뒤 24시간 내 1차 답변을 기준으로 안내합니다.
+                내용이 부족하면 추가 질문을 먼저 드리고, 범위가 명확하면 예상
+                일정과 다음 단계를 안내합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>접수 후 바로 결제가 필요한가요?</summary>
+              <p>
+                바로 결제부터 진행하지 않습니다. 먼저 가능 여부, 작업 범위,
+                필요한 자료, 일정, 비용을 확인합니다. 이후 진행 방식이 확정되면
+                계약 또는 결제 절차를 안내합니다.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>
+                접수 내용을 수정하거나 추가 자료를 보낼 수 있나요?
+              </summary>
+              <p>
+                가능합니다. 접수 후 추가 자료가 생기면 이메일, 카카오톡, 기존
+                상담 채널로 보내주시면 됩니다. 단, 추가 자료로 작업 범위가
+                커지는 경우 일정과 비용이 조정될 수 있습니다.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+      <section class="section contact">
+        <div class="container">
+          <div class="contact-box cta-band">
+            <div class="section-head">
+              <p class="section-label">CONTACT</p>
+              <h2 class="section-title">
+                답변을 확인했다면 현재 상황을 접수해 주세요
+              </h2>
+              <p class="section-desc">
+                정확한 견적과 일정은 서비스 유형, 기능 수, 데이터 구조, 계정
+                권한, 자료 준비 상태를 확인한 뒤 안내드립니다.
+              </p>
+            </div>
+            <a class="btn btn-primary" href="contact.html">접수하기</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div>
+            <p class="footer-logo">
+              <img
+                alt="NOVAWORK"
+                decoding="async"
+                height="286"
+                src="./assets/logo-horizontal.png"
+                width="1273"
+              />
+            </p>
+            <p class="footer-text">
+              홈페이지·랜딩페이지 제작 · 관리자 웹시스템 · GA4/GTM · GPT 챗봇 ·
+              데이터 수집
+            </p>
+            <ul class="footer-business">
+              <li>대표: 고찬휘</li>
+              <li>사업자등록번호: 613 27 53241</li>
+              <li>
+                이메일:
+                <a href="mailto:contact@novawork.kr">contact@novawork.kr</a>
+              </li>
+              <li>전화: <a href="tel:01055286580">010-5528-6580</a></li>
+              <li>회신: 24시간 내 1차 답변</li>
+              <li>서비스 지역: 전국 온라인 상담 가능</li>
+            </ul>
+          </div>
+          <nav aria-label="하단 메뉴" class="footer-nav">
+            <a href="index.html">홈</a>
+            <a href="about.html">회사소개</a>
+            <a href="services.html">서비스</a>
+            <a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
+            <a href="contact.html">접수하기</a>
+            <a href="privacy.html">개인정보처리방침</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
+          <p class="footer-note">
+            접수는 <a href="contact.html">접수 페이지</a> 또는
+            <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내
+            확인합니다.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script src="./js/modules/core-ui.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/vendor/gsap.min.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/vendor/ScrollTrigger.min.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/modules/subpage-motion.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/modules/page-interactions.js?v=v90-motion-full-20260712"></script>
+  </body>
 </html>

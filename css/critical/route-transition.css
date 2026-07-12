@@ -1,11 +1,18 @@
 html.nw-route-transitioning,
 html.nw-route-entering,
-html.nw-route-leaving { background: #000; scroll-behavior: auto !important; }
+html.nw-route-leaving {
+  background: #000;
+  scroll-behavior: auto !important;
+}
 html.nw-route-transitioning *,
 html.nw-route-entering *,
-html.nw-route-leaving * { scroll-behavior: auto !important; }
+html.nw-route-leaving * {
+  scroll-behavior: auto !important;
+}
 html.nw-route-entering body,
-html.nw-route-leaving body { background: #000; }
+html.nw-route-leaving body {
+  background: #000;
+}
 html.nw-route-entering::before {
   content: "";
   position: fixed;
@@ -19,26 +26,9 @@ html.nw-route-entering.nw-route-overlay-ready::before {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 120ms linear, visibility 120ms step-end;
-}
-html.nw-route-entering .site-loader { display: none !important; }
-html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript),
-html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  will-change: opacity, transform;
-}
-html.nw-route-entering body > :not(.nw-route-curtain):not(script):not(style):not(noscript) {
-  opacity: 0 !important;
-  transform: translate3d(0, 34px, 0) !important;
-}
-html.nw-route-entering.nw-route-ready body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
-  opacity: 1 !important;
-  transform: translate3d(0, 0, 0) !important;
-  transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1) 220ms, transform 980ms cubic-bezier(0.16, 1, 0.3, 1) 220ms;
-}
-html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(noscript):not(.site-loader) {
-  opacity: .66;
-  transform: translate3d(0, -18px, 0);
-  transition: opacity 620ms cubic-bezier(0.16, 1, 0.3, 1), transform 720ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 120ms linear,
+    visibility 120ms step-end;
 }
 .nw-route-curtain {
   position: fixed;
@@ -71,8 +61,15 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
   width: min(96vw, 1880px);
   max-width: calc(100vw - clamp(16px, 4vw, 72px));
   padding-inline: clamp(2px, 0.7vw, 14px);
-  color: rgba(255,255,255,0.18);
-  font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: rgba(255, 255, 255, 0.18);
+  font-family:
+    "Pretendard",
+    "Noto Sans KR",
+    "Apple SD Gothic Neo",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,7 +77,7 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
   font-size: clamp(28px, 8.45vw, 176px);
   font-weight: 900;
   letter-spacing: 0;
-  line-height: .82;
+  line-height: 0.82;
   white-space: nowrap;
   text-align: initial;
   text-align-last: auto;
@@ -100,5 +97,15 @@ html.nw-route-leaving body > :not(.nw-route-curtain):not(script):not(style):not(
     padding-inline: 0;
     gap: clamp(2px, 1.1vw, 8px);
     font-size: clamp(20px, 8.35vw, 50px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-route-curtain__text {
+    display: none !important;
+  }
+
+  .nw-route-curtain__panel {
+    transform: translate3d(0, 0, 0) !important;
   }
 }

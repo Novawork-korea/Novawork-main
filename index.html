@@ -1,475 +1,900 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="ko">
-<head>
-<meta charset="utf-8"/>
-<script id="nw-route-transition-boot" src="./js/boot/route-transition-boot.js?v=v55-enhance-v11-20260609"></script>
-<link href="./css/critical/route-transition.css?v=v55-enhance-v11-20260609" id="nw-route-transition-critical" rel="stylesheet"/>
-<script id="nw-reveal-boot" src="./js/boot/reveal-boot.js?v=v55-enhance-v11-20260609"></script>
-<link href="./css/critical/site-loader.css?v=v55-enhance-v11-20260609" id="nw-loading-critical" rel="stylesheet"/>
-<!-- Google Tag Manager -->
-<script>
-(function(w,d,l,i){
-  w[l]=w[l]||[];
-  w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-  var loaded=false;
-  function loadGTM(){
-    if(loaded) return;
-    loaded=true;
-    var f=d.getElementsByTagName('script')[0];
-    var j=d.createElement('script');
-    j.async=true;
-    j.src='https://www.googletagmanager.com/gtm.js?id='+i;
-    f.parentNode.insertBefore(j,f);
-  }
-  if('requestIdleCallback' in w){w.requestIdleCallback(loadGTM,{timeout:3200});}
-  else{w.setTimeout(loadGTM,2200);}
-  w.addEventListener('pointerdown',loadGTM,{once:true,passive:true});
-  w.addEventListener('keydown',loadGTM,{once:true});
-})(window,document,'dataLayer','GTM-MSVM26W9');
-</script>
-<!-- End Google Tag Manager -->
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link as="script" href="./js/modules/logo-scroll-hero.js?v=v55-enhance-v11-20260609" rel="preload"/>
-<link as="image" fetchpriority="high" href="./assets/logo-symbol.png" rel="preload"/>
-<title>NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작</title>
-<meta content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다." name="description"/>
-<meta content="index,follow" name="robots"/>
-<meta content="#050505" name="theme-color"/>
-<link href="https://novawork.kr/" rel="canonical"/>
-<link href="./assets/favicon.png" rel="icon" type="image/png"/>
-<link href="./assets/favicon-180.png" rel="apple-touch-icon"/>
-<meta content="website" property="og:type"/>
-<meta content="ko_KR" property="og:locale"/>
-<meta content="NOVAWORK" property="og:site_name"/>
-<meta content="NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작" property="og:title"/>
-<meta content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다." property="og:description"/>
-<meta content="https://novawork.kr/" property="og:url"/>
-<meta content="https://novawork.kr/assets/og-image.png" property="og:image"/>
-<meta content="1200" property="og:image:width"/>
-<meta content="630" property="og:image:height"/>
-<meta content="image/png" property="og:image:type"/>
-<meta content="summary_large_image" name="twitter:card"/>
-<meta content="NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작" name="twitter:title"/>
-<meta content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다." name="twitter:description"/>
-<meta content="https://novawork.kr/assets/og-image.png" name="twitter:image"/>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "name": "NOVAWORK",
-  "url": "https://novawork.kr/",
-  "image": "https://novawork.kr/assets/og-image.png",
-  "logo": "https://novawork.kr/assets/logo-symbol.png",
-  "description": "NOVAWORK는 홈페이지·랜딩페이지, React·Firebase 관리자 웹시스템, 홈페이지 오류 수정, GA4/GTM 추적 세팅, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다.",
-  "telephone": "+82-10-5528-6580",
-  "areaServed": "KR",
-  "founder": {
-    "@type": "Person",
-    "name": "고찬휘"
-  },
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "customer support",
-    "email": "contact@novawork.kr",
-    "telephone": "+82-10-5528-6580",
-    "availableLanguage": [
-      "ko"
-    ]
-  },
-  "hasOfferCatalog": {
-    "@type": "OfferCatalog",
-    "name": "NOVAWORK 서비스",
-    "itemListElement": [
+  <head>
+    <meta charset="utf-8" />
+    <script
+      id="nw-route-transition-boot"
+      src="./js/boot/route-transition-boot.js?v=v90-motion-full-20260712"
+    ></script>
+    <link
+      href="./css/critical/route-transition.css?v=v90-motion-full-20260712"
+      id="nw-route-transition-critical"
+      rel="stylesheet"
+    />
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var loaded = false;
+        function loadGTM() {
+          if (loaded) return;
+          loaded = true;
+          var f = d.getElementsByTagName("script")[0];
+          var j = d.createElement("script");
+          j.async = true;
+          j.src = "https://www.googletagmanager.com/gtm.js?id=" + i;
+          f.parentNode.insertBefore(j, f);
+        }
+        if ("requestIdleCallback" in w) {
+          w.requestIdleCallback(loadGTM, { timeout: 3200 });
+        } else {
+          w.setTimeout(loadGTM, 2200);
+        }
+        w.addEventListener("pointerdown", loadGTM, {
+          once: true,
+          passive: true,
+        });
+        w.addEventListener("keydown", loadGTM, { once: true });
+      })(window, document, "dataLayer", "GTM-MSVM26W9");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작</title>
+    <meta
+      content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다."
+      name="description"
+    />
+    <meta content="index,follow" name="robots" />
+    <meta content="#050505" name="theme-color" />
+    <link href="https://novawork.kr/" rel="canonical" />
+    <link href="./assets/favicon.png" rel="icon" type="image/png" />
+    <link href="./assets/favicon-180.png" rel="apple-touch-icon" />
+    <meta content="website" property="og:type" />
+    <meta content="ko_KR" property="og:locale" />
+    <meta content="NOVAWORK" property="og:site_name" />
+    <meta
+      content="NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작"
+      property="og:title"
+    />
+    <meta
+      content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다."
+      property="og:description"
+    />
+    <meta content="https://novawork.kr/" property="og:url" />
+    <meta
+      content="https://novawork.kr/assets/og-image.png"
+      property="og:image"
+    />
+    <meta content="1200" property="og:image:width" />
+    <meta content="630" property="og:image:height" />
+    <meta content="image/png" property="og:image:type" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta
+      content="NOVAWORK | 웹사이트·웹시스템·AI·데이터 제작"
+      name="twitter:title"
+    />
+    <meta
+      content="NOVAWORK는 홈페이지·랜딩페이지, 관리자 웹시스템, 홈페이지 수정, GA4/GTM, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다."
+      name="twitter:description"
+    />
+    <meta
+      content="https://novawork.kr/assets/og-image.png"
+      name="twitter:image"
+    />
+    <script type="application/ld+json">
       {
-        "@type": "Offer",
-        "name": "홈페이지·랜딩페이지",
-        "url": "https://novawork.kr/service-homepage-landing.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "React·Firebase 웹시스템",
-        "url": "https://novawork.kr/service-react-firebase-admin.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "홈페이지 오류 수정",
-        "url": "https://novawork.kr/service-homepage-fix.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "GA4·GTM 추적 세팅",
-        "url": "https://novawork.kr/service-ga4-gtm.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "GPT·AI 챗봇",
-        "url": "https://novawork.kr/service-gpt-ai-chatbot.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "웹 데이터 크롤링",
-        "url": "https://novawork.kr/service-web-crawling.html"
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "NOVAWORK",
+        "url": "https://novawork.kr/",
+        "image": "https://novawork.kr/assets/og-image.png",
+        "logo": "https://novawork.kr/assets/logo-symbol.png",
+        "description": "NOVAWORK는 홈페이지·랜딩페이지, React·Firebase 관리자 웹시스템, 홈페이지 오류 수정, GA4/GTM 추적 세팅, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다.",
+        "telephone": "+82-10-5528-6580",
+        "areaServed": "KR",
+        "founder": {
+          "@type": "Person",
+          "name": "고찬휘"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": "contact@novawork.kr",
+          "telephone": "+82-10-5528-6580",
+          "availableLanguage": ["ko"]
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "NOVAWORK 서비스",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "name": "홈페이지·랜딩페이지",
+              "url": "https://novawork.kr/service-homepage-landing.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "React·Firebase 웹시스템",
+              "url": "https://novawork.kr/service-react-firebase-admin.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "홈페이지 오류 수정",
+              "url": "https://novawork.kr/service-homepage-fix.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "GA4·GTM 추적 세팅",
+              "url": "https://novawork.kr/service-ga4-gtm.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "GPT·AI 챗봇",
+              "url": "https://novawork.kr/service-gpt-ai-chatbot.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "웹 데이터 크롤링",
+              "url": "https://novawork.kr/service-web-crawling.html"
+            }
+          ]
+        }
       }
-    ]
-  }
-}
-</script>
-<link href="./css/site-base.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
-<link href="./css/hero-logo-scroll.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
-</head>
-<body class="home">
-<div aria-hidden="true" class="site-loader">
-<div class="site-loader-inner">
-<img alt="" decoding="async" height="500" src="./assets/logo-symbol.png" width="751"/>
-</div>
-</div>
-<!-- Google Tag Manager (noscript) -->
-<noscript>
-<iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-MSVM26W9" style="display:none;visibility:hidden" width="0"></iframe>
-</noscript>
-<!-- End Google Tag Manager (noscript) -->
-<a class="skip-link" href="#main">본문 바로가기</a>
-<header class="header">
-<div class="container">
-<div class="header-inner">
-<a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></a>
-<nav aria-label="주요 메뉴" class="nav">
-<ul class="nav-list">
-<li><a class="nav-link" href="about.html">회사소개</a></li>
-<li><a class="nav-link" href="services.html">서비스</a></li>
-<li><a class="nav-link" href="portfolio.html">포트폴리오</a></li><li><a class="nav-link" href="faq.html">FAQ</a></li>
-</ul>
-</nav>
-<div class="header-actions">
-<a class="btn btn-small btn-secondary header-cta" href="contact.html">접수하기</a>
-<button aria-controls="mobile-menu" aria-expanded="false" aria-label="모바일 메뉴 열기" class="menu-toggle" type="button">
-<span></span>
-<span></span>
-<span></span>
-</button>
-</div>
-</div>
-</div>
-<div aria-label="모바일 메뉴" aria-modal="true" class="mobile-menu" id="mobile-menu" role="dialog">
-<div class="mobile-menu-panel">
-<ul class="mobile-menu-list"><li><a href="about.html">회사소개</a></li><li><a href="services.html">서비스</a></li><li><a href="portfolio.html">포트폴리오</a></li><li><a href="faq.html">FAQ</a></li></ul>
-<div aria-label="대표 서비스 바로가기" class="mobile-menu-shortcuts">
-<p>대표 서비스</p>
-<div class="mobile-menu-shortcut-grid">
-<a href="service-homepage-landing.html">홈페이지</a>
-<a href="service-react-firebase-admin.html">웹시스템</a>
-<a href="service-homepage-fix.html">오류 수정</a>
-<a href="service-ga4-gtm.html">GA4/GTM</a>
-<a href="service-gpt-ai-chatbot.html">AI 챗봇</a>
-<a href="service-web-crawling.html">크롤링</a>
-</div>
-</div>
-<a class="btn btn-primary mobile-menu-cta" href="contact.html">접수하기</a>
-</div>
-</div>
-</header>
-<main id="main" tabindex="-1"><section aria-label="NOVAWORK 로고 스크롤 조립 애니메이션" class="nw-logo-scroll">
-<div class="nw-sticky-stage">
-<div class="nw-stage-copy">
-<p class="nw-eyebrow">NOVAWORK</p>
-<h1>브랜드의 첫 인상을 설계하고 문의로 연결합니다</h1>
-</div>
-<div class="nw-logo-lockup">
-<div aria-hidden="true" class="nw-logo-aura"></div>
-<svg aria-labelledby="nwLogoTitle nwLogoDesc" class="nw-logo-svg" role="img" viewbox="285 305 730 610">
-<title id="nwLogoTitle">NOVAWORK Logo</title>
-<desc id="nwLogoDesc">
-                  스크롤에 따라 여러 SVG 조각이 중앙으로 모이며 완성되는 NOVAWORK 로고입니다.
-                </desc>
-<g class="nw-symbol" fill="currentColor">
-<path class="nw-logo-piece nw-symbol-piece" d="M315 326 L450 721 L491 600 L398 326 Z" data-end="0.70" data-piece="left-solid-slab" data-r="-18" data-s="0.78" data-start="0" data-x="-820" data-y="-420"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M599 327 L691 328 L684 337 L606 336 Z" data-end="0.52" data-piece="center-top-bar" data-r="9" data-s="0.92" data-start="0.08" data-x="-120" data-y="-620"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M599 327 L448 752 L462 743 L606 336 Z M448 752 L531 752 L525 741 L462 743 Z" data-end="0.58" data-piece="center-left-diagonal" data-r="15" data-s="0.86" data-start="0.12" data-x="-720" data-y="420"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M531 752 L643 445 L644 415 L525 741 Z" data-end="0.64" data-piece="center-inner-diagonal" data-r="-16" data-s="0.88" data-start="0.18" data-x="260" data-y="640"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M643 445 L746 751 L753 742 L644 415 Z" data-end="0.68" data-piece="center-inner-return" data-r="12" data-s="0.9" data-start="0.23" data-x="80" data-y="680"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M691 328 L786 611 L785 641 L684 337 Z" data-end="0.62" data-piece="center-right-diagonal" data-r="-13" data-s="0.88" data-start="0.16" data-x="520" data-y="-460"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M786 611 L887 327 L894 337 L785 641 Z" data-end="0.74" data-piece="right-inner-diagonal" data-r="18" data-s="0.84" data-start="0.28" data-x="760" data-y="280"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M887 327 L979 327 L965 337 L894 337 Z" data-end="0.76" data-piece="right-top-bar" data-r="10" data-s="0.94" data-start="0.32" data-x="640" data-y="-620"></path>
-<path class="nw-logo-piece nw-symbol-piece" d="M979 327 L822 752 L815 743 L965 337 Z M822 752 L746 751 L753 742 L815 743 Z" data-end="0.82" data-piece="right-outer-diagonal" data-r="-16" data-s="0.86" data-start="0.36" data-x="860" data-y="-260"></path>
-</g>
-<g class="nw-wordmark" fill="currentColor">
-<path class="nw-logo-piece nw-letter" d="M325 827 L325 881 L333 881 L334 842 L365 881 L372 881 L372 827 L364 828 L363 866 L335 831 Z" data-end="0.84" data-piece="letter-n" data-r="-8" data-s="0.92" data-start="0.70" data-x="-220" data-y="140"></path>
-<path class="nw-logo-piece nw-letter" d="M434 826 L425 828 L414 836 L409 846 L408 856 L412 869 L419 877 L431 882 L440 882 L450 879 L460 869 L463 862 L463 847 L452 831 Z M432 833 L445 835 L452 841 L455 847 L455 861 L452 867 L441 875 L431 875 L423 871 L416 858 L419 842 L425 836 Z" data-end="0.86" data-piece="letter-o-1" data-r="7" data-s="0.91" data-start="0.72" data-x="-180" data-y="170" fill-rule="evenodd"></path>
-<path class="nw-logo-piece nw-letter" d="M493 827 L514 881 L521 881 L542 827 L534 828 L518 868 L501 827 Z" data-end="0.88" data-piece="letter-v" data-r="-7" data-s="0.92" data-start="0.74" data-x="-120" data-y="180"></path>
-<path class="nw-logo-piece nw-letter" d="M592 827 L569 881 L577 881 L583 867 L606 867 L612 881 L620 881 L599 828 Z M595 838 L604 859 L603 861 L587 861 L586 860 L586 858 L592 845 L593 840 Z" data-end="0.90" data-piece="letter-a" data-r="6" data-s="0.92" data-start="0.76" data-x="-50" data-y="190" fill-rule="evenodd"></path>
-<path class="nw-logo-piece nw-letter" d="M647 827 L664 881 L672 880 L684 841 L697 881 L705 880 L721 827 L713 827 L701 867 L688 827 L680 828 L668 867 L656 828 Z" data-end="0.92" data-piece="letter-w" data-r="-5" data-s="0.92" data-start="0.78" data-x="50" data-y="190"></path>
-<path class="nw-logo-piece nw-letter" d="M770 827 L761 831 L753 840 L750 848 L751 864 L757 874 L766 880 L787 881 L795 877 L802 869 L805 861 L805 847 L801 838 L792 830 L779 826 Z M774 833 L787 835 L793 840 L797 848 L797 860 L794 867 L789 872 L782 875 L772 875 L766 872 L758 860 L760 843 L767 836 Z" data-end="0.94" data-piece="letter-o-2" data-r="7" data-s="0.91" data-start="0.80" data-x="120" data-y="170" fill-rule="evenodd"></path>
-<path class="nw-logo-piece nw-letter" d="M839 827 L839 881 L847 881 L848 859 L856 859 L870 881 L879 881 L865 859 L875 851 L875 835 L862 827 Z M847 834 L848 833 L860 833 L865 835 L869 840 L868 848 L865 851 L860 853 L848 852 L847 851 Z" data-end="0.96" data-piece="letter-r" data-r="-6" data-s="0.92" data-start="0.82" data-x="180" data-y="150" fill-rule="evenodd"></path>
-<path class="nw-logo-piece nw-letter" d="M911 827 L911 881 L918 881 L919 855 L942 881 L952 881 L928 854 L951 827 L942 827 L920 851 L918 827 Z" data-end="0.98" data-piece="letter-k" data-r="8" data-s="0.92" data-start="0.84" data-x="230" data-y="130"></path>
-</g>
-</svg>
-<p class="nw-brand-copy">
-                웹사이트 제작 · 랜딩페이지 · 유지관리까지, 사업에 필요한 온라인 접점을 명확하게 만듭니다.
-              </p>
-<div aria-label="주요 상담 동선" class="nw-hero-actions">
-<a class="btn btn-primary" href="contact.html">프로젝트 접수하기</a>
-<a class="btn btn-secondary" href="services.html">서비스 보기</a>
-</div>
-</div>
-<div aria-label="로고 조립 진행률" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="nw-hero-progress" role="progressbar">
-<span class="nw-hero-progress__label">ASSEMBLY</span>
-<strong class="nw-hero-progress__value">0%</strong>
-<i aria-hidden="true" class="nw-hero-progress__track"><b></b></i>
-</div>
-<a aria-label="아래 내용 보기" class="nw-scroll-hint" href="#about">
-<span aria-hidden="true" class="nw-scroll-hint__mouse"></span>
-<span class="nw-scroll-hint__text">SCROLL</span>
-</a>
-</div>
-</section>
-<section class="section home-intro-section" id="about">
-<div class="container">
-<div class="home-intro-card">
-<div class="section-head">
-<span class="section-label">WHAT WE BUILD</span>
-<h2 class="section-title">필요한 작업을 정확히 나누고 직접 구현합니다.</h2>
-<p class="section-desc">NOVAWORK는 단순히 웹사이트 하나만 만드는 곳이 아닙니다. 보여주는 화면, 운영용 관리자 시스템, 기존 사이트 수정, 문의 행동 측정, AI 상담 흐름, 공개 데이터 수집을 목적별로 분리해 구현합니다.</p>
-<div class="section-actions"><a class="btn btn-primary" href="services.html">전체 서비스 보기</a><a class="btn btn-secondary" href="contact.html">상담 접수</a></div>
-</div>
-<div class="home-intro-visual-stack">
-<figure class="home-intro-visual site-visual-frame">
-<img alt="NOVAWORK 통합 디지털 서비스 구성 화면" decoding="async" height="810" loading="lazy" src="./assets/visual-integrated-services.webp" width="1440"/>
-</figure>
-<div aria-label="NOVAWORK 작업 구분" class="home-signal-stack">
-<div class="home-signal"><span>01</span><div><strong>보여주는 화면</strong><p>홈페이지·랜딩페이지처럼 고객에게 정보를 전달하고 문의로 연결하는 구조입니다.</p></div></div>
-<div class="home-signal"><span>02</span><div><strong>운영하는 시스템</strong><p>신청·예약·고객 데이터를 저장하고 관리자가 처리하는 웹시스템입니다.</p></div></div>
-<div class="home-signal"><span>03</span><div><strong>측정·AI·데이터</strong><p>GA4/GTM, GPT 챗봇, 웹 데이터 수집처럼 운영 판단을 돕는 작업입니다.</p></div></div>
-</div>
-</div>
-</div>
-</div></section><section aria-labelledby="nw-proof-title" class="section nw-proof-section">
-<div class="container">
-<div class="section-head nw-proof-head">
-<p class="section-label">WORK STANDARD</p>
-<h2 class="section-title" id="nw-proof-title">보여주는 페이지에서 끝나지 않도록 만듭니다.</h2>
-<p class="section-desc">홈페이지·랜딩페이지·관리자 시스템·GA4/GTM·AI 챗봇까지, 작은 비즈니스가 바로 쓸 수 있는 웹 구조를 작업 범위에 맞춰 설계합니다.</p>
-</div>
-<div class="nw-proof-badge-grid">
-<span>직접 코딩 기반 가능</span><span>PC / 모바일 반응형</span><span>문의 CTA 검수</span><span>GA4/GTM 연동 가능</span><span>소스 파일 전달 가능</span><span>작업 범위 사전 확정</span><span>작업 후 오류 확인</span><span>카카오톡 상담 연결</span>
-</div>
-</div>
-</section><section aria-labelledby="nw-fit-title" class="section nw-fit-section">
-<div class="container">
-<div class="section-head">
-<p class="section-label">FIT CHECK</p>
-<h2 class="section-title" id="nw-fit-title">NOVAWORK가 맞는 경우</h2>
-<p class="section-desc">서비스명을 정확히 몰라도 괜찮습니다. 현재 상황을 기준으로 필요한 웹 작업을 먼저 나눕니다.</p>
-</div>
-<div class="nw-fit-grid">
-<article class="nw-fit-card"><span>01</span><h3>방식부터 정리가 필요한 경우</h3><p>홈페이지가 필요한지, 랜딩페이지가 맞는지, 웹시스템이 필요한지 먼저 구분합니다.</p></article>
-<article class="nw-fit-card"><span>02</span><h3>대표 링크가 필요한 경우</h3><p>명함, 인스타그램, 광고에 연결할 반응형 웹사이트 또는 원페이지를 구성합니다.</p></article>
-<article class="nw-fit-card"><span>03</span><h3>문의 클릭을 확인하고 싶은 경우</h3><p>전화, 카카오톡, 이메일, 문의폼 CTA 클릭을 GA4/GTM 기준으로 정리할 수 있습니다.</p></article>
-<article class="nw-fit-card"><span>04</span><h3>기존 사이트가 불안정한 경우</h3><p>모바일 깨짐, 버튼 오류, 레이아웃 문제, 링크 누락을 수정 범위로 나눠 확인합니다.</p></article>
-<article class="nw-fit-card"><span>05</span><h3>데이터 저장이 필요한 경우</h3><p>신청·예약·문의 데이터를 저장하고 관리자 화면에서 확인하는 구조를 설계합니다.</p></article>
-<article class="nw-fit-card"><span>06</span><h3>반복 문의를 줄이고 싶은 경우</h3><p>자주 묻는 질문과 문서를 기준으로 AI 챗봇 답변 범위와 상담 연결 조건을 정리합니다.</p></article>
-</div>
-<div class="nw-section-actions"><a class="btn btn-secondary" href="services.html">서비스 보기</a><a class="btn btn-primary" href="contact.html">프로젝트 접수하기</a></div>
-</div>
-</section>
-<section class="section home-services-showcase service-compact-section" id="services">
-<div class="container">
-<div class="section-head compact-head">
-<span class="section-label">SERVICES</span>
-<h2 class="section-title">6개 서비스로 간단하게 선택하세요.</h2>
-<p class="section-desc">메인에서는 어떤 문제에 맞는 서비스인지 빠르게 보이도록 정리했습니다. 자세한 작업 범위는 각 상세 페이지에서 확인할 수 있습니다.</p>
-</div>
-<div class="service-mini-grid service-mini-grid--visual home-service-mini-grid">
-<a class="service-mini-card service-mini-card--visual" href="service-homepage-landing.html">
-<figure><img alt="홈페이지 랜딩페이지 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-homepage.webp" width="1450"/></figure>
-<span class="service-mini-body"><i class="service-mini-kicker">웹 제작</i><strong>홈페이지·랜딩페이지</strong><em class="service-mini-note">처음 방문한 고객이 사업을 이해하고 문의까지 이동하도록 구성합니다.</em></span>
-</a>
-<a class="service-mini-card service-mini-card--visual" href="service-react-firebase-admin.html">
-<figure><img alt="React Firebase 웹시스템 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-admin-system.webp" width="1450"/></figure>
-<span class="service-mini-body"><i class="service-mini-kicker">웹시스템</i><strong>React·Firebase 웹시스템</strong><em class="service-mini-note">신청폼, DB 저장, 로그인, 관리자 페이지처럼 운영 기능을 구현합니다.</em></span>
-</a>
-<a class="service-mini-card service-mini-card--visual" href="service-homepage-fix.html">
-<figure><img alt="홈페이지 오류 수정 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-homepage-fix.webp" width="1450"/></figure>
-<span class="service-mini-body"><i class="service-mini-kicker">수정·유지보수</i><strong>홈페이지 오류 수정</strong><em class="service-mini-note">모바일 깨짐, 버튼 미작동, 문구·이미지·링크 변경을 정리합니다.</em></span>
-</a>
-<a class="service-mini-card service-mini-card--visual" href="service-ga4-gtm.html">
-<figure><img alt="GA4 GTM 추적 세팅 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-ga4-gtm.webp" width="1450"/></figure>
-<span class="service-mini-body"><i class="service-mini-kicker">측정 세팅</i><strong>GA4·GTM 추적 세팅</strong><em class="service-mini-note">전화, 카카오톡, 문의폼, CTA 버튼 클릭이 측정되도록 세팅합니다.</em></span>
-</a>
-<a class="service-mini-card service-mini-card--visual" href="service-gpt-ai-chatbot.html">
-<figure><img alt="GPT AI 챗봇 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-ai-chatbot.webp" width="1450"/></figure>
-<span class="service-mini-body"><i class="service-mini-kicker">AI 챗봇</i><strong>GPT·AI 챗봇</strong><em class="service-mini-note">FAQ, 반복 문의, 문서 기반 답변 흐름과 사람 연결 기준을 설계합니다.</em></span>
-</a>
-<a class="service-mini-card service-mini-card--visual" href="service-web-crawling.html">
-<figure><img alt="웹 데이터 크롤링 서비스 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-web-crawling.webp" width="1450"/></figure>
-<span class="service-mini-body"><i class="service-mini-kicker">데이터 수집</i><strong>웹 데이터 크롤링</strong><em class="service-mini-note">공개 웹페이지 데이터를 수집하고 중복·형식을 정리해 엑셀/CSV로 제공합니다.</em></span>
-</a>
-</div>
-</div>
-</section><section aria-labelledby="nw-case-title" class="section nw-case-section">
-<div class="container">
-<div class="section-head">
-<p class="section-label">EXAMPLE SCOPE</p>
-<h2 class="section-title" id="nw-case-title">작업 유형 예시</h2>
-<p class="section-desc">아래 내용은 실제 고객명이나 성과 수치를 공개한 사례가 아니라, 진행 가능한 대표 작업 범위를 문제·작업·전달물 기준으로 정리한 예시입니다.</p>
-</div>
-<div class="nw-case-grid">
-<article class="nw-case-card"><p class="nw-case-kicker">소상공인 원페이지 홈페이지</p><h3>대표 링크 구축</h3><dl><dt>목적</dt><dd>명함, 인스타그램, 광고에 연결할 대표 링크 구축</dd><dt>작업</dt><dd>원페이지 홈페이지, 카카오톡 CTA, 문의 버튼 연결, 기본 SEO</dd><dt>전달물</dt><dd>PC/모바일 반응형 페이지, 소스 파일, 링크 점검</dd></dl></article>
-<article class="nw-case-card"><p class="nw-case-kicker">랜딩페이지 제작</p><h3>광고·이벤트 문의 전환</h3><dl><dt>목적</dt><dd>특정 광고나 이벤트 문의 행동 유도</dd><dt>작업</dt><dd>핵심 메시지, CTA 배치, 문의 동선, GA4/GTM 이벤트</dd><dt>전달물</dt><dd>랜딩페이지, 버튼 클릭 추적 기준, 검수 링크</dd></dl></article>
-<article class="nw-case-card"><p class="nw-case-kicker">기존 사이트 모바일 오류 수정</p><h3>깨짐과 버튼 오류 정리</h3><dl><dt>목적</dt><dd>모바일 화면 깨짐, 버튼 오류, 레이아웃 문제 해결</dd><dt>작업</dt><dd>CSS 구조 정리, 반응형 보정, 주요 링크 점검</dd><dt>전달물</dt><dd>수정 파일, 변경 내역, 검수 체크리스트</dd></dl></article>
-<article class="nw-case-card"><p class="nw-case-kicker">GA4/GTM 전환 추적</p><h3>문의 행동 확인</h3><dl><dt>목적</dt><dd>전화, 카카오톡, 문의폼 클릭 확인</dd><dt>작업</dt><dd>이벤트명 정의, 태그/트리거 세팅, 테스트</dd><dt>전달물</dt><dd>이벤트 목록, 확인 방법, 테스트 결과</dd></dl></article>
-<article class="nw-case-card"><p class="nw-case-kicker">React/Firebase 관리자 페이지</p><h3>신청 데이터 관리</h3><dl><dt>목적</dt><dd>신청/예약/문의 데이터를 관리자 화면에서 확인</dd><dt>작업</dt><dd>데이터 구조, 관리자 목록, 상태 관리, 엑셀 다운로드 여부 검토</dd><dt>전달물</dt><dd>관리자 화면, DB 구조 기준, 기본 운영 안내</dd></dl></article>
-<article class="nw-case-card"><p class="nw-case-kicker">AI 챗봇 / 데이터 자동화</p><h3>반복 업무 줄이기</h3><dl><dt>목적</dt><dd>반복 문의 응대 또는 공개 데이터 정리 자동화</dd><dt>작업</dt><dd>답변 범위 설계, 데이터 항목 정리, 자동화 흐름 구성</dd><dt>전달물</dt><dd>챗봇 또는 자동화 스크립트, 사용 안내</dd></dl></article>
-</div>
-<div class="nw-section-actions"><a class="btn btn-secondary" href="portfolio.html">포트폴리오 보기</a><a class="btn btn-primary" href="contact.html">내 작업 범위 문의하기</a></div>
-</div>
-</section><section aria-labelledby="nw-estimate-title" class="section nw-estimate-section">
-<div class="container">
-<div class="section-head"><p class="section-label">ESTIMATE LOGIC</p><h2 class="section-title" id="nw-estimate-title">같은 홈페이지라도 가격이 다른 이유</h2><p class="section-desc">가격은 단순 페이지 수만으로 정하지 않습니다. 화면 수, 기능 수, 자료 준비 상태, 반응형 난이도, 추적/운영 범위에 따라 작업량이 달라집니다.</p></div>
-<div class="nw-estimate-grid">
-<article class="nw-estimate-card"><h3>화면 수</h3><p>메인 1페이지인지, 서브 페이지가 포함되는지에 따라 작업량이 달라집니다.</p></article>
-<article class="nw-estimate-card"><h3>기능 수</h3><p>문의폼, 예약폼, 관리자 화면, 로그인, 파일 업로드, 외부 API 연동 여부를 확인합니다.</p></article>
-<article class="nw-estimate-card"><h3>자료 준비 상태</h3><p>문구, 이미지, 로고, 참고 사이트, 계정 권한이 준비되어 있으면 일정이 짧아집니다.</p></article>
-<article class="nw-estimate-card"><h3>반응형 난이도</h3><p>PC와 모바일에서 같은 정보가 자연스럽게 보여야 하므로 화면 구조에 따라 작업량이 달라집니다.</p></article>
-<article class="nw-estimate-card"><h3>추적 / 운영 범위</h3><p>전화, 카카오톡, 문의폼, CTA 클릭을 GA4/GTM으로 확인해야 하는 경우 별도 세팅이 필요할 수 있습니다.</p></article>
-</div>
-<div class="nw-section-actions"><a class="btn btn-primary" href="contact.html">내 작업 범위 문의하기</a></div>
-</div>
-</section>
-<section class="section home-decision-section">
-<div class="container">
-<div class="home-decision-board">
-<div class="section-head">
-<span class="section-label">SERVICE ROUTE</span>
-<h2 class="section-title">상황을 먼저 보면 서비스가 명확해집니다.</h2>
-<p class="section-desc">의뢰 이름을 정확히 몰라도 됩니다. 지금 필요한 결과가 무엇인지에 따라 작업 범위를 나눕니다.</p>
-</div>
-<div class="decision-rail">
-<div class="decision-row"><em>01</em><div><strong>대표 링크가 필요하다</strong><span>서비스 소개와 문의 연결 중심</span></div><i>홈페이지·랜딩페이지</i></div>
-<div class="decision-row"><em>02</em><div><strong>신청 내역을 관리해야 한다</strong><span>DB 저장과 관리자 화면 중심</span></div><i>React·Firebase 웹시스템</i></div>
-<div class="decision-row"><em>03</em><div><strong>기존 사이트가 깨지거나 불편하다</strong><span>원인 확인과 부분 수정 중심</span></div><i>홈페이지 오류 수정</i></div>
-<div class="decision-row"><em>04</em><div><strong>전화·카톡·문의 클릭을 보고 싶다</strong><span>이벤트 정의와 추적 검수 중심</span></div><i>GA4·GTM</i></div>
-<div class="decision-row"><em>05</em><div><strong>반복 문의 응답을 줄이고 싶다</strong><span>FAQ·문서 기반 답변 흐름 중심</span></div><i>GPT·AI 챗봇</i></div>
-<div class="decision-row"><em>06</em><div><strong>공개 데이터를 엑셀로 정리해야 한다</strong><span>수집 가능성 검토와 컬럼 정리 중심</span></div><i>웹 데이터 크롤링</i></div>
-</div>
-</div>
-</div>
-</section>
-<section class="section home-package-section">
-<div class="container">
-<div class="package-preview-band">
-<div class="section-head">
-<span class="section-label">PACKAGE SYSTEM</span>
-<h2 class="section-title">서비스가 여러 개 섞이면 패키지로 묶어 정리합니다.</h2>
-<p class="section-desc">홈페이지를 만들고 GA4를 붙이거나, 관리자 시스템에 측정 기준을 넣고, AI 챗봇이나 데이터 수집을 다음 단계로 연결하는 방식입니다.</p>
-</div>
-<div class="package-preview-mini-grid">
-<a href="services.html#package-list"><span>01</span><strong>Launch Basic</strong><em>홈페이지 + GA4/GTM</em></a>
-<a href="services.html#package-list"><span>02</span><strong>Operation Core</strong><em>React·Firebase + 측정</em></a>
-<a href="services.html#package-list"><span>03</span><strong>AI Support</strong><em>홈페이지 + GPT 챗봇</em></a>
-</div>
-<a class="btn btn-primary" href="services.html#package-system">서비스 조합 보기</a>
-</div>
-</div>
-</section>
-<section class="section home-work-preview-section">
-<div class="container">
-<div class="home-work-preview-grid">
-<div aria-label="NOVAWORK 서비스 이미지 미리보기" class="home-preview-collage">
-<figure><img alt="홈페이지 제작 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-homepage.webp" width="1450"/></figure>
-<figure><img alt="관리자 웹시스템 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-admin-system.webp" width="1450"/></figure>
-<figure><img alt="AI 챗봇 구축 이미지" decoding="async" height="1085" loading="lazy" src="./assets/service-visual-ai-chatbot.webp" width="1450"/></figure>
-</div>
-<div class="section-head">
-<span class="section-label">OUTPUT</span>
-<h2 class="section-title">결과물은 보기 좋게, 운영 기준은 명확하게.</h2>
-<p class="section-desc">화면만 만들어 놓고 끝내지 않습니다. 버튼 연결, 데이터 저장, 이벤트 측정, AI 답변 기준, 수집 결과 검수처럼 실제 사용 단계에서 필요한 기준까지 같이 확인합니다.</p>
-<ul class="home-preview-list">
-<li><strong>화면 결과물</strong><span>PC·모바일 반응형, 문의 버튼, 공유 미리보기, 기본 SEO를 확인합니다.</span></li>
-<li><strong>운영 결과물</strong><span>관리자 목록, 상태값, 검색·필터, 파일 업로드, 사용 방법을 정리합니다.</span></li>
-<li><strong>측정·데이터 결과물</strong><span>이벤트 목록, 챗봇 응답 기준, 수집 컬럼과 누락 기준을 전달합니다.</span></li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section class="section home-process-section">
-<div class="container">
-<div class="section-head compact-head">
-<span class="section-label">PROCESS</span>
-<h2 class="section-title">작업은 세 단계로 단순하게 진행합니다.</h2>
-<p class="section-desc">상담 단계에서 범위를 과하게 키우지 않고, 현재 필요한 결과물부터 먼저 정리합니다.</p>
-</div>
-<figure class="process-visual-strip site-visual-frame">
-<img alt="리서치부터 런칭까지 이어지는 NOVAWORK 작업 프로세스" decoding="async" height="810" loading="lazy" src="./assets/visual-process-flow.webp" width="1440"/>
-</figure>
-<div class="home-process-band">
-<article class="home-process-step"><span>STEP 01</span><h3>문제와 목적 분리</h3><p>대표 링크, 관리자 시스템, 기존 사이트 수정, 측정, AI 챗봇, 데이터 수집 중 어디에 해당하는지 먼저 나눕니다.</p></article>
-<article class="home-process-step"><span>STEP 02</span><h3>구조와 준비 자료 확정</h3><p>화면 수, 기능 수, 데이터 항목, 계정 권한, 참고 자료, 검수 기준을 정리한 뒤 작업 범위를 확정합니다.</p></article>
-<article class="home-process-step"><span>STEP 03</span><h3>구현·검수·전달</h3><p>테스트 링크 또는 결과 파일을 공유하고, 합의된 범위 안에서 수정 후 최종 파일과 안내를 전달합니다.</p></article>
-</div>
-</div>
-</section>
-<section aria-labelledby="nw-aftercare-title" class="section nw-aftercare-section">
-<div class="container">
-<div class="section-head"><p class="section-label">AFTERCARE</p><h2 class="section-title" id="nw-aftercare-title">제작 후에도 이어갈 수 있는 작업</h2><p class="section-desc">공개 후 문구, 이미지, 링크, 전환 추적, 챗봇 답변 범위처럼 운영하면서 바뀌는 항목을 작업 범위에 따라 이어갈 수 있습니다.</p></div>
-<div class="nw-aftercare-grid">
-<article class="nw-aftercare-card"><h3>단건 수정</h3><p>가끔 수정이 필요한 경우에 적합합니다.</p><ul><li>문구 / 이미지 교체</li><li>버튼 링크 변경</li><li>간단한 CSS 수정</li></ul></article>
-<article class="nw-aftercare-card"><h3>월간 관리</h3><p>매달 콘텐츠가 바뀌는 경우에 적합합니다.</p><ul><li>공지 또는 이벤트 섹션 추가</li><li>버튼 / 폼 점검</li><li>작은 오류 대응</li></ul></article>
-<article class="nw-aftercare-card"><h3>성과 개선</h3><p>광고나 문의 전환을 보고 개선하는 경우에 적합합니다.</p><ul><li>GA4/GTM 이벤트 추가</li><li>CTA 문구/위치 개선</li><li>랜딩 섹션 수정</li></ul></article>
-</div>
-</div>
-</section><section class="section contact home-final-cta">
-<div class="container">
-<div class="contact-box cta-band">
-<div class="section-head">
-<span class="section-label">CONTACT</span>
-<h2 class="section-title">서비스명을 몰라도 현재 상황만 남겨주세요.</h2>
-<p class="section-desc">필요한 작업이 한 가지인지, 여러 서비스가 섞인 프로젝트인지 확인해 24시간 내 1차 답변드립니다.</p>
-</div>
-<a class="btn btn-primary" href="contact.html">프로젝트 접수하기</a>
-<figure class="home-final-cta-visual site-visual-frame">
-<img alt="문의 접수와 상담 화면을 보여주는 NOVAWORK 컨택트 이미지" decoding="async" height="810" loading="lazy" src="./assets/visual-contact-cta.webp" width="1440"/>
-</figure>
-</div>
-</div>
-</section>
-</main>
-<footer class="footer">
-<div class="container">
-<div class="footer-top">
-<div>
-<p class="footer-logo"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></p>
-<p class="footer-text">홈페이지·랜딩페이지 제작 · 관리자 웹시스템 · GA4/GTM · GPT 챗봇 · 데이터 수집</p>
-<ul aria-label="사업자 정보" class="footer-business">
-<li>대표: 고찬휘</li>
-<li>사업자등록번호: 613 27 53241</li>
-<li>이메일: <a href="mailto:contact@novawork.kr">contact@novawork.kr</a></li>
-<li>전화: <a href="tel:01055286580">010-5528-6580</a></li>
-<li>회신: 24시간 내 1차 답변</li>
-<li>서비스 지역: 전국 온라인 상담 가능</li>
-</ul>
-</div>
-<nav aria-label="하단 메뉴" class="footer-nav">
-<a href="index.html">홈</a>
-<a href="about.html">회사소개</a>
-<a href="services.html">서비스</a>
-<a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
-<a href="contact.html">접수하기</a>
-<a href="privacy.html">개인정보처리방침</a>
-</nav>
-</div>
-<div class="footer-bottom">
-<p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
-<p class="footer-note">접수는 <a href="contact.html">접수 페이지</a> 또는 <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내 확인합니다.</p>
-</div>
-</div>
-</footer>
-<script src="./js/modules/logo-scroll-hero.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/modules/site-reveal.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/01-core-ui.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/02-enhance-v7-smooth-scroll.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/03-enhance-v8-faq-search.js?v=v55-enhance-v11-20260609"></script>
-</body>
+    </script>
+    <link href="./css/site.css?v=v90-motion-full-20260712" rel="stylesheet" />
+  </head>
+  <body class="home">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        title="Google Tag Manager"
+        height="0"
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MSVM26W9"
+        style="display: none; visibility: hidden"
+        width="0"
+      ></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="header">
+      <div class="container">
+        <div class="header-inner">
+          <a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"
+            ><img
+              alt="NOVAWORK"
+              decoding="async"
+              height="286"
+              src="./assets/logo-horizontal.png"
+              width="1273"
+          /></a>
+          <nav aria-label="주요 메뉴" class="nav">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="about.html">회사소개</a></li>
+              <li><a class="nav-link" href="services.html">서비스</a></li>
+              <li><a class="nav-link" href="portfolio.html">포트폴리오</a></li>
+              <li><a class="nav-link" href="faq.html">FAQ</a></li>
+            </ul>
+          </nav>
+          <div class="header-actions">
+            <a
+              class="btn btn-small btn-secondary header-cta"
+              href="contact.html"
+              >접수하기</a
+            >
+            <button
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              aria-label="모바일 메뉴 열기"
+              class="menu-toggle"
+              type="button"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="모바일 메뉴"
+        aria-modal="true"
+        class="mobile-menu"
+        id="mobile-menu"
+        role="dialog"
+      >
+        <div class="mobile-menu-panel">
+          <ul class="mobile-menu-list">
+            <li><a href="about.html">회사소개</a></li>
+            <li><a href="services.html">서비스</a></li>
+            <li><a href="portfolio.html">포트폴리오</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+          <div
+            aria-label="대표 서비스 바로가기"
+            class="mobile-menu-shortcuts"
+            role="group"
+          >
+            <p>대표 서비스</p>
+            <div class="mobile-menu-shortcut-grid">
+              <a href="service-homepage-landing.html">홈페이지</a>
+              <a href="service-react-firebase-admin.html">웹시스템</a>
+              <a href="service-homepage-fix.html">오류 수정</a>
+              <a href="service-ga4-gtm.html">GA4/GTM</a>
+              <a href="service-gpt-ai-chatbot.html">AI 챗봇</a>
+              <a href="service-web-crawling.html">크롤링</a>
+            </div>
+          </div>
+          <a class="btn btn-primary mobile-menu-cta" href="contact.html"
+            >접수하기</a
+          >
+        </div>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section aria-labelledby="hero-title" class="nw-logo-scroll">
+        <div class="nw-sticky-stage">
+          <div class="nw-stage-copy">
+            <p class="nw-eyebrow">NOVAWORK</p>
+            <h1 id="hero-title">
+              <span>홈페이지를</span><span>문의와 운영으로 연결합니다.</span>
+            </h1>
+          </div>
+          <div class="nw-logo-lockup">
+            <div aria-hidden="true" class="nw-logo-aura"></div>
+            <svg
+              aria-labelledby="nwLogoTitle nwLogoDesc"
+              class="nw-logo-svg"
+              role="img"
+              viewBox="285 305 730 610"
+            >
+              <title id="nwLogoTitle">NOVAWORK Logo</title>
+              <desc id="nwLogoDesc">
+                짧은 조립 애니메이션으로 완성되는 NOVAWORK 로고입니다.
+              </desc>
+              <g class="nw-symbol" fill="currentColor">
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M315 326 L450 721 L491 600 L398 326 Z"
+                  data-end="0.70"
+                  data-piece="left-solid-slab"
+                  data-r="-18"
+                  data-s="0.78"
+                  data-start="0"
+                  data-x="-820"
+                  data-y="-420"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M599 327 L691 328 L684 337 L606 336 Z"
+                  data-end="0.52"
+                  data-piece="center-top-bar"
+                  data-r="9"
+                  data-s="0.92"
+                  data-start="0.08"
+                  data-x="-120"
+                  data-y="-620"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M599 327 L448 752 L462 743 L606 336 Z M448 752 L531 752 L525 741 L462 743 Z"
+                  data-end="0.58"
+                  data-piece="center-left-diagonal"
+                  data-r="15"
+                  data-s="0.86"
+                  data-start="0.12"
+                  data-x="-720"
+                  data-y="420"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M531 752 L643 445 L644 415 L525 741 Z"
+                  data-end="0.64"
+                  data-piece="center-inner-diagonal"
+                  data-r="-16"
+                  data-s="0.88"
+                  data-start="0.18"
+                  data-x="260"
+                  data-y="640"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M643 445 L746 751 L753 742 L644 415 Z"
+                  data-end="0.68"
+                  data-piece="center-inner-return"
+                  data-r="12"
+                  data-s="0.9"
+                  data-start="0.23"
+                  data-x="80"
+                  data-y="680"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M691 328 L786 611 L785 641 L684 337 Z"
+                  data-end="0.62"
+                  data-piece="center-right-diagonal"
+                  data-r="-13"
+                  data-s="0.88"
+                  data-start="0.16"
+                  data-x="520"
+                  data-y="-460"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M786 611 L887 327 L894 337 L785 641 Z"
+                  data-end="0.74"
+                  data-piece="right-inner-diagonal"
+                  data-r="18"
+                  data-s="0.84"
+                  data-start="0.28"
+                  data-x="760"
+                  data-y="280"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M887 327 L979 327 L965 337 L894 337 Z"
+                  data-end="0.76"
+                  data-piece="right-top-bar"
+                  data-r="10"
+                  data-s="0.94"
+                  data-start="0.32"
+                  data-x="640"
+                  data-y="-620"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-symbol-piece"
+                  d="M979 327 L822 752 L815 743 L965 337 Z M822 752 L746 751 L753 742 L815 743 Z"
+                  data-end="0.82"
+                  data-piece="right-outer-diagonal"
+                  data-r="-16"
+                  data-s="0.86"
+                  data-start="0.36"
+                  data-x="860"
+                  data-y="-260"
+                ></path>
+              </g>
+              <g class="nw-wordmark" fill="currentColor">
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M325 827 L325 881 L333 881 L334 842 L365 881 L372 881 L372 827 L364 828 L363 866 L335 831 Z"
+                  data-end="0.84"
+                  data-piece="letter-n"
+                  data-r="-8"
+                  data-s="0.92"
+                  data-start="0.70"
+                  data-x="-220"
+                  data-y="140"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M434 826 L425 828 L414 836 L409 846 L408 856 L412 869 L419 877 L431 882 L440 882 L450 879 L460 869 L463 862 L463 847 L452 831 Z M432 833 L445 835 L452 841 L455 847 L455 861 L452 867 L441 875 L431 875 L423 871 L416 858 L419 842 L425 836 Z"
+                  data-end="0.86"
+                  data-piece="letter-o-1"
+                  data-r="7"
+                  data-s="0.91"
+                  data-start="0.72"
+                  data-x="-180"
+                  data-y="170"
+                  fill-rule="evenodd"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M493 827 L514 881 L521 881 L542 827 L534 828 L518 868 L501 827 Z"
+                  data-end="0.88"
+                  data-piece="letter-v"
+                  data-r="-7"
+                  data-s="0.92"
+                  data-start="0.74"
+                  data-x="-120"
+                  data-y="180"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M592 827 L569 881 L577 881 L583 867 L606 867 L612 881 L620 881 L599 828 Z M595 838 L604 859 L603 861 L587 861 L586 860 L586 858 L592 845 L593 840 Z"
+                  data-end="0.90"
+                  data-piece="letter-a"
+                  data-r="6"
+                  data-s="0.92"
+                  data-start="0.76"
+                  data-x="-50"
+                  data-y="190"
+                  fill-rule="evenodd"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M647 827 L664 881 L672 880 L684 841 L697 881 L705 880 L721 827 L713 827 L701 867 L688 827 L680 828 L668 867 L656 828 Z"
+                  data-end="0.92"
+                  data-piece="letter-w"
+                  data-r="-5"
+                  data-s="0.92"
+                  data-start="0.78"
+                  data-x="50"
+                  data-y="190"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M770 827 L761 831 L753 840 L750 848 L751 864 L757 874 L766 880 L787 881 L795 877 L802 869 L805 861 L805 847 L801 838 L792 830 L779 826 Z M774 833 L787 835 L793 840 L797 848 L797 860 L794 867 L789 872 L782 875 L772 875 L766 872 L758 860 L760 843 L767 836 Z"
+                  data-end="0.94"
+                  data-piece="letter-o-2"
+                  data-r="7"
+                  data-s="0.91"
+                  data-start="0.80"
+                  data-x="120"
+                  data-y="170"
+                  fill-rule="evenodd"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M839 827 L839 881 L847 881 L848 859 L856 859 L870 881 L879 881 L865 859 L875 851 L875 835 L862 827 Z M847 834 L848 833 L860 833 L865 835 L869 840 L868 848 L865 851 L860 853 L848 852 L847 851 Z"
+                  data-end="0.96"
+                  data-piece="letter-r"
+                  data-r="-6"
+                  data-s="0.92"
+                  data-start="0.82"
+                  data-x="180"
+                  data-y="150"
+                  fill-rule="evenodd"
+                ></path>
+                <path
+                  class="nw-logo-piece nw-letter"
+                  d="M911 827 L911 881 L918 881 L919 855 L942 881 L952 881 L928 854 L951 827 L942 827 L920 851 L918 827 Z"
+                  data-end="0.98"
+                  data-piece="letter-k"
+                  data-r="8"
+                  data-s="0.92"
+                  data-start="0.84"
+                  data-x="230"
+                  data-y="130"
+                ></path>
+              </g>
+            </svg>
+            <p class="nw-brand-copy">WEBSITE · TRACKING · WEB SYSTEM</p>
+            <div
+              aria-label="주요 상담 동선"
+              class="nw-hero-actions"
+              role="group"
+            >
+              <a class="btn btn-primary" href="#work">작업 보기</a>
+              <a class="btn btn-secondary" href="contact.html">프로젝트 접수</a>
+            </div>
+          </div>
+          <div
+            aria-label="로고 조립 진행률"
+            aria-valuemax="100"
+            aria-valuemin="0"
+            aria-valuenow="100"
+            class="nw-hero-progress"
+            role="progressbar"
+          >
+            <span class="nw-hero-progress__label">ASSEMBLY</span>
+            <strong class="nw-hero-progress__value">100%</strong>
+            <i aria-hidden="true" class="nw-hero-progress__track"><b></b></i>
+          </div>
+          <a
+            aria-label="아래 내용 보기"
+            class="nw-scroll-hint"
+            href="#capabilities"
+          >
+            <span aria-hidden="true" class="nw-scroll-hint__mouse"></span>
+            <span class="nw-scroll-hint__text">SCROLL</span>
+          </a>
+        </div>
+      </section>
+
+      <section
+        class="nw-capabilities"
+        id="capabilities"
+        aria-labelledby="capabilities-title"
+      >
+        <div class="nw-capabilities-sticky">
+          <header class="nw-section-intro nw-capabilities-intro">
+            <p class="nw-kicker">BUILD · MEASURE · OPERATE</p>
+            <h2 id="capabilities-title">하나의 흐름으로 연결합니다.</h2>
+          </header>
+
+          <div class="nw-capability-index" aria-hidden="true">
+            <span class="is-active">01 <b>BUILD</b></span>
+            <span>02 <b>MEASURE</b></span>
+            <span>03 <b>OPERATE</b></span>
+          </div>
+
+          <div class="nw-capability-panels">
+            <article class="nw-capability-panel is-active" data-capability="0">
+              <div class="nw-capability-copy">
+                <span>01 / BUILD</span>
+                <h3>고객이 보는 화면</h3>
+                <p>브랜드를 이해하고 문의까지 이동하는 웹사이트.</p>
+                <a href="service-homepage-landing.html">홈페이지 제작 보기</a>
+              </div>
+              <div
+                class="nw-capability-visual nw-build-demo"
+                aria-hidden="true"
+              >
+                <div class="nw-demo-browser">
+                  <div class="nw-demo-browser-bar">
+                    <i></i><i></i><i></i><span>novawork / build</span>
+                  </div>
+                  <div class="nw-demo-landing">
+                    <div class="nw-demo-nav">
+                      <b>BRAND</b
+                      ><span
+                        >ABOUT&nbsp;&nbsp; SERVICE&nbsp;&nbsp; CONTACT</span
+                      >
+                    </div>
+                    <div class="nw-demo-landing-copy">
+                      <small>YOUR NEXT WEBSITE</small>
+                      <strong>FIRST IMPRESSION<br />TO ACTION.</strong>
+                      <em>PROJECT START</em>
+                    </div>
+                    <div class="nw-demo-orbit"><i></i><i></i><i></i></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="nw-capability-panel" data-capability="1">
+              <div class="nw-capability-copy">
+                <span>02 / MEASURE</span>
+                <h3>행동이 남는 구조</h3>
+                <p>전화·카카오톡·문의 행동을 데이터로 확인합니다.</p>
+                <a href="service-ga4-gtm.html">전환 추적 보기</a>
+              </div>
+              <div
+                class="nw-capability-visual nw-measure-demo"
+                aria-hidden="true"
+              >
+                <div class="nw-metric-topline">
+                  <span>INTERACTION DEMO</span><b>SAMPLE</b>
+                </div>
+                <div class="nw-metric-number">
+                  <small>EVENT FLOW</small><strong>READY</strong>
+                </div>
+                <div class="nw-metric-chart">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <div class="nw-event-stream">
+                  <span><i></i> form_submit <b>just now</b></span>
+                  <span><i></i> kakao_click <b>02 sec</b></span>
+                  <span><i></i> cta_click <b>08 sec</b></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="nw-capability-panel" data-capability="2">
+              <div class="nw-capability-copy">
+                <span>03 / OPERATE</span>
+                <h3>운영이 쉬운 시스템</h3>
+                <p>예약·문의·고객 데이터를 한 화면에서 관리합니다.</p>
+                <a href="service-react-firebase-admin.html">웹시스템 보기</a>
+              </div>
+              <div
+                class="nw-capability-visual nw-operate-demo"
+                aria-hidden="true"
+              >
+                <div class="nw-admin-rail">
+                  <b>NW</b><i></i><i></i><i></i><i></i>
+                </div>
+                <div class="nw-admin-main">
+                  <div class="nw-admin-head">
+                    <span>OVERVIEW</span><b>+ NEW</b>
+                  </div>
+                  <div class="nw-admin-stats">
+                    <span><small>TODAY</small><b>28</b></span
+                    ><span><small>ACTIVE</small><b>116</b></span
+                    ><span><small>DONE</small><b>84%</b></span>
+                  </div>
+                  <div class="nw-admin-table">
+                    <span
+                      ><i>01</i><b>신규 문의</b
+                      ><em class="is-new">NEW</em></span
+                    >
+                    <span><i>02</i><b>상담 진행</b><em>ACTIVE</em></span>
+                    <span><i>03</i><b>작업 검수</b><em>REVIEW</em></span>
+                    <span><i>04</i><b>전달 완료</b><em>DONE</em></span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="nw-capability-progress" aria-hidden="true"><i></i></div>
+        </div>
+      </section>
+
+      <section
+        class="nw-home-section nw-selected-work"
+        id="work"
+        aria-labelledby="work-title"
+      >
+        <div class="container">
+          <header class="nw-section-intro nw-section-intro--split">
+            <p class="nw-kicker">SELECTED BUILDS</p>
+            <h2 id="work-title">설명보다 결과를<br />먼저 보여드립니다.</h2>
+            <p>공개 가능한 배포 샘플을 큰 화면으로 먼저 보여드립니다.</p>
+          </header>
+
+          <article class="nw-featured-work">
+            <a
+              class="nw-featured-screen"
+              href="https://pf-academy.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="NOVAEDU 학원 홈페이지 데모 새 창에서 보기"
+            >
+              <div class="nw-live-browser">
+                <div class="nw-live-browser-bar">
+                  <i></i><i></i><i></i><span>pf-academy.vercel.app</span
+                  ><b>DEMO ↗</b>
+                </div>
+                <figure>
+                  <img
+                    src="./assets/work-novaedu-hero.webp"
+                    width="1600"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
+                    alt="NOVAEDU 학원 홈페이지 히어로 데모"
+                  />
+                  <div class="nw-live-site-nav">
+                    <img
+                      src="./assets/work-novaedu-logo.webp"
+                      width="90"
+                      height="90"
+                      alt=""
+                    /><span>NOVAEDU</span><em>상담 신청</em>
+                  </div>
+                  <strong>NOVAEDU</strong>
+                  <small>체험수업 신청하기</small>
+                </figure>
+              </div>
+            </a>
+            <div class="nw-featured-copy">
+              <span>01 / PUBLIC DEMO</span>
+              <h3>NOVAEDU</h3>
+              <p>학원 소개부터 상담 신청까지 구현한 공개형 반응형 데모.</p>
+              <ul>
+                <li>WEBSITE</li>
+                <li>RESPONSIVE</li>
+                <li>CTA</li>
+              </ul>
+              <div>
+                <a
+                  href="https://pf-academy.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >데모 보기 ↗</a
+                ><a href="portfolio.html">포트폴리오 보기</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="nw-home-section nw-services-lab"
+        id="services"
+        aria-labelledby="services-title"
+      >
+        <div class="container">
+          <header class="nw-section-intro nw-section-intro--split">
+            <p class="nw-kicker">CORE SERVICES</p>
+            <h2 id="services-title">
+              필요한 결과에 맞춰<br />서비스를 선택합니다.
+            </h2>
+            <a href="services.html">전체 서비스 ↗</a>
+          </header>
+
+          <div class="nw-services-stage">
+            <nav class="nw-service-list" aria-label="핵심 서비스">
+              <a
+                class="is-active"
+                href="service-homepage-landing.html"
+                data-service-preview="./assets/service-visual-homepage.webp"
+                data-service-alt="홈페이지와 랜딩페이지 제작 화면"
+                data-service-number="01"
+                data-service-type="WEB EXPERIENCE"
+              >
+                <span>01</span><strong>홈페이지·랜딩페이지</strong
+                ><em>방문을 문의로 연결</em>
+              </a>
+              <a
+                href="service-react-firebase-admin.html"
+                data-service-preview="./assets/service-visual-admin-system.webp"
+                data-service-alt="React Firebase 관리자 웹시스템 화면"
+                data-service-number="02"
+                data-service-type="WEB SYSTEM"
+              >
+                <span>02</span><strong>React·Firebase 웹시스템</strong
+                ><em>예약과 데이터를 운영</em>
+              </a>
+              <a
+                href="service-ga4-gtm.html"
+                data-service-preview="./assets/service-visual-ga4-gtm.webp"
+                data-service-alt="GA4 GTM 전환 추적 화면"
+                data-service-number="03"
+                data-service-type="MEASUREMENT"
+              >
+                <span>03</span><strong>GA4·GTM 전환 추적</strong
+                ><em>행동을 데이터로 확인</em>
+              </a>
+              <a
+                href="service-homepage-fix.html"
+                data-service-preview="./assets/service-visual-homepage-fix.webp"
+                data-service-alt="홈페이지 오류 수정과 유지관리 화면"
+                data-service-number="04"
+                data-service-type="MAINTENANCE"
+              >
+                <span>04</span><strong>오류 수정·유지관리</strong
+                ><em>운영 중 문제를 정리</em>
+              </a>
+            </nav>
+
+            <figure class="nw-service-preview">
+              <div class="nw-service-preview-meta">
+                <span>01</span><b>WEB EXPERIENCE</b>
+              </div>
+              <img
+                src="./assets/service-visual-homepage.webp"
+                width="1450"
+                height="1085"
+                loading="lazy"
+                decoding="async"
+                alt="홈페이지와 랜딩페이지 제작 화면"
+              />
+            </figure>
+          </div>
+
+          <div class="nw-secondary-services">
+            <a href="service-gpt-ai-chatbot.html"
+              ><span>05</span><strong>GPT·AI 챗봇</strong
+              ><em>FAQ와 상담 연결</em></a
+            >
+            <a href="service-web-crawling.html"
+              ><span>06</span><strong>웹 데이터 크롤링</strong
+              ><em>공개 데이터를 정리</em></a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="nw-home-section nw-process"
+        aria-labelledby="process-title"
+      >
+        <div class="container">
+          <header class="nw-section-intro nw-section-intro--split">
+            <p class="nw-kicker">PROCESS</p>
+            <h2 id="process-title">세 단계면<br />충분합니다.</h2>
+            <p>범위를 키우기보다 필요한 결과부터 구현합니다.</p>
+          </header>
+
+          <ol class="nw-process-list">
+            <li>
+              <span>01</span>
+              <div>
+                <small>DEFINE</small>
+                <h3>목적과 범위</h3>
+                <p>필요한 화면·기능·데이터를 정합니다.</p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <small>BUILD</small>
+                <h3>설계와 구현</h3>
+                <p>구조를 확정하고 직접 제작합니다.</p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <small>VERIFY</small>
+                <h3>검수와 전달</h3>
+                <p>PC·모바일·기능을 확인하고 전달합니다.</p>
+              </div>
+            </li>
+          </ol>
+          <div class="nw-process-progress" aria-hidden="true"><i></i></div>
+        </div>
+      </section>
+
+      <section class="nw-principles" aria-labelledby="principles-title">
+        <div class="nw-principles-marquee" aria-hidden="true">
+          <div>
+            DIRECT · RESPONSIVE · MEASURABLE · TRANSFERABLE · DIRECT ·
+            RESPONSIVE · MEASURABLE · TRANSFERABLE ·
+          </div>
+        </div>
+        <div class="container">
+          <header class="nw-section-intro">
+            <p class="nw-kicker">WORK STANDARD</p>
+            <h2 id="principles-title">보이는 화면 이후까지.</h2>
+          </header>
+          <div class="nw-principle-grid">
+            <article>
+              <span>01</span><strong>DIRECT</strong>
+              <p>대표가 직접 설계하고 구현합니다.</p>
+            </article>
+            <article>
+              <span>02</span><strong>RESPONSIVE</strong>
+              <p>PC·태블릿·모바일을 함께 봅니다.</p>
+            </article>
+            <article>
+              <span>03</span><strong>MEASURABLE</strong>
+              <p>문의와 전환을 확인할 수 있게 만듭니다.</p>
+            </article>
+            <article>
+              <span>04</span><strong>TRANSFERABLE</strong>
+              <p>작업 범위에 따라 소스와 운영 기준을 전달합니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="nw-home-cta" aria-labelledby="contact-title">
+        <div class="container">
+          <p class="nw-kicker">START A PROJECT</p>
+          <h2 id="contact-title">WHAT ARE YOU<br />BUILDING NEXT?</h2>
+          <p>서비스명을 몰라도 괜찮습니다. 필요한 결과만 알려주세요.</p>
+          <a class="nw-cta-link" href="contact.html"
+            ><span>프로젝트 접수하기</span><i aria-hidden="true">↗</i></a
+          >
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div>
+            <p class="footer-logo">
+              <img
+                alt="NOVAWORK"
+                decoding="async"
+                height="286"
+                src="./assets/logo-horizontal.png"
+                width="1273"
+              />
+            </p>
+            <p class="footer-text">
+              홈페이지·랜딩페이지 제작 · 관리자 웹시스템 · GA4/GTM · GPT 챗봇 ·
+              데이터 수집
+            </p>
+            <ul class="footer-business">
+              <li>대표: 고찬휘</li>
+              <li>사업자등록번호: 613 27 53241</li>
+              <li>
+                이메일:
+                <a href="mailto:contact@novawork.kr">contact@novawork.kr</a>
+              </li>
+              <li>전화: <a href="tel:01055286580">010-5528-6580</a></li>
+              <li>회신: 24시간 내 1차 답변</li>
+              <li>서비스 지역: 전국 온라인 상담 가능</li>
+            </ul>
+          </div>
+          <nav aria-label="하단 메뉴" class="footer-nav">
+            <a href="index.html">홈</a>
+            <a href="about.html">회사소개</a>
+            <a href="services.html">서비스</a>
+            <a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
+            <a href="contact.html">접수하기</a>
+            <a href="privacy.html">개인정보처리방침</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
+          <p class="footer-note">
+            접수는 <a href="contact.html">접수 페이지</a> 또는
+            <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내
+            확인합니다.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script src="./js/modules/core-ui.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/vendor/gsap.min.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/vendor/ScrollTrigger.min.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/modules/home-motion.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/modules/page-interactions.js?v=v90-motion-full-20260712"></script>
+  </body>
 </html>

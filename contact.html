@@ -1,214 +1,769 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="ko">
-<head>
-<meta charset="utf-8"/>
-<script id="nw-route-transition-boot" src="./js/boot/route-transition-boot.js?v=v55-enhance-v11-20260609"></script>
-<link href="./css/critical/route-transition.css?v=v55-enhance-v11-20260609" id="nw-route-transition-critical" rel="stylesheet"/>
-<!-- Google Tag Manager -->
-<script>
-(function(w,d,l,i){
-  w[l]=w[l]||[];
-  w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-  var loaded=false;
-  function loadGTM(){
-    if(loaded) return;
-    loaded=true;
-    var f=d.getElementsByTagName('script')[0];
-    var j=d.createElement('script');
-    j.async=true;
-    j.src='https://www.googletagmanager.com/gtm.js?id='+i;
-    f.parentNode.insertBefore(j,f);
-  }
-  if('requestIdleCallback' in w){w.requestIdleCallback(loadGTM,{timeout:3200});}
-  else{w.setTimeout(loadGTM,2200);}
-  w.addEventListener('pointerdown',loadGTM,{once:true,passive:true});
-  w.addEventListener('keydown',loadGTM,{once:true});
-})(window,document,'dataLayer','GTM-MSVM26W9');
-</script>
-<!-- End Google Tag Manager -->
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>접수하기 | NOVAWORK</title>
-<meta content="홈페이지 제작, React·Firebase 관리자 웹시스템, 오류 수정, GA4/GTM, GPT 챗봇, 웹 데이터 수집 상담을 접수하세요." name="description"/>
-<meta content="index,follow" name="robots"/>
-<meta content="#050505" name="theme-color"/>
-<link href="https://novawork.kr/contact.html" rel="canonical"/>
-<link href="./assets/favicon.png" rel="icon" type="image/png"/>
-<link href="./assets/favicon-180.png" rel="apple-touch-icon"/>
-<meta content="website" property="og:type"/>
-<meta content="ko_KR" property="og:locale"/>
-<meta content="NOVAWORK" property="og:site_name"/>
-<meta content="접수하기 | NOVAWORK" property="og:title"/>
-<meta content="홈페이지 제작, React·Firebase 관리자 웹시스템, 오류 수정, GA4/GTM, GPT 챗봇, 웹 데이터 수집 상담을 접수하세요." property="og:description"/>
-<meta content="https://novawork.kr/contact.html" property="og:url"/>
-<meta content="https://novawork.kr/assets/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="image/png" property="og:image:type"/>
-<meta content="summary_large_image" name="twitter:card"/>
-<meta content="접수하기 | NOVAWORK" name="twitter:title"/>
-<meta content="홈페이지 제작, React·Firebase 관리자 웹시스템, 오류 수정, GA4/GTM, GPT 챗봇, 웹 데이터 수집 상담을 접수하세요." name="twitter:description"/>
-<meta content="https://novawork.kr/assets/og-image.png" name="twitter:image"/>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "name": "NOVAWORK",
-  "url": "https://novawork.kr/",
-  "image": "https://novawork.kr/assets/og-image.png",
-  "logo": "https://novawork.kr/assets/logo-symbol.png",
-  "description": "NOVAWORK는 홈페이지·랜딩페이지, React·Firebase 관리자 웹시스템, 홈페이지 오류 수정, GA4/GTM 추적 세팅, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다.",
-  "telephone": "+82-10-5528-6580",
-  "areaServed": "KR",
-  "founder": {
-    "@type": "Person",
-    "name": "고찬휘"
-  },
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "customer support",
-    "email": "contact@novawork.kr",
-    "telephone": "+82-10-5528-6580",
-    "availableLanguage": [
-      "ko"
-    ]
-  },
-  "hasOfferCatalog": {
-    "@type": "OfferCatalog",
-    "name": "NOVAWORK 서비스",
-    "itemListElement": [
+  <head>
+    <meta charset="utf-8" />
+    <script
+      id="nw-route-transition-boot"
+      src="./js/boot/route-transition-boot.js?v=v90-motion-full-20260712"
+    ></script>
+    <link
+      href="./css/critical/route-transition.css?v=v90-motion-full-20260712"
+      id="nw-route-transition-critical"
+      rel="stylesheet"
+    />
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var loaded = false;
+        function loadGTM() {
+          if (loaded) return;
+          loaded = true;
+          var f = d.getElementsByTagName("script")[0];
+          var j = d.createElement("script");
+          j.async = true;
+          j.src = "https://www.googletagmanager.com/gtm.js?id=" + i;
+          f.parentNode.insertBefore(j, f);
+        }
+        if ("requestIdleCallback" in w) {
+          w.requestIdleCallback(loadGTM, { timeout: 3200 });
+        } else {
+          w.setTimeout(loadGTM, 2200);
+        }
+        w.addEventListener("pointerdown", loadGTM, {
+          once: true,
+          passive: true,
+        });
+        w.addEventListener("keydown", loadGTM, { once: true });
+      })(window, document, "dataLayer", "GTM-MSVM26W9");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>접수하기 | NOVAWORK</title>
+    <meta
+      content="홈페이지 제작, React·Firebase 관리자 웹시스템, 오류 수정, GA4/GTM, GPT 챗봇, 웹 데이터 수집 상담을 접수하세요."
+      name="description"
+    />
+    <meta content="index,follow" name="robots" />
+    <meta content="#050505" name="theme-color" />
+    <link href="https://novawork.kr/contact.html" rel="canonical" />
+    <link href="./assets/favicon.png" rel="icon" type="image/png" />
+    <link href="./assets/favicon-180.png" rel="apple-touch-icon" />
+    <meta content="website" property="og:type" />
+    <meta content="ko_KR" property="og:locale" />
+    <meta content="NOVAWORK" property="og:site_name" />
+    <meta content="접수하기 | NOVAWORK" property="og:title" />
+    <meta
+      content="홈페이지 제작, React·Firebase 관리자 웹시스템, 오류 수정, GA4/GTM, GPT 챗봇, 웹 데이터 수집 상담을 접수하세요."
+      property="og:description"
+    />
+    <meta content="https://novawork.kr/contact.html" property="og:url" />
+    <meta
+      content="https://novawork.kr/assets/og-image.png"
+      property="og:image"
+    />
+    <meta content="1200" property="og:image:width" />
+    <meta content="630" property="og:image:height" />
+    <meta content="image/png" property="og:image:type" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="접수하기 | NOVAWORK" name="twitter:title" />
+    <meta
+      content="홈페이지 제작, React·Firebase 관리자 웹시스템, 오류 수정, GA4/GTM, GPT 챗봇, 웹 데이터 수집 상담을 접수하세요."
+      name="twitter:description"
+    />
+    <meta
+      content="https://novawork.kr/assets/og-image.png"
+      name="twitter:image"
+    />
+    <script type="application/ld+json">
       {
-        "@type": "Offer",
-        "name": "홈페이지·랜딩페이지",
-        "url": "https://novawork.kr/service-homepage-landing.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "React·Firebase 웹시스템",
-        "url": "https://novawork.kr/service-react-firebase-admin.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "홈페이지 오류 수정",
-        "url": "https://novawork.kr/service-homepage-fix.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "GA4·GTM 추적 세팅",
-        "url": "https://novawork.kr/service-ga4-gtm.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "GPT·AI 챗봇",
-        "url": "https://novawork.kr/service-gpt-ai-chatbot.html"
-      },
-      {
-        "@type": "Offer",
-        "name": "웹 데이터 크롤링",
-        "url": "https://novawork.kr/service-web-crawling.html"
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "NOVAWORK",
+        "url": "https://novawork.kr/",
+        "image": "https://novawork.kr/assets/og-image.png",
+        "logo": "https://novawork.kr/assets/logo-symbol.png",
+        "description": "NOVAWORK는 홈페이지·랜딩페이지, React·Firebase 관리자 웹시스템, 홈페이지 오류 수정, GA4/GTM 추적 세팅, GPT·AI 챗봇, 웹 데이터 수집을 직접 구현합니다.",
+        "telephone": "+82-10-5528-6580",
+        "areaServed": "KR",
+        "founder": {
+          "@type": "Person",
+          "name": "고찬휘"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": "contact@novawork.kr",
+          "telephone": "+82-10-5528-6580",
+          "availableLanguage": ["ko"]
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "NOVAWORK 서비스",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "name": "홈페이지·랜딩페이지",
+              "url": "https://novawork.kr/service-homepage-landing.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "React·Firebase 웹시스템",
+              "url": "https://novawork.kr/service-react-firebase-admin.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "홈페이지 오류 수정",
+              "url": "https://novawork.kr/service-homepage-fix.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "GA4·GTM 추적 세팅",
+              "url": "https://novawork.kr/service-ga4-gtm.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "GPT·AI 챗봇",
+              "url": "https://novawork.kr/service-gpt-ai-chatbot.html"
+            },
+            {
+              "@type": "Offer",
+              "name": "웹 데이터 크롤링",
+              "url": "https://novawork.kr/service-web-crawling.html"
+            }
+          ]
+        }
       }
-    ]
-  }
-}
-</script>
-<link href="./css/site-base.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
-<link href="./css/site-ui.css?v=v55-enhance-v11-20260609" rel="stylesheet"/>
-</head>
-<body class="contact-static-page">
-<!-- Google Tag Manager (noscript) -->
-<noscript>
-<iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-MSVM26W9" style="display:none;visibility:hidden" width="0"></iframe>
-</noscript>
-<!-- End Google Tag Manager (noscript) -->
-<a class="skip-link" href="#main">본문 바로가기</a>
-<header class="header">
-<div class="container">
-<div class="header-inner">
-<a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></a>
-<nav aria-label="주요 메뉴" class="nav">
-<ul class="nav-list">
-<li><a class="nav-link" href="about.html">회사소개</a></li>
-<li><a class="nav-link" href="services.html">서비스</a></li>
-<li><a class="nav-link" href="portfolio.html">포트폴리오</a></li><li><a class="nav-link" href="faq.html">FAQ</a></li>
-</ul>
-</nav>
-<div class="header-actions">
-<a class="btn btn-small btn-secondary header-cta" href="contact.html">접수하기</a>
-<button aria-controls="mobile-menu" aria-expanded="false" aria-label="모바일 메뉴 열기" class="menu-toggle" type="button">
-<span></span>
-<span></span>
-<span></span>
-</button>
-</div>
-</div>
-</div>
-<div aria-label="모바일 메뉴" aria-modal="true" class="mobile-menu" id="mobile-menu" role="dialog">
-<div class="mobile-menu-panel">
-<ul class="mobile-menu-list"><li><a href="about.html">회사소개</a></li><li><a href="services.html">서비스</a></li><li><a href="portfolio.html">포트폴리오</a></li><li><a href="faq.html">FAQ</a></li></ul>
-<div aria-label="대표 서비스 바로가기" class="mobile-menu-shortcuts">
-<p>대표 서비스</p>
-<div class="mobile-menu-shortcut-grid">
-<a href="service-homepage-landing.html">홈페이지</a>
-<a href="service-react-firebase-admin.html">웹시스템</a>
-<a href="service-homepage-fix.html">오류 수정</a>
-<a href="service-ga4-gtm.html">GA4/GTM</a>
-<a href="service-gpt-ai-chatbot.html">AI 챗봇</a>
-<a href="service-web-crawling.html">크롤링</a>
-</div>
-</div><a class="btn btn-primary mobile-menu-cta" href="contact.html">접수하기</a>
-</div>
-</div>
-</header>
-<main id="main" tabindex="-1"><section aria-label="접수 정보 입력" class="section contact-intake-section"><div class="container contact-intake-container"><div class="form-shell form-shell-single"><form accept-charset="UTF-8" action="https://script.google.com/macros/s/AKfycbywZAKl2NEXCXagcu_jZ7WgAfiHcgcelu-tjzROfymWeSiahVr3vkVusiD6TMwRsJx9Qw/exec" class="contact-form inquiry-form" id="inquiry-form" method="post" novalidate="" target="hidden_iframe"><input name="form_name" type="hidden" value="NOVAWORK 서비스 접수"/><input name="recipient_email" type="hidden" value="contact@novawork.kr"/><input name="form_version" type="hidden" value="2026-06-07-v44-contact-response"/><input id="package-name" name="package_name" type="hidden" value=""/><input id="page-url" name="page_url" type="hidden" value=""/><input id="page-title" name="page_title" type="hidden" value=""/><input id="page-origin" name="page_origin" type="hidden" value=""/><input id="user-agent" name="user_agent" type="hidden" value=""/><input id="submitted-at" name="submitted_at" type="hidden" value=""/><input id="submitted-at-client" name="submitted_at_client" type="hidden" value=""/><input id="utm-source" name="utm_source" type="hidden" value=""/><input id="utm-medium" name="utm_medium" type="hidden" value=""/><input id="utm-campaign" name="utm_campaign" type="hidden" value=""/><input id="utm-term" name="utm_term" type="hidden" value=""/><input id="utm-content" name="utm_content" type="hidden" value=""/><div aria-hidden="true" class="honeypot-field"><label for="website">Website</label><input autocomplete="off" id="website" name="website" tabindex="-1" type="text"/></div>
-<div class="form-section"><div class="form-heading"><span class="form-step">01</span><div><h2 class="form-title">기본 정보</h2><p class="form-text">상담을 위해 필요한 기본 정보를 입력해 주십시오.</p></div></div><div class="form-grid"><div class="field"><label class="field-label" for="company">회사명 / 업체명 <span class="field-optional">선택</span></label><input autocomplete="organization" id="company" maxlength="80" name="company" type="text"/></div><div class="field"><label class="field-label" for="name">담당자 이름 <span class="field-required">*</span></label><input autocomplete="name" id="name" maxlength="40" name="name" required="" type="text"/></div><div class="field"><label class="field-label" for="phone">담당자 연락처</label><input autocomplete="tel" id="phone" maxlength="30" name="phone" placeholder="010-1234-5678" type="tel"/><p class="field-help">전화 회신을 원하시면 입력해 주세요.</p></div><div class="field"><label class="field-label" for="email">이메일</label><input autocomplete="email" id="email" maxlength="120" name="email" placeholder="name@example.com" type="email"/><p class="field-help">연락처 또는 이메일 중 하나는 입력해 주세요.</p></div><div class="field is-full"><label class="field-label" for="homepage">현재 사이트 / 참고 URL</label><input id="homepage" maxlength="300" name="homepage" placeholder="https://example.com 또는 참고 사이트" type="url"/><p class="field-help">운영 중인 사이트, 참고 사이트, 수집 대상 사이트가 있다면 남겨주십시오.</p></div></div></div>
-<div class="form-section"><div class="form-heading"><span class="form-step">02</span><div><h2 class="form-title">필요한 서비스</h2><p class="form-text">해당되는 항목을 모두 선택해 주십시오. 복수 선택 가능합니다.</p></div></div><div class="check-grid" data-service-group=""><label><input name="service" type="checkbox" value="홈페이지·랜딩페이지 제작"/> 홈페이지·랜딩페이지 제작</label>
-<label><input name="service" type="checkbox" value="React·Firebase 관리자 웹시스템"/> React·Firebase 관리자 웹시스템</label>
-<label><input name="service" type="checkbox" value="홈페이지 오류 수정·기능 추가"/> 홈페이지 오류 수정·기능 추가</label>
-<label><input name="service" type="checkbox" value="GA4/GTM 전환 추적 세팅"/> GA4/GTM 전환 추적 세팅</label>
-<label><input name="service" type="checkbox" value="맞춤형 GPT·AI 챗봇"/> 맞춤형 GPT·AI 챗봇</label>
-<label><input name="service" type="checkbox" value="웹 데이터 크롤링·엑셀 수집"/> 웹 데이터 크롤링·엑셀 수집</label>
-<label><input name="service" type="checkbox" value="패키지 조합 상담"/> 패키지 조합 상담</label>
-<label><input id="service-other-check" name="service" type="checkbox" value="기타"/> 기타</label></div><div class="field field-spaced is-full js-conditional-field" data-service-other-field="" hidden=""><label class="field-label" for="service-other">기타 서비스 내용</label><input id="service-other" maxlength="120" name="service_other" placeholder="예) 예약 시스템 고도화, API 연동, 기존 코드 점검, 대량 데이터 정리 등" type="text"/><p class="field-help">기타를 선택했다면 필요한 내용을 짧게 적어주세요.</p></div></div>
-<div class="form-section"><div class="form-heading"><span class="form-step">03</span><div><h2 class="form-title">프로젝트 내용</h2><p class="form-text">예산과 일정, 참고할 자료가 있다면 함께 적어주십시오.</p></div></div><div class="form-grid"><div class="field"><label class="field-label" for="budget">예산 <span class="field-optional">선택</span></label><select id="budget" name="budget"><option value="">예산 선택 또는 미정</option><option value="5만원 ~ 20만원">5만원 ~ 20만원</option><option value="20만원 ~ 70만원">20만원 ~ 70만원</option><option value="70만원 ~ 150만원">70만원 ~ 150만원</option><option value="150만원 ~ 300만원">150만원 ~ 300만원</option><option value="300만원 이상">300만원 이상</option><option value="미정">미정</option></select></div><div class="field"><label class="field-label" for="schedule">일정 <span class="field-optional">선택</span></label><select id="schedule" name="schedule"><option value="">일정 선택 또는 미정</option><option value="최대한 빠르게">최대한 빠르게</option><option value="1주 이내">1주 이내</option><option value="2주 이내">2주 이내</option><option value="1개월 이내">1개월 이내</option><option value="1개월 이상">1개월 이상</option><option value="일정 미정">일정 미정</option></select></div><div class="field is-full"><label class="field-label" for="reference">참고 자료 / 참고 사이트 URL</label><input id="reference" maxlength="600" name="reference" placeholder="참고 사이트, 문서, 수집 대상 URL 등을 적어주세요" type="text"/><p class="field-help">참고 자료가 여러 개라면 쉼표로 구분해 적어주세요.</p></div><div class="field is-full"><label class="field-label" for="details">프로젝트 상세 내용 <span class="field-required">*</span></label><textarea id="details" maxlength="2000" minlength="20" name="details" placeholder="예)
+    </script>
+    <link href="./css/site.css?v=v90-motion-full-20260712" rel="stylesheet" />
+  </head>
+  <body class="nw-subpage-v2 contact-static-page">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        title="Google Tag Manager"
+        height="0"
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MSVM26W9"
+        style="display: none; visibility: hidden"
+        width="0"
+      ></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="header">
+      <div class="container">
+        <div class="header-inner">
+          <a aria-label="NOVAWORK 홈으로 이동" class="logo" href="index.html"
+            ><img
+              alt="NOVAWORK"
+              decoding="async"
+              height="286"
+              src="./assets/logo-horizontal.png"
+              width="1273"
+          /></a>
+          <nav aria-label="주요 메뉴" class="nav">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="about.html">회사소개</a></li>
+              <li><a class="nav-link" href="services.html">서비스</a></li>
+              <li><a class="nav-link" href="portfolio.html">포트폴리오</a></li>
+              <li><a class="nav-link" href="faq.html">FAQ</a></li>
+            </ul>
+          </nav>
+          <div class="header-actions">
+            <a
+              class="btn btn-small btn-secondary header-cta"
+              href="contact.html"
+              >접수하기</a
+            >
+            <button
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              aria-label="모바일 메뉴 열기"
+              class="menu-toggle"
+              type="button"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="모바일 메뉴"
+        aria-modal="true"
+        class="mobile-menu"
+        id="mobile-menu"
+        role="dialog"
+      >
+        <div class="mobile-menu-panel">
+          <ul class="mobile-menu-list">
+            <li><a href="about.html">회사소개</a></li>
+            <li><a href="services.html">서비스</a></li>
+            <li><a href="portfolio.html">포트폴리오</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+          <div
+            aria-label="대표 서비스 바로가기"
+            class="mobile-menu-shortcuts"
+            role="group"
+          >
+            <p>대표 서비스</p>
+            <div class="mobile-menu-shortcut-grid">
+              <a href="service-homepage-landing.html">홈페이지</a>
+              <a href="service-react-firebase-admin.html">웹시스템</a>
+              <a href="service-homepage-fix.html">오류 수정</a>
+              <a href="service-ga4-gtm.html">GA4/GTM</a>
+              <a href="service-gpt-ai-chatbot.html">AI 챗봇</a>
+              <a href="service-web-crawling.html">크롤링</a>
+            </div>
+          </div>
+          <a class="btn btn-primary mobile-menu-cta" href="contact.html"
+            >접수하기</a
+          >
+        </div>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section
+        aria-labelledby="contact-hero-title"
+        class="nw-subpage-hero nw-contact-hero"
+      >
+        <div class="container nw-contact-hero-grid">
+          <div>
+            <p class="section-label">START A PROJECT</p>
+            <h1 id="contact-hero-title">필요한 결과만<br />알려주세요.</h1>
+            <p>
+              서비스명을 정확히 몰라도 괜찮습니다. 현재 상황과 원하는 결과를
+              남겨주시면 가능한 범위부터 정리합니다.
+            </p>
+          </div>
+          <div aria-hidden="true" class="nw-contact-hero-art">
+            <span>PROJECT REQUEST</span>
+            <strong>01</strong>
+            <i></i>
+          </div>
+        </div>
+      </section>
+      <section
+        aria-label="접수 정보 입력"
+        class="section contact-intake-section"
+      >
+        <div class="container contact-intake-container">
+          <div class="form-shell form-shell-single">
+            <form
+              accept-charset="UTF-8"
+              action="https://script.google.com/macros/s/AKfycbywZAKl2NEXCXagcu_jZ7WgAfiHcgcelu-tjzROfymWeSiahVr3vkVusiD6TMwRsJx9Qw/exec"
+              class="contact-form inquiry-form"
+              id="inquiry-form"
+              method="post"
+              novalidate=""
+              target="hidden_iframe"
+            >
+              <input
+                name="form_name"
+                type="hidden"
+                value="NOVAWORK 서비스 접수"
+              /><input
+                name="recipient_email"
+                type="hidden"
+                value="contact@novawork.kr"
+              /><input
+                name="form_version"
+                type="hidden"
+                value="2026-06-07-v44-contact-response"
+              /><input
+                id="package-name"
+                name="package_name"
+                type="hidden"
+                value=""
+              /><input
+                id="page-url"
+                name="page_url"
+                type="hidden"
+                value=""
+              /><input
+                id="page-title"
+                name="page_title"
+                type="hidden"
+                value=""
+              /><input
+                id="page-origin"
+                name="page_origin"
+                type="hidden"
+                value=""
+              /><input
+                id="user-agent"
+                name="user_agent"
+                type="hidden"
+                value=""
+              /><input
+                id="submitted-at"
+                name="submitted_at"
+                type="hidden"
+                value=""
+              /><input
+                id="submitted-at-client"
+                name="submitted_at_client"
+                type="hidden"
+                value=""
+              /><input
+                id="utm-source"
+                name="utm_source"
+                type="hidden"
+                value=""
+              /><input
+                id="utm-medium"
+                name="utm_medium"
+                type="hidden"
+                value=""
+              /><input
+                id="utm-campaign"
+                name="utm_campaign"
+                type="hidden"
+                value=""
+              /><input
+                id="utm-term"
+                name="utm_term"
+                type="hidden"
+                value=""
+              /><input
+                id="utm-content"
+                name="utm_content"
+                type="hidden"
+                value=""
+              />
+              <div aria-hidden="true" class="honeypot-field">
+                <label for="website">Website</label
+                ><input
+                  autocomplete="off"
+                  id="website"
+                  name="website"
+                  tabindex="-1"
+                  type="text"
+                />
+              </div>
+              <div class="form-section">
+                <div class="form-heading">
+                  <span class="form-step">01</span>
+                  <div>
+                    <h2 class="form-title">기본 정보</h2>
+                    <p class="form-text">
+                      상담을 위해 필요한 기본 정보를 입력해 주십시오.
+                    </p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <div class="field">
+                    <label class="field-label" for="company"
+                      >회사명 / 업체명
+                      <span class="field-optional">선택</span></label
+                    ><input
+                      autocomplete="organization"
+                      id="company"
+                      maxlength="80"
+                      name="company"
+                      type="text"
+                    />
+                  </div>
+                  <div class="field">
+                    <label class="field-label" for="name"
+                      >담당자 이름 <span class="field-required">*</span></label
+                    ><input
+                      autocomplete="name"
+                      id="name"
+                      maxlength="40"
+                      name="name"
+                      required=""
+                      type="text"
+                    />
+                  </div>
+                  <div class="field">
+                    <label class="field-label" for="phone">담당자 연락처</label
+                    ><input
+                      autocomplete="tel"
+                      id="phone"
+                      maxlength="30"
+                      name="phone"
+                      placeholder="010-1234-5678"
+                      type="tel"
+                    />
+                    <p class="field-help">
+                      전화 회신을 원하시면 입력해 주세요.
+                    </p>
+                  </div>
+                  <div class="field">
+                    <label class="field-label" for="email">이메일</label
+                    ><input
+                      autocomplete="email"
+                      id="email"
+                      maxlength="120"
+                      name="email"
+                      placeholder="name@example.com"
+                      type="email"
+                    />
+                    <p class="field-help">
+                      연락처 또는 이메일 중 하나는 입력해 주세요.
+                    </p>
+                  </div>
+                  <div class="field is-full">
+                    <label class="field-label" for="homepage"
+                      >현재 사이트 / 참고 URL</label
+                    ><input
+                      id="homepage"
+                      maxlength="300"
+                      name="homepage"
+                      placeholder="https://example.com 또는 참고 사이트"
+                      type="url"
+                    />
+                    <p class="field-help">
+                      운영 중인 사이트, 참고 사이트, 수집 대상 사이트가 있다면
+                      남겨주십시오.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-section">
+                <div class="form-heading">
+                  <span class="form-step">02</span>
+                  <div>
+                    <h2 class="form-title">필요한 서비스</h2>
+                    <p class="form-text">
+                      해당되는 항목을 모두 선택해 주십시오. 복수 선택
+                      가능합니다.
+                    </p>
+                  </div>
+                </div>
+                <div class="check-grid" data-service-group="">
+                  <label
+                    ><input
+                      name="service"
+                      type="checkbox"
+                      value="홈페이지·랜딩페이지 제작"
+                    />
+                    홈페이지·랜딩페이지 제작</label
+                  >
+                  <label
+                    ><input
+                      name="service"
+                      type="checkbox"
+                      value="React·Firebase 관리자 웹시스템"
+                    />
+                    React·Firebase 관리자 웹시스템</label
+                  >
+                  <label
+                    ><input
+                      name="service"
+                      type="checkbox"
+                      value="홈페이지 오류 수정·기능 추가"
+                    />
+                    홈페이지 오류 수정·기능 추가</label
+                  >
+                  <label
+                    ><input
+                      name="service"
+                      type="checkbox"
+                      value="GA4/GTM 전환 추적 세팅"
+                    />
+                    GA4/GTM 전환 추적 세팅</label
+                  >
+                  <label
+                    ><input
+                      name="service"
+                      type="checkbox"
+                      value="맞춤형 GPT·AI 챗봇"
+                    />
+                    맞춤형 GPT·AI 챗봇</label
+                  >
+                  <label
+                    ><input
+                      name="service"
+                      type="checkbox"
+                      value="웹 데이터 크롤링·엑셀 수집"
+                    />
+                    웹 데이터 크롤링·엑셀 수집</label
+                  >
+                  <label
+                    ><input
+                      name="service"
+                      type="checkbox"
+                      value="패키지 조합 상담"
+                    />
+                    패키지 조합 상담</label
+                  >
+                  <label
+                    ><input
+                      id="service-other-check"
+                      name="service"
+                      type="checkbox"
+                      value="기타"
+                    />
+                    기타</label
+                  >
+                </div>
+                <div
+                  class="field field-spaced is-full js-conditional-field"
+                  data-service-other-field=""
+                  hidden=""
+                >
+                  <label class="field-label" for="service-other"
+                    >기타 서비스 내용</label
+                  ><input
+                    id="service-other"
+                    maxlength="120"
+                    name="service_other"
+                    placeholder="예) 예약 시스템 고도화, API 연동, 기존 코드 점검, 대량 데이터 정리 등"
+                    type="text"
+                  />
+                  <p class="field-help">
+                    기타를 선택했다면 필요한 내용을 짧게 적어주세요.
+                  </p>
+                </div>
+              </div>
+              <div class="form-section">
+                <div class="form-heading">
+                  <span class="form-step">03</span>
+                  <div>
+                    <h2 class="form-title">프로젝트 내용</h2>
+                    <p class="form-text">
+                      예산과 일정, 참고할 자료가 있다면 함께 적어주십시오.
+                    </p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <div class="field">
+                    <label class="field-label" for="budget"
+                      >예산 <span class="field-optional">선택</span></label
+                    ><select id="budget" name="budget">
+                      <option value="">예산 선택 또는 미정</option>
+                      <option value="5만원 ~ 20만원">5만원 ~ 20만원</option>
+                      <option value="20만원 ~ 70만원">20만원 ~ 70만원</option>
+                      <option value="70만원 ~ 150만원">70만원 ~ 150만원</option>
+                      <option value="150만원 ~ 300만원">
+                        150만원 ~ 300만원
+                      </option>
+                      <option value="300만원 이상">300만원 이상</option>
+                      <option value="미정">미정</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="field-label" for="schedule"
+                      >일정 <span class="field-optional">선택</span></label
+                    ><select id="schedule" name="schedule">
+                      <option value="">일정 선택 또는 미정</option>
+                      <option value="최대한 빠르게">최대한 빠르게</option>
+                      <option value="1주 이내">1주 이내</option>
+                      <option value="2주 이내">2주 이내</option>
+                      <option value="1개월 이내">1개월 이내</option>
+                      <option value="1개월 이상">1개월 이상</option>
+                      <option value="일정 미정">일정 미정</option>
+                    </select>
+                  </div>
+                  <div class="field is-full">
+                    <label class="field-label" for="reference"
+                      >참고 자료 / 참고 사이트 URL</label
+                    ><input
+                      id="reference"
+                      maxlength="600"
+                      name="reference"
+                      placeholder="참고 사이트, 문서, 수집 대상 URL 등을 적어주세요"
+                      type="text"
+                    />
+                    <p class="field-help">
+                      참고 자료가 여러 개라면 쉼표로 구분해 적어주세요.
+                    </p>
+                  </div>
+                  <div class="field is-full">
+                    <label class="field-label" for="details"
+                      >프로젝트 상세 내용
+                      <span class="field-required">*</span></label
+                    ><textarea
+                      id="details"
+                      maxlength="2000"
+                      minlength="20"
+                      name="details"
+                      placeholder="예)
 - 현재 사이트 URL:
 - 원하는 작업:
 - 참고 사이트:
 - 필요한 기능:
 - 희망 일정:
 - 예산 범위가 있다면:
-- 기타 요청:" required=""></textarea><p class="field-help">최소 20자 이상 적어주세요. 상세할수록 더 정확한 안내가 가능합니다.</p><p class="text-counter" data-details-count="">0자</p></div></div></div>
-<div class="form-section"><div class="form-heading"><span class="form-step">04</span><div><h2 class="form-title">상담 방식 및 유입 경로</h2><p class="form-text">원하시는 상담 방식과 유입 경로를 남겨주시면 응대와 마케팅 분석에 도움이 됩니다.</p></div></div><div class="radio-group"><label><input name="consulting" type="radio" value="전화상담"/> 전화상담</label><label><input name="consulting" type="radio" value="이메일상담"/> 이메일상담</label><label><input name="consulting" type="radio" value="둘 다 가능"/> 둘 다 가능</label></div><div class="field field-spaced"><label class="field-label" for="source">유입 경로</label><select id="source" name="source"><option value="">유입 경로 선택</option><option value="크몽">크몽</option><option value="구글 검색">구글 검색</option><option value="네이버 검색">네이버 검색</option><option value="SNS">SNS</option><option value="지인 소개">지인 소개</option><option value="기존 거래처">기존 거래처</option><option value="기타">기타</option></select></div><div class="field field-spaced js-conditional-field" data-source-detail-field="" hidden=""><label class="field-label" for="source-detail">유입 경로 상세</label><input id="source-detail" maxlength="120" name="source_detail" placeholder="예: 크몽 상품명, 인스타그램, 블로그, 소개자 성함 등" type="text"/><p class="field-help">SNS, 지인 소개, 기타를 선택했다면 가능하면 상세 내용을 적어주세요.</p></div></div>
-<div class="form-section consent-section"><div class="form-heading"><span class="form-step">05</span><div><h2 class="form-title">동의</h2><p class="form-text">접수와 회신을 위해 필요한 동의 항목입니다.</p></div></div><div class="radio-group"><label class="consent-item"><input name="privacy" required="" type="checkbox" value="동의"/><span class="consent-text">개인정보 수집 및 이용에 동의합니다. <a class="link-underline" href="privacy.html" rel="noopener" target="_blank">개인정보처리방침 보기</a> <em>(필수)</em></span></label></div><div class="form-submit-bar"><p class="form-submit-note">접수 후 24시간 내 1차 답변을 드립니다. 내용 확인 후 필요한 서비스, 예상 범위, 준비 자료, 다음 진행 방법을 안내드립니다.</p><div class="form-submit"><button class="btn btn-primary" type="submit">접수하기</button></div></div></div></form><iframe hidden="" id="form-response-frame" name="hidden_iframe" title="문의 접수 처리 프레임"></iframe></div></div></section></main>
-<footer class="footer">
-<div class="container">
-<div class="footer-top">
-<div>
-<p class="footer-logo"><img alt="NOVAWORK" decoding="async" height="286" src="./assets/logo-horizontal.png" width="1273"/></p>
-<p class="footer-text">홈페이지·랜딩페이지 제작 · 관리자 웹시스템 · GA4/GTM · GPT 챗봇 · 데이터 수집</p>
-<ul aria-label="사업자 정보" class="footer-business">
-<li>대표: 고찬휘</li>
-<li>사업자등록번호: 613 27 53241</li>
-<li>이메일: <a href="mailto:contact@novawork.kr">contact@novawork.kr</a></li>
-<li>전화: <a href="tel:01055286580">010-5528-6580</a></li>
-<li>회신: 24시간 내 1차 답변</li>
-<li>서비스 지역: 전국 온라인 상담 가능</li>
-</ul>
-</div>
-<nav aria-label="하단 메뉴" class="footer-nav">
-<a href="index.html">홈</a>
-<a href="about.html">회사소개</a>
-<a href="services.html">서비스</a>
-<a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
-<a href="contact.html">접수하기</a>
-<a href="privacy.html">개인정보처리방침</a>
-</nav>
-</div>
-<div class="footer-bottom">
-<p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
-<p class="footer-note">접수는 <a href="contact.html">접수 페이지</a> 또는 <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내 확인합니다.</p>
-</div>
-</div>
-</footer>
-<script src="./js/modules/inquiry-form.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/01-core-ui.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/02-enhance-v7-smooth-scroll.js?v=v55-enhance-v11-20260609"></script>
-<script src="./js/site-core/03-enhance-v8-faq-search.js?v=v55-enhance-v11-20260609"></script>
-</body>
+- 기타 요청:"
+                      required=""
+                    ></textarea>
+                    <p class="field-help">
+                      최소 20자 이상 적어주세요. 상세할수록 더 정확한 안내가
+                      가능합니다.
+                    </p>
+                    <p class="text-counter" data-details-count="">0자</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-section">
+                <div class="form-heading">
+                  <span class="form-step">04</span>
+                  <div>
+                    <h2 class="form-title">상담 방식 및 유입 경로</h2>
+                    <p class="form-text">
+                      원하시는 상담 방식과 유입 경로를 남겨주시면 응대와 마케팅
+                      분석에 도움이 됩니다.
+                    </p>
+                  </div>
+                </div>
+                <div class="radio-group">
+                  <label
+                    ><input name="consulting" type="radio" value="전화상담" />
+                    전화상담</label
+                  ><label
+                    ><input name="consulting" type="radio" value="이메일상담" />
+                    이메일상담</label
+                  ><label
+                    ><input name="consulting" type="radio" value="둘 다 가능" />
+                    둘 다 가능</label
+                  >
+                </div>
+                <div class="field field-spaced">
+                  <label class="field-label" for="source">유입 경로</label
+                  ><select id="source" name="source">
+                    <option value="">유입 경로 선택</option>
+                    <option value="크몽">크몽</option>
+                    <option value="구글 검색">구글 검색</option>
+                    <option value="네이버 검색">네이버 검색</option>
+                    <option value="SNS">SNS</option>
+                    <option value="지인 소개">지인 소개</option>
+                    <option value="기존 거래처">기존 거래처</option>
+                    <option value="기타">기타</option>
+                  </select>
+                </div>
+                <div
+                  class="field field-spaced js-conditional-field"
+                  data-source-detail-field=""
+                  hidden=""
+                >
+                  <label class="field-label" for="source-detail"
+                    >유입 경로 상세</label
+                  ><input
+                    id="source-detail"
+                    maxlength="120"
+                    name="source_detail"
+                    placeholder="예: 크몽 상품명, 인스타그램, 블로그, 소개자 성함 등"
+                    type="text"
+                  />
+                  <p class="field-help">
+                    SNS, 지인 소개, 기타를 선택했다면 가능하면 상세 내용을
+                    적어주세요.
+                  </p>
+                </div>
+              </div>
+              <div class="form-section consent-section">
+                <div class="form-heading">
+                  <span class="form-step">05</span>
+                  <div>
+                    <h2 class="form-title">동의</h2>
+                    <p class="form-text">
+                      접수와 회신을 위해 필요한 동의 항목입니다.
+                    </p>
+                  </div>
+                </div>
+                <div class="radio-group">
+                  <label class="consent-item"
+                    ><input
+                      name="privacy"
+                      required=""
+                      type="checkbox"
+                      value="동의"
+                    /><span class="consent-text"
+                      >개인정보 수집 및 이용에 동의합니다.
+                      <a
+                        class="link-underline"
+                        href="privacy.html"
+                        rel="noopener"
+                        target="_blank"
+                        >개인정보처리방침 보기</a
+                      >
+                      <em>(필수)</em></span
+                    ></label
+                  >
+                </div>
+                <div class="form-submit-bar">
+                  <p class="form-submit-note">
+                    접수 후 24시간 내 1차 답변을 드립니다. 내용 확인 후 필요한
+                    서비스, 예상 범위, 준비 자료, 다음 진행 방법을 안내드립니다.
+                  </p>
+                  <div class="form-submit">
+                    <button class="btn btn-primary" type="submit">
+                      접수하기
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <iframe
+              hidden=""
+              id="form-response-frame"
+              name="hidden_iframe"
+              title="문의 접수 처리 프레임"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div>
+            <p class="footer-logo">
+              <img
+                alt="NOVAWORK"
+                decoding="async"
+                height="286"
+                src="./assets/logo-horizontal.png"
+                width="1273"
+              />
+            </p>
+            <p class="footer-text">
+              홈페이지·랜딩페이지 제작 · 관리자 웹시스템 · GA4/GTM · GPT 챗봇 ·
+              데이터 수집
+            </p>
+            <ul class="footer-business">
+              <li>대표: 고찬휘</li>
+              <li>사업자등록번호: 613 27 53241</li>
+              <li>
+                이메일:
+                <a href="mailto:contact@novawork.kr">contact@novawork.kr</a>
+              </li>
+              <li>전화: <a href="tel:01055286580">010-5528-6580</a></li>
+              <li>회신: 24시간 내 1차 답변</li>
+              <li>서비스 지역: 전국 온라인 상담 가능</li>
+            </ul>
+          </div>
+          <nav aria-label="하단 메뉴" class="footer-nav">
+            <a href="index.html">홈</a>
+            <a href="about.html">회사소개</a>
+            <a href="services.html">서비스</a>
+            <a href="portfolio.html">포트폴리오</a><a href="faq.html">FAQ</a>
+            <a href="contact.html">접수하기</a>
+            <a href="privacy.html">개인정보처리방침</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-copy">© 2026 NOVAWORK. All rights reserved.</p>
+          <p class="footer-note">
+            접수는 <a href="contact.html">접수 페이지</a> 또는
+            <a href="tel:01055286580">전화</a>로 남겨주세요. 24시간 내
+            확인합니다.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script src="./js/modules/inquiry-form.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/modules/core-ui.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/vendor/gsap.min.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/vendor/ScrollTrigger.min.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/modules/subpage-motion.js?v=v90-motion-full-20260712"></script>
+    <script src="./js/modules/page-interactions.js?v=v90-motion-full-20260712"></script>
+  </body>
 </html>

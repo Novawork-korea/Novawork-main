@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  var VERSION = "v54-enhance-v10";
+  var VERSION = "2026.07-motion-full";
   var KEY = "novawork:route-transition";
   var root = document.documentElement;
   var leaving = false;
@@ -9,21 +9,36 @@
   var enterTimer = 0;
   var coverTimer = 0;
   var reduceMotion = false;
-  try { reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (error) {}
+  try {
+    reduceMotion = !!(
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
+  } catch (error) {}
 
-  var COVER_MS = reduceMotion ? 660 : 1640;
-  var REVEAL_MS = reduceMotion ? 760 : 1780;
-  var CONTENT_MS = reduceMotion ? 580 : 1120;
-  var EASE_COVER = "cubic-bezier(0.76, 0, 0.24, 1)";
+  var COVER_MS = reduceMotion ? 160 : 460;
+  var REVEAL_MS = reduceMotion ? 180 : 500;
+  var CONTENT_MS = 0;
+  var EASE_COVER = reduceMotion
+    ? "cubic-bezier(0.22, 1, 0.36, 1)"
+    : "cubic-bezier(0.76, 0, 0.24, 1)";
 
   function storageGet() {
-    try { return window.sessionStorage ? window.sessionStorage.getItem(KEY) : null; } catch (error) { return null; }
+    try {
+      return window.sessionStorage ? window.sessionStorage.getItem(KEY) : null;
+    } catch (error) {
+      return null;
+    }
   }
   function storageSet(value) {
-    try { if (window.sessionStorage) window.sessionStorage.setItem(KEY, value); } catch (error) {}
+    try {
+      if (window.sessionStorage) window.sessionStorage.setItem(KEY, value);
+    } catch (error) {}
   }
   function storageRemove() {
-    try { if (window.sessionStorage) window.sessionStorage.removeItem(KEY); } catch (error) {}
+    try {
+      if (window.sessionStorage) window.sessionStorage.removeItem(KEY);
+    } catch (error) {}
   }
   function now() {
     return Date.now ? Date.now() : new Date().getTime();
@@ -51,16 +66,24 @@
   }
 
   function sameDocumentHashOnly(url) {
-    return url.protocol === window.location.protocol &&
+    return (
+      url.protocol === window.location.protocol &&
       url.host === window.location.host &&
       url.pathname === window.location.pathname &&
       url.search === window.location.search &&
-      !!url.hash;
+      !!url.hash
+    );
   }
   function isInternalUrl(url) {
     var loc = window.location;
     if (url.protocol === "file:" && loc.protocol === "file:") return true;
-    if (url.origin && loc.origin && url.origin !== "null" && loc.origin !== "null") return url.origin === loc.origin;
+    if (
+      url.origin &&
+      loc.origin &&
+      url.origin !== "null" &&
+      loc.origin !== "null"
+    )
+      return url.origin === loc.origin;
     return url.protocol === loc.protocol && url.host === loc.host;
   }
   function isHtmlRoute(url) {
@@ -72,16 +95,22 @@
     if (event) {
       if (event.defaultPrevented) return null;
       if (typeof event.button === "number" && event.button !== 0) return null;
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+        return null;
     }
-    if (link.hasAttribute("download") || link.closest("[data-no-transition]")) return null;
+    if (link.hasAttribute("download") || link.closest("[data-no-transition]"))
+      return null;
     var target = (link.getAttribute("target") || "").toLowerCase();
     if (target && target !== "_self") return null;
     var href = link.getAttribute("href") || "";
     if (!href || href.charAt(0) === "#") return null;
     if (/^(tel:|mailto:|sms:|javascript:|data:|blob:)/i.test(href)) return null;
     var url;
-    try { url = new URL(href, window.location.href); } catch (error) { return null; }
+    try {
+      url = new URL(href, window.location.href);
+    } catch (error) {
+      return null;
+    }
     if (!isInternalUrl(url)) return null;
     if (sameDocumentHashOnly(url)) return null;
     if (url.href === window.location.href) return null;
@@ -90,7 +119,9 @@
   }
 
   function setBaseStyle(el, styles) {
-    Object.keys(styles).forEach(function (key) { el.style[key] = styles[key]; });
+    Object.keys(styles).forEach(function (key) {
+      el.style[key] = styles[key];
+    });
   }
   function applyRouteText(el) {
     if (!el || el.dataset.nwRouteLetters === "true") return;
@@ -128,7 +159,7 @@
       overflow: "hidden",
       pointerEvents: "auto",
       contain: "layout paint style",
-      background: "transparent"
+      background: "transparent",
     });
     var panelEl = curtain.querySelector(".nw-route-curtain__panel");
     if (panelEl) {
@@ -142,9 +173,13 @@
         placeItems: "center",
         overflow: "hidden",
         background: "#000",
-        transform: state === "enter" ? "translate3d(0, 0, 0)" : "translate3d(0, 100%, 0)",
-        willChange: "transform",
-        backfaceVisibility: "hidden"
+        transform:
+          reduceMotion || state === "enter"
+            ? "translate3d(0, 0, 0)"
+            : "translate3d(0, 100%, 0)",
+        opacity: reduceMotion && state !== "enter" ? "0" : "1",
+        willChange: reduceMotion ? "opacity" : "transform",
+        backfaceVisibility: "hidden",
       });
       var textEl = panelEl.querySelector(".nw-route-curtain__text");
       if (!textEl) {
@@ -166,7 +201,14 @@
     function finish() {
       if (finished) return;
       finished = true;
-      if (frames && frames.length && frames[frames.length - 1].transform) el.style.transform = frames[frames.length - 1].transform;
+      if (frames && frames.length && frames[frames.length - 1].transform)
+        el.style.transform = frames[frames.length - 1].transform;
+      if (
+        frames &&
+        frames.length &&
+        typeof frames[frames.length - 1].opacity !== "undefined"
+      )
+        el.style.opacity = String(frames[frames.length - 1].opacity);
       if (typeof done === "function") done();
     }
     if (el && typeof el.animate === "function") {
@@ -177,12 +219,19 @@
         return animation;
       } catch (error) {}
     }
-    window.setTimeout(finish, Math.max(0, Number(options && options.duration) || 0));
+    window.setTimeout(
+      finish,
+      Math.max(0, Number(options && options.duration) || 0),
+    );
     return null;
   }
   function dispatch(name, detail) {
-    try { document.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
-    try { window.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (error) {}
+    try {
+      document.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+    } catch (error) {}
+    try {
+      window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+    } catch (error) {}
   }
   function closeOpenUi() {
     if (!document.body) return;
@@ -204,19 +253,40 @@
     var main = document.querySelector("main");
     if (!main) return;
     if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
-    try { main.focus({ preventScroll: true }); }
-    catch (error) { try { main.focus(); } catch (innerError) {} }
+    try {
+      main.focus({ preventScroll: true });
+    } catch (error) {
+      try {
+        main.focus();
+      } catch (innerError) {}
+    }
   }
   function startLeave(url) {
     if (!url || leaving) return false;
     leaving = true;
-    storageSet(JSON.stringify({ v: VERSION, t: now(), to: url.href, from: window.location.href }));
+    storageSet(
+      JSON.stringify({
+        v: VERSION,
+        t: now(),
+        to: url.href,
+        from: window.location.href,
+      }),
+    );
     closeOpenUi();
     root.classList.remove("nw-route-entering", "nw-route-ready");
-    root.classList.add("nw-route-transitioning", "nw-route-leaving", "nw-route-overlay-ready");
+    root.classList.add(
+      "nw-route-transitioning",
+      "nw-route-leaving",
+      "nw-route-overlay-ready",
+    );
     var curtain = ensureCurtain("leave");
-    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
-    dispatch("novawork:route-leave-start", { to: url.href, source: "route-" + VERSION });
+    var panel = curtain
+      ? curtain.querySelector(".nw-route-curtain__panel")
+      : null;
+    dispatch("novawork:route-leave-start", {
+      to: url.href,
+      source: "route-" + VERSION,
+    });
     var navigated = false;
     function go() {
       if (navigated) return;
@@ -224,17 +294,25 @@
       window.location.assign(url.href);
     }
     window.clearTimeout(coverTimer);
-    coverTimer = window.setTimeout(go, COVER_MS + 320);
+    coverTimer = window.setTimeout(go, COVER_MS + 180);
     if (!panel) {
       window.setTimeout(go, 40);
       return true;
     }
     panel.getBoundingClientRect();
     window.requestAnimationFrame(function () {
-      animateElement(panel, [
-        { transform: "translate3d(0, 100%, 0)" },
-        { transform: "translate3d(0, 0, 0)" }
-      ], { duration: COVER_MS, easing: EASE_COVER, fill: "forwards" }, go);
+      var leaveFrames = reduceMotion
+        ? [{ opacity: 0 }, { opacity: 1 }]
+        : [
+            { transform: "translate3d(0, 100%, 0)" },
+            { transform: "translate3d(0, 0, 0)" },
+          ];
+      animateElement(
+        panel,
+        leaveFrames,
+        { duration: COVER_MS, easing: EASE_COVER, fill: "forwards" },
+        go,
+      );
     });
     return true;
   }
@@ -242,7 +320,13 @@
     if (enterFinished) return;
     enterFinished = true;
     window.clearTimeout(enterTimer);
-    root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
+    root.classList.remove(
+      "nw-route-transitioning",
+      "nw-route-entering",
+      "nw-route-leaving",
+      "nw-route-ready",
+      "nw-route-overlay-ready",
+    );
     window.__NW_ROUTE_ENTERING = false;
     entering = false;
     removeCurtain();
@@ -252,7 +336,10 @@
   function startEnter() {
     if (entering || enterFinished) return;
     var entry = getFreshEntry();
-    var shouldEnter = !!entry || root.classList.contains("nw-route-entering") || window.__NW_ROUTE_ENTERING === true;
+    var shouldEnter =
+      !!entry ||
+      root.classList.contains("nw-route-entering") ||
+      window.__NW_ROUTE_ENTERING === true;
     if (!shouldEnter) return;
     entering = true;
     storageRemove();
@@ -260,56 +347,95 @@
     root.classList.add("nw-route-transitioning", "nw-route-entering");
     root.classList.remove("nw-route-leaving", "nw-route-ready");
     var curtain = ensureCurtain("enter");
-    var panel = curtain ? curtain.querySelector(".nw-route-curtain__panel") : null;
+    var panel = curtain
+      ? curtain.querySelector(".nw-route-curtain__panel")
+      : null;
     root.classList.add("nw-route-overlay-ready");
     if (curtain) curtain.getBoundingClientRect();
-    dispatch("novawork:route-enter-start", { from: entry && entry.from, source: "route-" + VERSION });
+    dispatch("novawork:route-enter-start", {
+      from: entry && entry.from,
+      source: "route-" + VERSION,
+    });
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
         root.classList.add("nw-route-ready");
         window.clearTimeout(enterTimer);
-        enterTimer = window.setTimeout(finishEnter, Math.max(REVEAL_MS + CONTENT_MS, 1500));
+        enterTimer = window.setTimeout(
+          finishEnter,
+          Math.max(REVEAL_MS + CONTENT_MS + 80, reduceMotion ? 260 : 620),
+        );
         if (!panel) return;
-        animateElement(panel, [
-          { transform: "translate3d(0, 0, 0)" },
-          { transform: "translate3d(0, -100%, 0)" }
-        ], { duration: REVEAL_MS, easing: EASE_COVER, fill: "forwards", delay: 120 }, finishEnter);
+        var enterFrames = reduceMotion
+          ? [{ opacity: 1 }, { opacity: 0 }]
+          : [
+              { transform: "translate3d(0, 0, 0)" },
+              { transform: "translate3d(0, -100%, 0)" },
+            ];
+        animateElement(
+          panel,
+          enterFrames,
+          {
+            duration: REVEAL_MS,
+            easing: EASE_COVER,
+            fill: "forwards",
+            delay: 40,
+          },
+          finishEnter,
+        );
       });
     });
   }
 
-  document.addEventListener("click", function (event) {
-    var target = event.target;
-    if (!target || !target.closest) return;
-    var link = target.closest("a[href]");
-    var url = getTransitionUrl(link, event);
-    if (!url) return;
-    event.preventDefault();
-    startLeave(url);
-  }, true);
+  document.addEventListener(
+    "click",
+    function (event) {
+      var target = event.target;
+      if (!target || !target.closest) return;
+      var link = target.closest("a[href]");
+      var url = getTransitionUrl(link, event);
+      if (!url) return;
+      event.preventDefault();
+      startLeave(url);
+    },
+    true,
+  );
 
   document.addEventListener("DOMContentLoaded", startEnter, { once: true });
-  window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-      leaving = false;
-      entering = false;
-      enterFinished = false;
-      storageRemove();
-      root.classList.remove("nw-route-transitioning", "nw-route-entering", "nw-route-leaving", "nw-route-ready", "nw-route-overlay-ready");
-      removeCurtain();
-      window.__NW_ROUTE_ENTERING = false;
-      return;
-    }
-    startEnter();
-  }, { passive: true });
+  window.addEventListener(
+    "pageshow",
+    function (event) {
+      if (event.persisted) {
+        leaving = false;
+        entering = false;
+        enterFinished = false;
+        storageRemove();
+        root.classList.remove(
+          "nw-route-transitioning",
+          "nw-route-entering",
+          "nw-route-leaving",
+          "nw-route-ready",
+          "nw-route-overlay-ready",
+        );
+        removeCurtain();
+        window.__NW_ROUTE_ENTERING = false;
+        return;
+      }
+      startEnter();
+    },
+    { passive: true },
+  );
   if (document.readyState !== "loading") startEnter();
 
   window.NOVAWORKRouteTransition = {
     version: VERSION,
     start: function (href) {
       var url;
-      try { url = new URL(href, window.location.href); } catch (error) { return false; }
+      try {
+        url = new URL(href, window.location.href);
+      } catch (error) {
+        return false;
+      }
       return startLeave(url);
-    }
+    },
   };
 })();
