@@ -164,7 +164,7 @@
         finish();
         return;
       }
-      const duration = opening ? 300 : 280;
+      const duration = opening ? 450 : 380;
       const options = { duration: duration, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' };
       try {
         const navAnimation = mobileNav.animate([fromNav, {

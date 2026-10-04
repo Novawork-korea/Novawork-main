@@ -87,7 +87,7 @@
     button.disabled = Boolean(activeRequest) || unchanged;
     const sentLabel = lastResult && lastResult.kind === 'success'
       ? '접수 완료 ✓' : '접수 확인 대기';
-    button.textContent = activeRequest ? '보내는 중…' : unchanged ? sentLabel : '이야기 보내기 ↗';
+    button.textContent = activeRequest ? '문의 전송 중…' : unchanged ? sentLabel : '문의 접수하기 ↗';
     form.setAttribute('aria-busy', activeRequest ? 'true' : 'false');
   }
 
@@ -114,7 +114,7 @@
     const errors = [
       [fields.name, fields.name.value.trim() ? '' : '이름을 입력해 주세요.'],
       [fields.reply, replyType(fields.reply.value.trim()) ? '' : '이메일 또는 전화번호를 확인해 주세요.'],
-      [fields.message, fields.message.value.trim().length >= 20 ? '' : '문의 내용을 20자 이상 적어주세요.'],
+      [fields.message, fields.message.value.trim().length >= 20 ? '' : '문의 내용을 20자 이상 작성해 주세요.'],
       [fields.privacy, fields.privacy.checked ? '' : '개인정보 수집·이용에 동의해 주세요.'],
     ];
     errors.forEach(([field, message]) => setError(field, message));
@@ -178,15 +178,15 @@
     activeRequest = request;
     lastSentValues = request.values;
     lastResult = null;
-    setStatus('문의 내용을 보내고 있습니다. 접수 확인까지 잠시 기다려 주세요.');
+    setStatus('문의를 전송하고 있습니다. 접수 확인까지 잠시 기다려 주세요.');
     syncButton();
 
     request.softTimeout = setTimeout(() => {
       if (activeRequest !== request) return;
-      setStatus('접수 확인이 지연되고 있습니다. 중복 전송하지 말고 잠시 기다려 주세요.', 'pending');
+      setStatus('접수 확인이 지연되고 있습니다. 중복 접수를 방지하기 위해 잠시 기다려 주세요.', 'pending');
     }, 30000);
     request.hardTimeout = setTimeout(() => {
-      finish(request, 'pending', '접수 여부를 확인하지 못했습니다. 이미 전달됐을 수 있으니 카카오톡 또는 이메일로 접수 여부를 확인해 주세요. 입력한 내용은 그대로 남아 있습니다.');
+      finish(request, 'pending', '접수 여부를 확인하지 못했습니다. 이미 전달되었을 수 있으므로 카카오톡 또는 이메일로 접수 여부를 확인해 주세요. 입력 내용은 유지됩니다.');
     }, 90000);
 
     try {
@@ -209,8 +209,8 @@
     if (data.status === 'success') {
       const changed = valuesFingerprint() !== request.values;
       finish(request, 'success', changed
-        ? '앞서 보낸 문의는 접수되었습니다. 수정한 내용은 아직 보내지 않았습니다.'
-        : '문의가 접수되었습니다. 남겨주신 연락처로 답변드리겠습니다.');
+        ? '이전 문의는 접수되었습니다. 수정한 내용은 아직 전송되지 않았습니다.'
+        : '문의가 접수되었습니다. 입력하신 연락처로 답변드리겠습니다.');
     } else if (data.status === 'error') {
       // Server diagnostics are not displayed to visitors and never imply delivery.
       finish(request, 'error', '접수를 확인하지 못했습니다. 입력 내용은 유지됩니다. 카카오톡 또는 이메일로 문의해 주세요.');
@@ -223,11 +223,11 @@
       const changed = valuesFingerprint() !== lastSentValues;
       if (lastResult.kind === 'success') {
         setStatus(changed
-          ? '앞서 보낸 문의는 접수되었습니다. 수정한 내용은 아직 보내지 않았습니다.'
-          : '문의가 접수되었습니다. 남겨주신 연락처로 답변드리겠습니다.', 'success');
+          ? '이전 문의는 접수되었습니다. 수정한 내용은 아직 전송되지 않았습니다.'
+          : '문의가 접수되었습니다. 입력하신 연락처로 답변드리겠습니다.', 'success');
       } else {
         setStatus(changed
-          ? '내용이 변경되었습니다. 앞서 보낸 문의의 접수 여부를 카카오톡 또는 이메일로 먼저 확인해 주세요.'
+          ? '내용이 변경되었습니다. 이전 문의의 접수 여부를 카카오톡 또는 이메일로 먼저 확인해 주세요.'
           : lastResult.message, lastResult.kind);
       }
     }
