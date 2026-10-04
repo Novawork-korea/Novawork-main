@@ -184,8 +184,9 @@
       if (!menuOpen || !mobileNav) return;
       // The keyboard/address bar can resize only the visual viewport on iOS.
       const viewport = window.visualViewport;
-      const visibleBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
-      const available = Math.max(0, visibleBottom - mobileNav.getBoundingClientRect().top);
+      const viewportHeight = viewport ? viewport.height : window.innerHeight;
+      const visibleBottom = (viewport ? viewport.offsetTop : 0) + viewportHeight;
+      const available = clamp(visibleBottom - mobileNav.getBoundingClientRect().top, 0, viewportHeight);
       mobileNav.style.setProperty('--menu-available-height', Math.floor(available) + 'px');
     }
 
@@ -267,14 +268,15 @@
       menuButton.setAttribute('aria-expanded', 'true');
       menuButton.setAttribute('aria-label', '메뉴 닫기');
       body.classList.add('menu-open');
-      // Store longhands: saving only the shorthand loses an existing distinct
-      // overflow-x/overflow-y setting when the menu closes.
-      savedOverflow = [document.documentElement, body].flatMap((element) =>
-        ['overflow-x', 'overflow-y'].map((property) => ({
-          element: element, property: property,
-          value: element.style.getPropertyValue(property),
-          priority: element.style.getPropertyPriority(property)
-        })));
+      // Lock only the root scrollport. Setting body overflow creates a new
+      // scrolling ancestor and pulls the sticky header offscreen on long pages.
+      // Preserve each root longhand and leave body layout/overflow untouched.
+      const root = document.documentElement;
+      savedOverflow = ['overflow-x', 'overflow-y'].map((property) => ({
+        element: root, property: property,
+        value: root.style.getPropertyValue(property),
+        priority: root.style.getPropertyPriority(property)
+      }));
       savedOverflow.forEach((saved) => saved.element.style.setProperty(saved.property, 'hidden'));
       inertElements = all('main, footer').filter((element) => !element.contains(mobileNav) && !element.contains(menuButton))
         .map((element) => ({ element: element, hadInert: element.hasAttribute('inert') }));
