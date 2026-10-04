@@ -84,6 +84,7 @@
     function applyMotionPreference() {
       // An explicit visitor choice takes precedence over the OS default.
       paused = preference ? preference === 'reduced' : systemMotion.matches;
+      document.documentElement.classList.toggle('motion-full', preference === 'full');
       body.classList.toggle('motion-paused', paused);
       motionButtons.forEach((button) => {
         button.setAttribute('aria-pressed', String(paused));
