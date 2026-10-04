@@ -20,6 +20,26 @@
     'https://script.google.com',
     'https://script.googleusercontent.com',
   ]);
+  function isAllowedResponseOrigin(origin) {
+    return allowedOrigins.has(origin) ||
+      /^https:\/\/[a-z0-9-]+-script\.googleusercontent\.com$/.test(origin);
+  }
+
+  function isResponseFrameSource(source, expectedFrame) {
+    // Apps Script HtmlService runs inside Google's nested sandbox iframe.
+    // Cross-origin Window.parent is readable; DOM/location access is unnecessary.
+    // Require the sender to be the current response frame or one of its children.
+    try {
+      for (let depth = 0; source && depth < 12; depth += 1) {
+        if (source === expectedFrame) return true;
+        const parent = source.parent;
+        if (!parent || parent === source) return false;
+        source = parent;
+      }
+    } catch (_) { /* A detached/inaccessible frame cannot prove a response's origin. */ }
+    return false;
+  }
+
   const serviceAliases = {
     homepage: '홈페이지·랜딩페이지 제작',
     system: 'React·Firebase 관리자 웹시스템',
@@ -36,6 +56,7 @@
   };
   let activeRequest = null;
   let lastSentValues = '';
+  let lastResult = null;
   let sequence = 0;
 
   // Discard drafts created by the old form. The new form never stores inquiry PII.
@@ -64,7 +85,9 @@
   function syncButton() {
     const unchanged = Boolean(lastSentValues && valuesFingerprint() === lastSentValues);
     button.disabled = Boolean(activeRequest) || unchanged;
-    button.textContent = activeRequest ? '보내는 중…' : unchanged ? '전송한 내용' : '이야기 보내기 ↗';
+    const sentLabel = lastResult && lastResult.kind === 'success'
+      ? '접수 완료 ✓' : '접수 확인 대기';
+    button.textContent = activeRequest ? '보내는 중…' : unchanged ? sentLabel : '이야기 보내기 ↗';
     form.setAttribute('aria-busy', activeRequest ? 'true' : 'false');
   }
 
@@ -114,6 +137,7 @@
     clearTimeout(request.softTimeout);
     clearTimeout(request.hardTimeout);
     activeRequest = null;
+    lastResult = { kind, message };
     // Leave every input untouched, even if it changed while the request was pending.
     setStatus(message, kind);
     syncButton();
@@ -153,6 +177,7 @@
     const request = { frame, source: frame.contentWindow, values: valuesFingerprint() };
     activeRequest = request;
     lastSentValues = request.values;
+    lastResult = null;
     setStatus('문의 내용을 보내고 있습니다. 접수 확인까지 잠시 기다려 주세요.');
     syncButton();
 
@@ -174,7 +199,8 @@
 
   window.addEventListener('message', event => {
     const request = activeRequest;
-    if (!request || event.source !== request.source || !allowedOrigins.has(event.origin)) return;
+    if (!request || !isAllowedResponseOrigin(event.origin) ||
+        !isResponseFrameSource(event.source, request.source)) return;
     let data = event.data;
     if (typeof data === 'string') {
       try { data = JSON.parse(data); } catch (_) { return; }
@@ -183,23 +209,36 @@
     if (data.status === 'success') {
       const changed = valuesFingerprint() !== request.values;
       finish(request, 'success', changed
-        ? '전송한 문의가 접수되었습니다. 전송 후 수정한 내용은 아직 보내지 않았습니다.'
+        ? '앞서 보낸 문의는 접수되었습니다. 수정한 내용은 아직 보내지 않았습니다.'
         : '문의가 접수되었습니다. 남겨주신 연락처로 답변드리겠습니다.');
     } else if (data.status === 'error') {
       // Server diagnostics are not displayed to visitors and never imply delivery.
       finish(request, 'error', '접수를 확인하지 못했습니다. 입력 내용은 유지됩니다. 카카오톡 또는 이메일로 문의해 주세요.');
     }
-    // Iframe load, unknown payloads, null origins and nested-frame messages are not proof of delivery.
+    // Iframe load, unknown payloads, null origins and unrelated frames never prove delivery.
   });
+
+  function syncEditedResult() {
+    if (!activeRequest && lastSentValues && lastResult) {
+      const changed = valuesFingerprint() !== lastSentValues;
+      if (lastResult.kind === 'success') {
+        setStatus(changed
+          ? '앞서 보낸 문의는 접수되었습니다. 수정한 내용은 아직 보내지 않았습니다.'
+          : '문의가 접수되었습니다. 남겨주신 연락처로 답변드리겠습니다.', 'success');
+      } else {
+        setStatus(changed
+          ? '내용이 변경되었습니다. 앞서 보낸 문의의 접수 여부를 카카오톡 또는 이메일로 먼저 확인해 주세요.'
+          : lastResult.message, lastResult.kind);
+      }
+    }
+    syncButton();
+  }
 
   form.addEventListener('input', event => {
     if (event.target && event.target.id) setError(event.target, '');
-    if (!activeRequest && lastSentValues && valuesFingerprint() !== lastSentValues) {
-      setStatus('내용이 변경되었습니다. 앞서 보낸 내용의 접수 여부가 불확실하다면 먼저 확인해 주세요.');
-    }
-    syncButton();
+    syncEditedResult();
   });
-  form.addEventListener('change', syncButton);
+  form.addEventListener('change', syncEditedResult);
   window.addEventListener('pageshow', () => {
     // A restored page must not silently unlock the same request for duplicate sending.
     syncButton();

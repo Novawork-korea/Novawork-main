@@ -165,33 +165,91 @@
 
     const menuButton = query('.menu-toggle');
     const mobileNav = query('#mobile-nav');
+    const mobileLayout = window.matchMedia('(max-width: 760px)');
     let menuOpen = false;
     let savedOverflow = null;
     let inertElements = [];
+    let menuBackdrop = null;
+    let menuViewportFrame = 0;
+    let lastMenuTouch = null;
+
+    function focusWithoutScroll(element) {
+      if (!element) return;
+      try { element.focus({ preventScroll: true }); }
+      catch (_) { element.focus(); }
+    }
+
+    function syncMenuViewport() {
+      menuViewportFrame = 0;
+      if (!menuOpen || !mobileNav) return;
+      // The keyboard/address bar can resize only the visual viewport on iOS.
+      const viewport = window.visualViewport;
+      const visibleBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+      const available = Math.max(0, visibleBottom - mobileNav.getBoundingClientRect().top);
+      mobileNav.style.setProperty('--menu-available-height', Math.floor(available) + 'px');
+    }
+
+    function scheduleMenuViewport() {
+      if (menuOpen && !menuViewportFrame) menuViewportFrame = window.requestAnimationFrame(syncMenuViewport);
+    }
 
     function restoreScroll() {
       if (!savedOverflow) return;
       savedOverflow.forEach((saved) => {
-        if (saved.value) saved.element.style.setProperty('overflow', saved.value, saved.priority);
-        else saved.element.style.removeProperty('overflow');
+        if (saved.value) saved.element.style.setProperty(saved.property, saved.value, saved.priority);
+        else saved.element.style.removeProperty(saved.property);
       });
       savedOverflow = null;
     }
 
+    function onMenuTouchStart(event) {
+      lastMenuTouch = event.touches.length === 1
+        ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
+    }
+
+    function onMenuTouchMove(event) {
+      // Keep pinch zoom available. Only a single-finger background/edge drag
+      // is canceled; normal movement inside a scrollable menu remains native.
+      if (!menuOpen || event.touches.length !== 1 || !lastMenuTouch) return;
+      const touch = event.touches[0];
+      const deltaX = touch.clientX - lastMenuTouch.x;
+      const deltaY = touch.clientY - lastMenuTouch.y;
+      lastMenuTouch = { x: touch.clientX, y: touch.clientY };
+      const inside = event.target instanceof Element && mobileNav.contains(event.target);
+      const maximum = Math.max(0, mobileNav.scrollHeight - mobileNav.clientHeight);
+      const canScroll = inside && maximum > 1 && Math.abs(deltaY) > Math.abs(deltaX)
+        && ((deltaY > 0 && mobileNav.scrollTop > 0)
+          || (deltaY < 0 && mobileNav.scrollTop < maximum - 1));
+      if (!canScroll && event.cancelable) event.preventDefault();
+    }
+
+    function clearMenuTouch() { lastMenuTouch = null; }
+
     function closeMenu(returnFocus) {
-      // Restore unconditionally: pageshow/back navigation must not leave a lock.
+      // Release our locks unconditionally, including pagehide/bfcache recovery.
       menuOpen = false;
+      document.removeEventListener('touchstart', onMenuTouchStart, true);
+      document.removeEventListener('touchmove', onMenuTouchMove, true);
+      document.removeEventListener('touchend', clearMenuTouch, true);
+      document.removeEventListener('touchcancel', clearMenuTouch, true);
+      clearMenuTouch();
+      if (menuViewportFrame) window.cancelAnimationFrame(menuViewportFrame);
+      menuViewportFrame = 0;
       restoreScroll();
       body.classList.remove('menu-open');
       inertElements.forEach((saved) => {
         if (!saved.hadInert) saved.element.removeAttribute('inert');
       });
       inertElements = [];
-      if (mobileNav) mobileNav.hidden = true;
+      if (mobileNav) {
+        mobileNav.hidden = true;
+        mobileNav.style.removeProperty('--menu-available-height');
+      }
+      if (menuBackdrop) menuBackdrop.hidden = true;
       if (menuButton) {
         menuButton.setAttribute('aria-expanded', 'false');
         menuButton.setAttribute('aria-label', '메뉴 열기');
-        if (returnFocus && menuButton.getClientRects().length) menuButton.focus({ preventScroll: true });
+        if (returnFocus && menuButton.getClientRects().length) focusWithoutScroll(menuButton);
       }
     }
 
@@ -201,30 +259,57 @@
         .filter((element) => element.getClientRects().length && element.getAttribute('aria-hidden') !== 'true');
     }
 
-    function openMenu() {
-      if (!mobileNav || !menuButton || menuOpen) return;
+    function openMenu(fromKeyboard) {
+      if (!mobileNav || !menuButton || menuOpen || !mobileLayout.matches || !menuButton.getClientRects().length) return;
       menuOpen = true;
       mobileNav.hidden = false;
+      if (menuBackdrop) menuBackdrop.hidden = false;
       menuButton.setAttribute('aria-expanded', 'true');
       menuButton.setAttribute('aria-label', '메뉴 닫기');
       body.classList.add('menu-open');
-      savedOverflow = [document.documentElement, body].map((element) => ({
-        element: element,
-        value: element.style.getPropertyValue('overflow'),
-        priority: element.style.getPropertyPriority('overflow')
-      }));
-      savedOverflow.forEach((saved) => saved.element.style.setProperty('overflow', 'hidden'));
-      // Main/footer cannot receive focus behind the mobile navigation overlay.
+      // Store longhands: saving only the shorthand loses an existing distinct
+      // overflow-x/overflow-y setting when the menu closes.
+      savedOverflow = [document.documentElement, body].flatMap((element) =>
+        ['overflow-x', 'overflow-y'].map((property) => ({
+          element: element, property: property,
+          value: element.style.getPropertyValue(property),
+          priority: element.style.getPropertyPriority(property)
+        })));
+      savedOverflow.forEach((saved) => saved.element.style.setProperty(saved.property, 'hidden'));
       inertElements = all('main, footer').filter((element) => !element.contains(mobileNav) && !element.contains(menuButton))
         .map((element) => ({ element: element, hadInert: element.hasAttribute('inert') }));
       inertElements.forEach((saved) => saved.element.setAttribute('inert', ''));
+      // Overflow locking alone has Safari edge-drag gaps; attach a scoped
+      // non-passive guard only while the menu is open, never during page use.
+      document.addEventListener('touchstart', onMenuTouchStart, { capture: true, passive: true });
+      document.addEventListener('touchmove', onMenuTouchMove, { capture: true, passive: false });
+      document.addEventListener('touchend', clearMenuTouch, { capture: true, passive: true });
+      document.addEventListener('touchcancel', clearMenuTouch, { capture: true, passive: true });
       const firstLink = menuFocusables().find((element) => element !== menuButton);
-      if (firstLink) firstLink.focus({ preventScroll: true });
+      // Pointer activation keeps focus on the toggle and dismisses a form
+      // keyboard without jumping to a distant link in the menu.
+      focusWithoutScroll(fromKeyboard && firstLink ? firstLink : menuButton);
+      syncMenuViewport();
+      scheduleMenuViewport();
     }
 
     if (menuButton && mobileNav) {
+      // A box-shadow cannot receive an outside tap. Use a real, non-focusable
+      // backdrop under the header instead; the header's close control remains available.
+      menuBackdrop = query('.menu-backdrop');
+      if (!menuBackdrop) {
+        menuBackdrop = document.createElement('div');
+        menuBackdrop.className = 'menu-backdrop';
+        menuBackdrop.setAttribute('aria-hidden', 'true');
+        menuBackdrop.hidden = true;
+        body.appendChild(menuBackdrop);
+      }
       closeMenu(false);
-      menuButton.addEventListener('click', () => menuOpen ? closeMenu(true) : openMenu());
+      menuButton.addEventListener('click', (event) => {
+        if (menuOpen) closeMenu(true);
+        else openMenu(event.detail === 0);
+      });
+      menuBackdrop.addEventListener('click', () => closeMenu(true));
       mobileNav.addEventListener('click', (event) => {
         if (event.target instanceof Element && event.target.closest('a[href]')) closeMenu(false);
       });
@@ -243,19 +328,35 @@
         const outside = !focusables.includes(document.activeElement);
         if (event.shiftKey && (document.activeElement === first || outside)) {
           event.preventDefault();
-          last.focus();
+          focusWithoutScroll(last);
         } else if (!event.shiftKey && (document.activeElement === last || outside)) {
           event.preventDefault();
-          first.focus();
+          focusWithoutScroll(first);
         }
       });
+      const onLayoutChange = () => {
+        if (!mobileLayout.matches) closeMenu(false);
+        else scheduleMenuViewport();
+      };
+      if (mobileLayout.addEventListener) mobileLayout.addEventListener('change', onLayoutChange);
+      else mobileLayout.addListener(onLayoutChange);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', scheduleMenuViewport, { passive: true });
+        window.visualViewport.addEventListener('scroll', scheduleMenuViewport, { passive: true });
+      }
       window.addEventListener('pagehide', () => closeMenu(false));
-      window.addEventListener('pageshow', () => { closeMenu(false); scheduleScroll(); });
+      window.addEventListener('pageshow', (event) => {
+        // Initial pageshow can arrive AFTER a visitor's first tap on a slow
+        // connection. Only restored documents need a forced state reset.
+        if (event.persisted) closeMenu(false);
+        scheduleScroll();
+      });
     }
 
     window.addEventListener('scroll', scheduleScroll, { passive: true });
     window.addEventListener('resize', () => {
-      if (menuOpen && menuButton && !menuButton.getClientRects().length) closeMenu(false);
+      if (menuOpen && !mobileLayout.matches) closeMenu(false);
+      else scheduleMenuViewport();
       resetTilt();
       scheduleScroll();
     }, { passive: true });
