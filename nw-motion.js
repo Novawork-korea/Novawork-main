@@ -1,4 +1,4 @@
-/* NOVAWORK: optional motion and small, progressively enhanced interactions.
+/* NOVAWORK: motion and small, progressively enhanced interactions.
  * No route interception, remote dependencies, or personal data are used here.
  */
 (function () {
@@ -12,28 +12,16 @@
     const query = (selector) => document.querySelector(selector);
     const all = (selector) => Array.from(document.querySelectorAll(selector));
     const clamp = (number, minimum, maximum) => Math.min(maximum, Math.max(minimum, number));
-    const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const preferenceKey = 'novawork.motion.preference';
-    const motionButtons = all('.motion-toggle');
     const header = query('.site-header');
     const progress = query('.scroll-progress');
     const parallaxItems = all('[data-parallax]');
     const visualCards = all('.visual-card');
     const revealItems = all('[data-reveal]');
-    let preference = null;
-    let paused = false;
     let scrollFrame = 0;
     let tiltFrame = 0;
     let pendingTilt = null;
     let observer = null;
     let revealFallback = 0;
-
-    // Storage may be unavailable in private browsing. The site still works.
-    try {
-      const stored = window.localStorage.getItem(preferenceKey);
-      if (stored === 'reduced' || stored === 'full') preference = stored;
-    } catch (_) { /* The OS preference remains the default. */ }
 
     function showAllContent() {
       if (observer) observer.disconnect();
@@ -57,7 +45,6 @@
 
     function updateScroll() {
       scrollFrame = 0;
-      if (document.hidden) return;
       const top = Math.max(0, window.scrollY || 0);
       if (header) header.classList.toggle('is-scrolled', top > 16);
       if (progress) {
@@ -66,11 +53,9 @@
       }
       parallaxItems.forEach((element) => {
         let offset = 0;
-        if (!paused) {
-          const rect = element.getBoundingClientRect();
-          if (rect.bottom > 0 && rect.top < window.innerHeight) {
-            offset = clamp((window.innerHeight / 2 - rect.top - rect.height / 2) * 0.065, -22, 22);
-          }
+        const rect = element.getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          offset = clamp((window.innerHeight / 2 - rect.top - rect.height / 2) * 0.065, -22, 22);
         }
         element.style.setProperty('--parallax-y', offset.toFixed(2) + 'px');
       });
@@ -78,43 +63,13 @@
 
     function scheduleScroll() {
       // One frame per input burst; there is no perpetual animation loop.
-      if (!scrollFrame && !document.hidden) scrollFrame = window.requestAnimationFrame(updateScroll);
+      if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateScroll);
     }
-
-    function applyMotionPreference() {
-      // An explicit visitor choice takes precedence over the OS default.
-      paused = preference ? preference === 'reduced' : systemMotion.matches;
-      document.documentElement.classList.toggle('motion-full', preference === 'full');
-      body.classList.toggle('motion-paused', paused);
-      motionButtons.forEach((button) => {
-        button.setAttribute('aria-pressed', String(paused));
-        const label = paused ? '동작 켜기' : '동작 줄이기';
-        const labelElement = button.querySelector('[data-motion-label]');
-        if (labelElement) labelElement.textContent = label;
-        else button.textContent = label;
-        button.setAttribute('aria-label', label);
-      });
-      if (paused) {
-        showAllContent();
-        resetTilt();
-      }
-      scheduleScroll();
-    }
-
-    motionButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        preference = paused ? 'full' : 'reduced';
-        try { window.localStorage.setItem(preferenceKey, preference); } catch (_) { /* Optional preference. */ }
-        applyMotionPreference();
-      });
-    });
-    if (systemMotion.addEventListener) systemMotion.addEventListener('change', applyMotionPreference);
-    else systemMotion.addListener(applyMotionPreference);
 
     // Nothing is hidden unless an observer was successfully created. A finite
     // fallback releases every item, even if observer delivery stops unexpectedly.
-    applyMotionPreference();
-    if (!paused && 'IntersectionObserver' in window && revealItems.length) {
+    scheduleScroll();
+    if ('IntersectionObserver' in window && revealItems.length) {
       try {
         observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
@@ -144,12 +99,11 @@
 
     visualCards.forEach((element) => {
       element.addEventListener('pointermove', (event) => {
-        if (paused || document.hidden || !finePointer.matches || event.pointerType === 'touch') return;
         pendingTilt = { element: element, x: event.clientX, y: event.clientY };
         if (tiltFrame) return;
         tiltFrame = window.requestAnimationFrame(() => {
           tiltFrame = 0;
-          if (!pendingTilt || paused || document.hidden) return;
+          if (!pendingTilt) return;
           const item = pendingTilt;
           pendingTilt = null;
           const rect = item.element.getBoundingClientRect();
@@ -161,7 +115,6 @@
       element.addEventListener('pointerleave', resetTilt, { passive: true });
       element.addEventListener('pointercancel', resetTilt, { passive: true });
     });
-    if (finePointer.addEventListener) finePointer.addEventListener('change', resetTilt);
 
     const menuButton = query('.menu-toggle');
     const mobileNav = query('#mobile-nav');
@@ -172,6 +125,64 @@
     let menuBackdrop = null;
     let menuViewportFrame = 0;
     let lastMenuTouch = null;
+    let menuTransitionId = 0;
+    let menuAnimations = [];
+    let menuTransitionTimer = 0;
+
+    function transitionMenu(opening, wasHidden, immediately) {
+      // Capture the current painted frame before canceling an in-flight
+      // transition, so a quick second tap reverses instead of snapping.
+      const navStyle = mobileNav && !wasHidden ? window.getComputedStyle(mobileNav) : null;
+      const backdropStyle = menuBackdrop && !wasHidden ? window.getComputedStyle(menuBackdrop) : null;
+      const fromNav = {
+        opacity: navStyle ? navStyle.opacity : '0',
+        transform: navStyle && navStyle.transform !== 'none' ? navStyle.transform : (wasHidden ? 'translateY(-10px)' : 'translateY(0px)')
+      };
+      const fromBackdrop = { opacity: backdropStyle ? backdropStyle.opacity : '0' };
+      const transitionId = ++menuTransitionId;
+      window.clearTimeout(menuTransitionTimer);
+      menuTransitionTimer = 0;
+      menuAnimations.forEach((animation) => animation.cancel());
+      menuAnimations = [];
+      let completed = false;
+      const finish = () => {
+        if (completed || transitionId !== menuTransitionId) return;
+        completed = true;
+        window.clearTimeout(menuTransitionTimer);
+        menuTransitionTimer = 0;
+        if (!opening && !menuOpen) {
+          if (mobileNav) {
+            mobileNav.hidden = true;
+            mobileNav.style.removeProperty('--menu-available-height');
+          }
+          if (menuBackdrop) menuBackdrop.hidden = true;
+        }
+        menuAnimations.forEach((animation) => animation.cancel());
+        menuAnimations = [];
+      };
+      if (immediately || !mobileNav || !menuBackdrop || typeof mobileNav.animate !== 'function' || typeof menuBackdrop.animate !== 'function') {
+        finish();
+        return;
+      }
+      const duration = opening ? 300 : 280;
+      const options = { duration: duration, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' };
+      try {
+        const navAnimation = mobileNav.animate([fromNav, {
+          opacity: opening ? '1' : '0',
+          transform: opening ? 'translateY(0px)' : 'translateY(-10px)'
+        }], options);
+        navAnimation.finished.catch(() => {});
+        menuAnimations.push(navAnimation);
+        const backdropAnimation = menuBackdrop.animate([fromBackdrop, { opacity: opening ? '1' : '0' }], options);
+        backdropAnimation.finished.catch(() => {});
+        menuAnimations.push(backdropAnimation);
+        Promise.allSettled(menuAnimations.map((animation) => animation.finished)).then(finish);
+        // Keep cleanup finite even if a browser fails to settle finished.
+        menuTransitionTimer = window.setTimeout(finish, duration + 80);
+      } catch (_) {
+        finish();
+      }
+    }
 
     function focusWithoutScroll(element) {
       if (!element) return;
@@ -186,7 +197,10 @@
       const viewport = window.visualViewport;
       const viewportHeight = viewport ? viewport.height : window.innerHeight;
       const visibleBottom = (viewport ? viewport.offsetTop : 0) + viewportHeight;
-      const available = clamp(visibleBottom - mobileNav.getBoundingClientRect().top, 0, viewportHeight);
+      // The dropdown is anchored to the header bottom. Its animated transform
+      // must not change the available height during entrance/exit or resize.
+      const menuTop = header ? header.getBoundingClientRect().bottom : mobileNav.getBoundingClientRect().top;
+      const available = clamp(visibleBottom - menuTop, 0, viewportHeight);
       mobileNav.style.setProperty('--menu-available-height', Math.floor(available) + 'px');
     }
 
@@ -226,8 +240,9 @@
 
     function clearMenuTouch() { lastMenuTouch = null; }
 
-    function closeMenu(returnFocus) {
+    function closeMenu(returnFocus, immediately) {
       // Release our locks unconditionally, including pagehide/bfcache recovery.
+      const wasHidden = !mobileNav || mobileNav.hidden;
       menuOpen = false;
       document.removeEventListener('touchstart', onMenuTouchStart, true);
       document.removeEventListener('touchmove', onMenuTouchMove, true);
@@ -243,15 +258,17 @@
       });
       inertElements = [];
       if (mobileNav) {
-        mobileNav.hidden = true;
-        mobileNav.style.removeProperty('--menu-available-height');
+        // The exit may remain visible, but must no longer trap focus or taps.
+        mobileNav.setAttribute('inert', '');
+        mobileNav.style.setProperty('pointer-events', 'none');
       }
-      if (menuBackdrop) menuBackdrop.hidden = true;
+      if (menuBackdrop) menuBackdrop.style.setProperty('pointer-events', 'none');
       if (menuButton) {
         menuButton.setAttribute('aria-expanded', 'false');
         menuButton.setAttribute('aria-label', '메뉴 열기');
         if (returnFocus && menuButton.getClientRects().length) focusWithoutScroll(menuButton);
       }
+      transitionMenu(false, wasHidden, immediately || wasHidden);
     }
 
     function menuFocusables() {
@@ -262,9 +279,15 @@
 
     function openMenu(fromKeyboard) {
       if (!mobileNav || !menuButton || menuOpen || !mobileLayout.matches || !menuButton.getClientRects().length) return;
+      const wasHidden = mobileNav.hidden;
       menuOpen = true;
       mobileNav.hidden = false;
-      if (menuBackdrop) menuBackdrop.hidden = false;
+      mobileNav.removeAttribute('inert');
+      mobileNav.style.removeProperty('pointer-events');
+      if (menuBackdrop) {
+        menuBackdrop.hidden = false;
+        menuBackdrop.style.removeProperty('pointer-events');
+      }
       menuButton.setAttribute('aria-expanded', 'true');
       menuButton.setAttribute('aria-label', '메뉴 닫기');
       body.classList.add('menu-open');
@@ -293,6 +316,7 @@
       focusWithoutScroll(fromKeyboard && firstLink ? firstLink : menuButton);
       syncMenuViewport();
       scheduleMenuViewport();
+      transitionMenu(true, wasHidden, false);
     }
 
     if (menuButton && mobileNav) {
@@ -306,7 +330,7 @@
         menuBackdrop.hidden = true;
         body.appendChild(menuBackdrop);
       }
-      closeMenu(false);
+      closeMenu(false, true);
       menuButton.addEventListener('click', (event) => {
         if (menuOpen) closeMenu(true);
         else openMenu(event.detail === 0);
@@ -337,7 +361,7 @@
         }
       });
       const onLayoutChange = () => {
-        if (!mobileLayout.matches) closeMenu(false);
+        if (!mobileLayout.matches) closeMenu(false, true);
         else scheduleMenuViewport();
       };
       if (mobileLayout.addEventListener) mobileLayout.addEventListener('change', onLayoutChange);
@@ -346,31 +370,22 @@
         window.visualViewport.addEventListener('resize', scheduleMenuViewport, { passive: true });
         window.visualViewport.addEventListener('scroll', scheduleMenuViewport, { passive: true });
       }
-      window.addEventListener('pagehide', () => closeMenu(false));
+      window.addEventListener('pagehide', () => closeMenu(false, true));
       window.addEventListener('pageshow', (event) => {
         // Initial pageshow can arrive AFTER a visitor's first tap on a slow
         // connection. Only restored documents need a forced state reset.
-        if (event.persisted) closeMenu(false);
+        if (event.persisted) closeMenu(false, true);
         scheduleScroll();
       });
     }
 
     window.addEventListener('scroll', scheduleScroll, { passive: true });
     window.addEventListener('resize', () => {
-      if (menuOpen && !mobileLayout.matches) closeMenu(false);
+      if (menuOpen && !mobileLayout.matches) closeMenu(false, true);
       else scheduleMenuViewport();
       resetTilt();
       scheduleScroll();
     }, { passive: true });
-    document.addEventListener('visibilitychange', () => {
-      body.classList.toggle('page-inactive', document.hidden);
-      if (document.hidden) {
-        if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
-        scrollFrame = 0;
-        resetTilt();
-      } else scheduleScroll();
-    });
-
     const filterButtons = all('[data-filter]');
     const filterCards = all('[data-category]');
     const filterStatus = query('#filter-status');
