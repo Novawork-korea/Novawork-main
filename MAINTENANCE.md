@@ -1,63 +1,21 @@
-# NOVAWORK maintenance guide
+# NOVAWORK website
 
-This repository is a static HTML/CSS/JavaScript site deployed from GitHub.
-No build step is required.
+Static HTML, CSS and JavaScript. GitHub Pages deploys main / root to novawork.kr.
 
-## Stylesheets
+## Active design system (2026-10-05)
 
-Every page loads `css/site.css`. Its imports are deliberately ordered:
+- `nw-studio.css`: shared responsive layout, page styles and optional CSS motion.
+- `nw-motion.js`: native-scroll reveals, small parallax, card hover, mobile menu, filters and motion preference. No route interception or smooth-scroll library.
+- `nw-contact.js`: simple enquiry form with existing Google Apps Script contract, validated frame responses and truthful unconfirmed states. It does not automatically save personal data or clear edited inputs.
+- `nw-visual-*.svg`: six original, script-free interface concept images. These are illustrative examples, never evidence of customer results.
+- HTML pages load only the active files above. Old `css/` and `js/` files remain as an inactive rollback reference and must not be loaded alongside the new system.
 
-1. `01-foundation.css` - reset, design tokens, base layout and shared components
-2. `03-content.css` - page, service, contact and responsive content rules
-3. `04-visual.css` - visual system and mobile composition
-4. `05-interactions.css` - menu, reveal and stabilization rules
-5. `06-conversion.css` - trust, form and contact refinements
-6. `02-hero.css` - maintained home logo hero overrides
-7. `07-home-redesign.css` - motion-led home sections and responsive layouts
-8. `08-subpage-redesign.css` - shared visual system for every non-home page
+Keep marketing copy focused on services and customer benefits. Do not reintroduce package prices, revision counts, delivery windows or numeric response promises. Scope the free example preview to web systems and data automation. Preserve service URL paths, business details, CNAME and the existing GTM container.
 
-Do not add numbered version-patch files. Place a rule in the closest maintained
-layer and keep page-specific selectors scoped by the page body class.
+## Verification
 
-The route-transition curtain remains separate in `css/critical` so it can run
-before the main stylesheet is available.
+Before publishing, check all HTML local references, fragment targets, unique IDs, one h1 per page, JSON-LD, SVG/XML syntax and JS syntax. Check mobile and desktop layout, menu focus and scroll restoration, filters, native FAQ disclosures, OS/visitor reduced motion and contact validation.
 
-## JavaScript
+The existing GAS server is outside this repository. Iframe navigation alone never confirms receipt. A matching source/origin/payload is required. If receipt cannot be confirmed, preserve the user's text and provide email/Kakao alternatives. Do not submit a real test enquiry or change the backend without authorization. No live enquiry was sent during the redesign.
 
-- `js/boot/` contains only scripts that must run from the document head.
-- `js/modules/core-ui.js` owns navigation, tracking, floating actions and detail accordions.
-- `js/modules/page-interactions.js` owns page reveals and FAQ controls.
-- `js/modules/home-motion.js` owns the home SVG intro and scroll-linked motion.
-- `js/modules/subpage-motion.js` owns non-home page reveals, parallax and page progress.
-- `js/modules/inquiry-form.js` owns contact-form validation and submission.
-- `js/vendor/` contains the locally served GSAP and ScrollTrigger runtime used by the home and redesigned subpages.
-
-Scrolling is native browser scrolling. Do not add wheel-event smoothing or a
-second home reveal system; extend `home-motion.js` instead.
-
-Every redesigned non-home page carries the `nw-subpage-v2` body class. Keep
-new subpage rules scoped to that class so the home composition stays isolated.
-
-Motion is enabled on both pointer and touch devices without CPU, memory or
-data-saver cutoffs. `prefers-reduced-motion` uses a short fade profile and
-removes only large scroll-linked movement such as parallax; it does not switch
-the site to a fully static presentation.
-
-Keep each behavior in one module. Do not create a second implementation as a
-temporary patch; update the owning module instead.
-
-## Safe-change checklist
-
-Before deployment, verify:
-
-- JavaScript syntax for every file
-- local CSS, JavaScript, image and page references
-- the home SVG hero and all seven home sections
-- reduced-motion and low-power fallbacks
-- mobile menu open/close and body-scroll restoration
-- internal page transitions
-- service-detail accordions
-- FAQ search and category controls
-- inquiry-form validation and Google Apps Script submission
-- desktop and mobile layouts, including horizontal overflow
-- JSON-LD and sitemap integrity
+Privacy policy text is retained; only the collected field inventory is reconciled with the shorter form. Native scrolling and navigation must remain functional without the animation script.
