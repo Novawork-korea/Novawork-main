@@ -35,3 +35,9 @@ Per the owner’s explicit request, animation preference controls and reduced-mo
 ## Benefits and editorial refinement (2026-10-05)
 
 The home page leads with free project previews. Scope this offer to web systems and data automation, and distinguish example screens from production data integration. Shared benefits are requirements/revision support, directly authored originals/settings, service-specific manuals and post-delivery support; do not add duration/count/price promises. Preserve professional, concrete copy across navigation, service details and enquiry states. Menu icon morph is 550 ms; panel opens in 450 ms and closes in 380 ms.
+
+## Brand and portal preparation (2026-10-05)
+
+The public website now introduces NOVAWORK as software development and IT solutions. Four broad capability groups organize the homepage; the six original detail URLs remain as implementation examples. Enquiries need not fit a service category. Free example previews remain prominent and scoped to web systems/data automation.
+
+`nw-brand.css` adds the brand layout without replacing the logo assembly or menu scripts. At mobile widths the header prioritizes project consultation while the portal is pending. `portal.html` is a noindex preparation page with no login form, authentication redirect, or analytics. The customer portal backend is not yet connected or live. Do not replace this page with a working-login claim until real authentication, tenant isolation, and logout are verified.
