@@ -40,4 +40,16 @@ The home page leads with free project previews. Scope this offer to web systems 
 
 The public website now introduces NOVAWORK as software development and IT solutions. Four broad capability groups organize the homepage; the six original detail URLs remain as implementation examples. Enquiries need not fit a service category. Free example previews remain prominent and scoped to web systems/data automation.
 
-`nw-brand.css` adds the brand layout without replacing the logo assembly or menu scripts. At mobile widths the header prioritizes project consultation while the portal is pending. `portal.html` is a noindex preparation page with no login form, authentication redirect, or analytics. The customer portal backend is not yet connected or live. Do not replace this page with a working-login claim until real authentication, tenant isolation, and logout are verified.
+`nw-brand.css` adds the brand layout without replacing the logo assembly or menu scripts. At mobile widths the header prioritizes project consultation; the customer portal remains available in the mobile menu.
+
+## Customer workspace entry (2026-10-05)
+
+`portal.html` is a noindex entry page with the existing marketing header and footer. It uses `location.replace` to send visitors to the fixed deployed origin `https://novawork-portal-test.novawork-korea.workers.dev/`, and provides a visible manual link when automatic navigation or JavaScript is unavailable. Its copy explicitly limits this setup to one test program. The destination is also defined in `build_brand_portal.py` so rebuilding preserves the connection.
+
+The entry page contains no login form, authentication/session logic, credential storage, or GTM analytics. It does not accept redirect targets from URL parameters, fragments or storage, and does not forward those values to the portal. A no-referrer policy covers navigation to the portal. Login and remembered-session handling occur on the portal's own origin; an existing authorized session opens its assigned program there.
+
+The core connection-release checks passed on 2026-10-05 against the deployed Worker and actual Supabase project: the owner-controlled test account logged in, created/renamed/completed a disposable task, confirmed persistence after refresh, and deleted that task. Three synthetic seed tasks remain. A new tab restored the remembered session automatically; logout in one tab immediately cleared the other tab's private UI. After logout, following the homepage link and navigating Back showed a fresh portal login form with no task controls. Both actual-project RLS and login-limiter SQL regressions also passed.
+
+The fixed-address entry is ready for the public-site release; publishing and checking `novawork.kr/portal.html` is a separate deployment step. No physical mobile-device portal test or real contact-form/email submission is claimed. Keep the workspace limited to synthetic test data.
+
+The public website and portal use separate deployments: public `Novawork-main` commits deploy automatically through GitHub Pages, while Worker releases are manual Cloudflare deployments. A GitHub Pages commit does not deploy the Worker. The Worker now uses supported manual upstream redirects and explicitly rejects every 3xx response rather than forwarding credentials to a redirect target.
