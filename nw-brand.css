@@ -109,3 +109,5 @@
 /* Until customer login launches, keep consultation as the mobile primary action. */
 @media(max-width:760px){.header-inner{gap:10px}.header-actions{gap:9px}.header-portal{display:none}.header-contact{display:inline-flex;font-size:11px;padding-inline:12px}}
 @media(max-width:370px){.header-inner{gap:6px}.header-actions{gap:3px}.header-contact{font-size:10px;padding-inline:9px}}
+
+@media(max-width:650px){.brand-hero .hero-stage.nw-logo-intro{height:180px;margin-bottom:8px}.brand-hero .nw-intro-orbit{width:178px}.brand-hero .nw-intro-orbit::before{inset:17px}.brand-hero .nw-intro-orbit::after{inset:34px}}
