@@ -41,18 +41,18 @@
   }
 
   const serviceAliases = {
-    homepage: '홈페이지·랜딩페이지 제작',
-    system: 'React·Firebase 관리자 웹시스템',
-    automation: '웹 데이터 크롤링·엑셀 수집',
-    ai: '맞춤형 GPT·AI 챗봇',
-    analytics: 'GA4/GTM 전환 추적 세팅',
-    care: '홈페이지 오류 수정·기능 추가',
-    'homepage-landing': '홈페이지·랜딩페이지 제작',
-    'react-firebase-admin': 'React·Firebase 관리자 웹시스템',
-    'homepage-fix': '홈페이지 오류 수정·기능 추가',
-    'ga4-gtm': 'GA4/GTM 전환 추적 세팅',
-    'gpt-ai-chatbot': '맞춤형 GPT·AI 챗봇',
-    'web-crawling': '웹 데이터 크롤링·엑셀 수집',
+    homepage: '방문자가 내용을 이해하고 문의하는 흐름을 만들고 싶어요.',
+    system: '흩어진 업무와 처리 상태를 한곳에서 확인하고 싶어요.',
+    automation: '반복해서 확인하고 옮기는 일을 줄이고 싶어요.',
+    ai: '업무 자료를 찾고 반복 질문에 답하는 과정을 정리하고 싶어요.',
+    analytics: '고객이 들어온 경로와 이후 행동을 확인하고 싶어요.',
+    care: '운영 중인 화면이나 기능의 불편한 부분을 수정하고 싶어요.',
+    'homepage-landing': '방문자가 내용을 이해하고 문의하는 흐름을 만들고 싶어요.',
+    'react-firebase-admin': '흩어진 업무와 처리 상태를 한곳에서 확인하고 싶어요.',
+    'homepage-fix': '운영 중인 화면이나 기능의 불편한 부분을 수정하고 싶어요.',
+    'ga4-gtm': '고객이 들어온 경로와 이후 행동을 확인하고 싶어요.',
+    'gpt-ai-chatbot': '업무 자료를 찾고 반복 질문에 답하는 과정을 정리하고 싶어요.',
+    'web-crawling': '반복해서 확인하고 옮기는 일을 줄이고 싶어요.',
   };
   let activeRequest = null;
   let lastSentValues = '';
@@ -65,9 +65,22 @@
     sessionStorage.removeItem('novawork_inquiry_draft_v43');
   } catch (_) { /* Storage may be blocked; the form still works. */ }
 
-  const selectedService = serviceAliases[new URLSearchParams(location.search).get('service')];
-  if (selectedService && Array.from(fields.service.options).some(option => option.value === selectedService)) {
-    fields.service.value = selectedService;
+  const params = new URLSearchParams(location.search);
+  const isPreviewRequest = params.get('intent') === 'preview';
+  const selectedContext = serviceAliases[params.get('service')];
+  // Keep old incoming links meaningful without restoring the product catalogue.
+  // Do not overwrite a value restored by the browser or already entered by a visitor.
+  if (selectedContext && !fields.service.value.trim()) {
+    fields.service.value = selectedContext;
+  }
+  if (isPreviewRequest) {
+    const heading = document.querySelector('#contact-heading');
+    const intro = document.querySelector('#contact-intro');
+    const intent = document.querySelector('#contact-intent');
+    if (heading) heading.textContent = '만들 화면을 먼저 이야기해요.';
+    if (intro) intro.textContent = '현재 업무, 원하는 결과, 참고 화면이나 링크를 알려주세요. 무료 시안으로 확인할 화면과 범위를 함께 정리합니다.';
+    if (intent) intent.hidden = false;
+    document.title = '무료 시안 상담 | NOVAWORK';
   }
 
   function valuesFingerprint() {
@@ -158,8 +171,11 @@
     const kind = replyType(reply);
     hidden('email', kind === 'email' ? reply : '');
     hidden('phone', kind === 'phone' ? reply : '');
-    hidden('service', fields.service.value || '기타');
-    hidden('service_other', fields.service.value ? '' : '상담 후 결정');
+    // The existing backend receives its established "other" category, with the
+    // optional situation and preview intent in the existing free-text field.
+    hidden('service', '기타');
+    const context = fields.service.value.trim();
+    hidden('service_other', [isPreviewRequest ? '무료 시안 요청' : '', context].filter(Boolean).join(' · ') || '상담 후 결정');
     hidden('page_url', location.origin + location.pathname);
     hidden('page_title', document.title);
     hidden('page_origin', location.origin);
