@@ -53,3 +53,19 @@ The core connection-release checks passed on 2026-10-05 against the deployed Wor
 The fixed-address public entry is deployed and verified. Clicking **고객 포털** in the actual `novawork.kr` homepage header navigated through `novawork.kr/portal.html`, automatically opened exactly `https://novawork-portal-test.novawork-korea.workers.dev/`, and displayed the portal login screen. The entry was published in `Novawork-main` commit `87f0c548a295be83f75b41030fdd0f51c1fbaad3`. No physical mobile-device portal test or real contact-form/email submission is claimed. Keep the workspace limited to synthetic test data.
 
 The public website and portal use separate deployments: public `Novawork-main` commits deploy automatically through GitHub Pages, while Worker releases are manual Cloudflare deployments. A GitHub Pages commit does not deploy the Worker. The Worker now uses supported manual upstream redirects and explicitly rejects every 3xx response rather than forwarding credentials to a redirect target.
+
+
+## Editorial flow refinement (2026-10-13)
+
+- `nw-editorial.css` loads last on every marketing page. It owns the neutral
+  white/ink/gray palette, limited orange accent, open service rows, unboxed
+  support content, and compact mobile portal entry. Do not load inactive CSS.
+- Homepage capability illustrations are labelled, synthetic workflow examples.
+  The original 17-piece logo assembly and menu behavior are retained.
+- Workflow and project-process animations loop continuously in CSS with no
+  replay control, no preference toggles, and no new runtime dependency, matching
+  the owner's always-on motion request. Print output is static.
+- Three relevant service details include the same explanatory flow language.
+  No live integration, result, delivery status, or customer metrics are implied.
+- Authentication, portal data, contact submission logic, existing business
+  details, URLs and GTM are unchanged. Marketing changes deploy via Pages only.
