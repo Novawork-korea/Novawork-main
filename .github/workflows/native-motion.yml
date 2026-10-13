@@ -128,7 +128,7 @@ jobs:
                   for (const [name, page] of [['services', services], ['about', about]]) {
                     const target = page.locator('[data-reveal]').last();
                     const before = await target.evaluate(e => ({ top: e.getBoundingClientRect().top, opacity: Number(getComputedStyle(e).opacity), revealed: e.classList.contains('revealed'), height: innerHeight }));
-                    if (name === 'services' || before.top >= before.height) {
+                    if (before.top >= before.height) {
                       check(record, `${name}: late offscreen reveal still pending`, before.top >= before.height && !before.revealed && before.opacity < .01, before);
                     } else {
                       check(record, `${name}: content already in initial viewport stays visible`, before.revealed && before.opacity >= .99, before);
