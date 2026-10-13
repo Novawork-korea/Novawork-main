@@ -21,15 +21,35 @@
     let tiltFrame = 0;
     let pendingTilt = null;
     let observer = null;
-    let revealFallback = 0;
+    const pendingReveals = new Set();
 
     function showAllContent() {
       if (observer) observer.disconnect();
       observer = null;
-      window.clearTimeout(revealFallback);
+      pendingReveals.clear();
       revealItems.forEach((element) => {
         element.classList.remove('reveal-ready');
         element.classList.add('revealed');
+      });
+    }
+
+    function revealContent(element) {
+      element.classList.add('revealed');
+      pendingReveals.delete(element);
+      if (observer) observer.unobserve(element);
+    }
+
+    function revealVisibleContent() {
+      // Observer delivery can stall. Check only pending content on the same
+      // scroll/resize frame, without completing sections that remain offscreen.
+      const viewportHeight = Math.max(0, window.innerHeight - 24);
+      if (!viewportHeight) return;
+      pendingReveals.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        const visibleHeight = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
+        if (rect.height > 0 && visibleHeight >= Math.min(rect.height * 0.08, viewportHeight)) {
+          revealContent(element);
+        }
       });
     }
 
@@ -59,6 +79,7 @@
         }
         element.style.setProperty('--parallax-y', offset.toFixed(2) + 'px');
       });
+      revealVisibleContent();
     }
 
     function scheduleScroll() {
@@ -66,25 +87,24 @@
       if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateScroll);
     }
 
-    // Nothing is hidden unless an observer was successfully created. A finite
-    // fallback releases every item, even if observer delivery stops unexpectedly.
+    // Nothing is hidden unless an observer was successfully created. Unsupported
+    // or failed initialization stays visible; later scrolls retain pending reveals.
     scheduleScroll();
     if ('IntersectionObserver' in window && revealItems.length) {
       try {
         observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
-            entry.target.classList.add('revealed');
-            if (observer) observer.unobserve(entry.target);
+            revealContent(entry.target);
           });
         }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
         revealItems.forEach((element) => {
           const parsedDelay = Number.parseInt(element.dataset.delay || '0', 10);
           element.style.setProperty('--reveal-delay', clamp(Number.isFinite(parsedDelay) ? parsedDelay : 0, 0, 500) + 'ms');
           element.classList.add('reveal-ready');
+          pendingReveals.add(element);
           observer.observe(element);
         });
-        revealFallback = window.setTimeout(showAllContent, 15000);
       } catch (_) { showAllContent(); }
     } else {
       showAllContent();
@@ -94,7 +114,7 @@
     document.addEventListener('focusin', (event) => {
       if (!(event.target instanceof Element)) return;
       const element = event.target.closest('[data-reveal]');
-      if (element) element.classList.add('revealed');
+      if (element) revealContent(element);
     });
 
     visualCards.forEach((element) => {
