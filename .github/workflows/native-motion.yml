@@ -1,0 +1,183 @@
+name: Native motion verification
+on:
+  push:
+    branches: [qa/native-motion-20261013]
+  workflow_dispatch:
+permissions: {}
+jobs:
+  motion:
+    name: ${{ matrix.browser }} / native motion
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - name: Install pinned official Playwright
+        run: npm install --no-save --ignore-scripts playwright@1.62.1
+      - name: Install browser and system dependencies
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify public production animations
+        env:
+          MOTION_BROWSER: ${{ matrix.browser }}
+        run: |
+          cat > check.mjs <<'MOTION_SCRIPT'
+          import { chromium, webkit } from 'playwright';
+          import { mkdir, writeFile, appendFile } from 'node:fs/promises';
+          const engine = process.env.MOTION_BROWSER || 'chromium';
+          const browser = await ({ chromium, webkit }[engine]).launch();
+          const out = `motion-results/${engine}`;
+          await mkdir(out, { recursive: true });
+          const report = { engine, browserVersion: browser.version(), started: new Date().toISOString(), scope: 'Live public pages, no account or form submissions; native browser media emulation, not physical-device verification.', profiles: [] };
+          function check(record, name, passed, evidence) {
+            record.checks.push({ name, passed: !!passed, evidence });
+            console.log(`${passed ? 'PASS' : 'FAIL'} ${record.id}: ${name}`);
+          }
+          async function sample(page) {
+            return page.evaluate(() => ({
+              reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
+              age: Math.round(performance.now()),
+              overflow: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth,
+              logo: [...document.querySelectorAll('.nw-intro-piece,.portal-logo path')].map(p => ({ opacity: Number(getComputedStyle(p).opacity), transform: getComputedStyle(p).transform, running: p.getAnimations().some(a => a.playState === 'running') })),
+              intro: document.querySelector('[data-nw-logo-intro]')?.className || '',
+              loops: document.getAnimations().filter(a => a.effect?.getComputedTiming().iterations === Infinity).map(a => ({ name: a.animationName, state: a.playState, currentTime: Math.round(a.currentTime || 0), iteration: a.effect.getComputedTiming().currentIteration })),
+              observations: window.motionObservations
+            }));
+          }
+          async function openPage(context, url, record, name) {
+            const page = await context.newPage();
+            page.on('pageerror', e => record.errors.push(`${name}: ${e.message}`));
+            const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+            check(record, `${name}: document available`, response?.ok(), response?.status());
+            return page;
+          }
+          try {
+            for (const viewport of [{ width: 360, height: 780 }, { width: 820, height: 1180 }, { width: 1440, height: 900 }]) {
+              for (const reducedMotion of ['reduce', 'no-preference']) {
+                const record = { id: `${viewport.width}-${reducedMotion}`, viewport, reducedMotion, checks: [], errors: [] };
+                report.profiles.push(record);
+                const context = await browser.newContext({ viewport, reducedMotion, locale: 'ko-KR', isMobile: viewport.width < 900, hasTouch: viewport.width < 900 });
+                // Prevent this synthetic read-only visit from producing analytics traffic.
+                await context.route(/googletagmanager\.com|google-analytics\.com/, r => r.fulfill({ status: 200, contentType: 'application/javascript', body: '' }));
+                await context.addInitScript(() => {
+                  window.motionObservations = { maxPieces: 0, activeLogoFrames: 0, partialLogoFrames: 0, assembledEntries: 0, previousAssembled: false, iterations: {} };
+                  document.addEventListener('animationiteration', e => {
+                    const counts = window.motionObservations.iterations;
+                    counts[e.animationName] = (counts[e.animationName] || 0) + 1;
+                  }, true);
+                  let previous = -100;
+                  const tick = now => {
+                    if (now - previous >= 100) {
+                      previous = now;
+                      const o = window.motionObservations;
+                      const pieces = [...document.querySelectorAll('.nw-intro-piece,.portal-logo path')];
+                      o.maxPieces = Math.max(o.maxPieces, pieces.length);
+                      if (pieces.some(p => p.getAnimations().some(a => a.playState === 'running'))) o.activeLogoFrames++;
+                      if (pieces.some(p => { const v = Number(getComputedStyle(p).opacity); return v > .01 && v < .99; })) o.partialLogoFrames++;
+                      const assembled = !!document.querySelector('.nw-logo-intro.is-assembled');
+                      if (assembled && !o.previousAssembled) o.assembledEntries++;
+                      o.previousAssembled = assembled;
+                    }
+                    if (now < 32000) requestAnimationFrame(tick);
+                  };
+                  requestAnimationFrame(tick);
+                });
+                try {
+                  const control = await context.newPage();
+                  await control.setContent('<style>:root{--native-motion:no-preference}@media(prefers-reduced-motion:reduce){:root{--native-motion:reduce}}</style>');
+                  const native = await control.evaluate(() => ({ js: matchMedia('(prefers-reduced-motion:reduce)').matches, css: getComputedStyle(document.documentElement).getPropertyValue('--native-motion').trim() }));
+                  check(record, 'native CSS and JS media setting', native.js === (reducedMotion === 'reduce') && native.css === reducedMotion, native);
+                  await control.close();
+                  const [home, services, about, portal] = await Promise.all([
+                    openPage(context, 'https://novawork.kr/', record, 'home'),
+                    openPage(context, 'https://novawork.kr/services.html', record, 'services'),
+                    openPage(context, 'https://novawork.kr/about.html', record, 'about'),
+                    openPage(context, 'https://novawork-portal-test.novawork-korea.workers.dev/', record, 'portal')
+                  ]);
+                  await Promise.all([home.waitForFunction(() => performance.now() >= 6000), portal.waitForFunction(() => performance.now() >= 6000)]);
+                  for (const [name, page] of [['home', home], ['portal', portal]]) {
+                    const state = await sample(page);
+                    check(record, `${name}: 17 pieces animated through intermediate frames`, state.observations.maxPieces === 17 && state.observations.activeLogoFrames > 2 && state.observations.partialLogoFrames > 2, state.observations);
+                    check(record, `${name}: logo completed and visible`, state.logo.length === 17 && state.logo.every(p => p.opacity >= .99 && !p.running), state.logo);
+                    check(record, `${name}: no horizontal overflow`, state.overflow <= 1, state.overflow);
+                    await page.screenshot({ path: `${out}/${record.id}-${name}.png` });
+                  }
+                  check(record, 'portal: login control ready', await portal.locator('#login-submit').isEnabled(), 'Public health check only; no login submitted.');
+                  if (viewport.width <= 760) {
+                    const button = home.locator('.menu-toggle');
+                    const closed = await button.locator('span').evaluateAll(els => els.map(e => getComputedStyle(e).transform));
+                    await button.click();
+                    await home.waitForTimeout(650);
+                    const opened = await button.locator('span').evaluateAll(els => els.map(e => getComputedStyle(e).transform));
+                    check(record, 'mobile: hamburger morph and open panel', await button.getAttribute('aria-expanded') === 'true' && await home.locator('#mobile-nav').isVisible() && JSON.stringify(closed) !== JSON.stringify(opened), { closed, opened });
+                    await home.screenshot({ path: `${out}/${record.id}-menu-open.png` });
+                    await home.keyboard.press('Escape');
+                    await home.waitForTimeout(600);
+                    check(record, 'mobile: Escape closes and restores focus/scroll', await home.evaluate(() => document.querySelector('#mobile-nav').hidden && document.activeElement === document.querySelector('.menu-toggle') && getComputedStyle(document.documentElement).overflow !== 'hidden'), await button.getAttribute('aria-expanded'));
+                    await button.click();
+                    await home.waitForTimeout(60);
+                    await button.click();
+                    await home.waitForTimeout(60);
+                    await button.click();
+                    await home.waitForTimeout(650);
+                    check(record, 'mobile: rapid reversal ends open', await button.getAttribute('aria-expanded') === 'true' && await home.locator('#mobile-nav').isVisible(), null);
+                    await home.keyboard.press('Escape');
+                  }
+                  await Promise.all([services, about].map(p => p.waitForFunction(() => performance.now() >= 21000)));
+                  for (const [name, page] of [['services', services], ['about', about]]) {
+                    const target = page.locator('[data-reveal]').last();
+                    const before = await target.evaluate(e => ({ top: e.getBoundingClientRect().top, opacity: Number(getComputedStyle(e).opacity), revealed: e.classList.contains('revealed'), height: innerHeight }));
+                    check(record, `${name}: late offscreen reveal still pending`, before.top >= before.height && !before.revealed && before.opacity < .01, before);
+                    await target.scrollIntoViewIfNeeded();
+                    await page.waitForTimeout(1500);
+                    const after = await target.evaluate(e => ({ opacity: Number(getComputedStyle(e).opacity), revealed: e.classList.contains('revealed') }));
+                    check(record, `${name}: late scroll reveals content`, after.revealed && after.opacity >= .99, after);
+                    await page.screenshot({ path: `${out}/${record.id}-${name}-revealed.png` });
+                  }
+                  await home.waitForFunction(() => performance.now() >= 28000);
+                  const finalHome = await sample(home);
+                  const names = ['result-arrive', 'request-step', 'page-assemble', 'graphic-assemble', 'demo-pulse'];
+                  for (const name of names) {
+                    const loops = finalHome.loops.filter(a => a.name === name);
+                    check(record, `loop: ${name} continues for two cycles`, loops.length > 0 && loops.every(a => a.state === 'running' && a.iteration >= 2) && finalHome.observations.iterations[name] >= 2, loops);
+                  }
+                  check(record, 'home: logo assembles once and holds', finalHome.observations.assembledEntries === 1 && finalHome.logo.every(p => p.opacity >= .99 && !p.running), { entries: finalHome.observations.assembledEntries });
+                  await home.emulateMedia({ reducedMotion: reducedMotion === 'reduce' ? 'no-preference' : 'reduce' });
+                  await home.waitForTimeout(300);
+                  const switched = await sample(home);
+                  check(record, 'live preference switch preserves loops and completed logo', switched.reduced !== finalHome.reduced && switched.loops.length === finalHome.loops.length && switched.loops.every(a => a.state === 'running') && switched.logo.every(p => p.opacity >= .99 && !p.running), { reduced: switched.reduced, loops: switched.loops.length });
+                  const finalPortal = await sample(portal);
+                  check(record, 'portal: completed logo stays visible after 28s', finalPortal.logo.length === 17 && finalPortal.logo.every(p => p.opacity >= .99 && !p.running), finalPortal.age);
+                  check(record, 'no application runtime errors', record.errors.length === 0, record.errors);
+                } catch (error) {
+                  check(record, 'scenario completed', false, String(error.stack || error));
+                } finally {
+                  await context.close();
+                  await writeFile(`${out}/report.json`, JSON.stringify(report, null, 2));
+                }
+              }
+            }
+          } finally {
+            await browser.close();
+          }
+          const checks = report.profiles.flatMap(p => p.checks);
+          const failures = checks.filter(c => !c.passed);
+          report.completed = new Date().toISOString();
+          report.summary = { passed: checks.length - failures.length, failed: failures.length, profiles: report.profiles.length };
+          await writeFile(`${out}/report.json`, JSON.stringify(report, null, 2));
+          if (process.env.GITHUB_STEP_SUMMARY) {
+            const lines = [`## Native motion: ${engine}`, `${report.summary.passed} passed, ${failures.length} failed across ${report.profiles.length} profiles.`, '', '| Width / motion | Passed | Failed |', '|---|---:|---:|', ...report.profiles.map(p => `| ${p.id} | ${p.checks.filter(c => c.passed).length} | ${p.checks.filter(c => !c.passed).length} |`), '', ...failures.map(c => `- FAIL: ${c.name}: ${JSON.stringify(c.evidence)}`), '', report.scope];
+            await appendFile(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+          }
+          console.log(JSON.stringify(report.summary));
+          if (failures.length) process.exitCode = 1;
+          MOTION_SCRIPT
+          node check.mjs
+      - name: Keep verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-motion-${{ matrix.browser }}
+          path: motion-results/
+          retention-days: 30
