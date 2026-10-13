@@ -10,7 +10,7 @@
     if (!stage || stage.dataset.nwIntroReady === 'true') return;
     stage.dataset.nwIntroReady = 'true';
     const pieces = Array.from(stage.querySelectorAll('.nw-intro-piece'));
-    const duration = 2400;
+    const duration = 2800;
     let animations = [];
     let timer = 0;
 
@@ -23,7 +23,9 @@
       const end = Math.max(start + .01, Math.min(1, number('end', 1)));
       return {
         element: piece,
-        from: 'translate3d(' + number('x', 0) + 'px,' + number('y', 0) + 'px,0) rotate(' + number('r', 0) + 'deg) scale(' + number('s', 1) + ')',
+        // Keep the original directions and order, but bring the trajectories
+        // into the visible stage instead of spending the entrance offscreen.
+        from: 'translate3d(' + number('x', 0) * .38 + 'px,' + number('y', 0) * .38 + 'px,0) rotate(' + number('r', 0) + 'deg) scale(' + number('s', 1) + ')',
         delay: start * duration,
         duration: (end - start) * duration
       };
@@ -55,7 +57,7 @@
         state.element.style.setProperty('--nw-intro-from', state.from);
         // The inline finite sequence remains active even when an unrelated
         // global stylesheet applies animation preferences to every element.
-        state.element.style.setProperty('animation', 'nw-intro-piece-in ' + state.duration + 'ms cubic-bezier(0.16, 1, 0.3, 1) ' + state.delay + 'ms 1 normal both running', 'important');
+        state.element.style.setProperty('animation', 'nw-intro-piece-in ' + state.duration + 'ms cubic-bezier(0.22, 0.8, 0.25, 1) ' + state.delay + 'ms 1 normal both running', 'important');
         state.element.style.setProperty('animation-play-state', 'running', 'important');
       });
     }
@@ -74,7 +76,7 @@
               ], {
                 delay: state.delay,
                 duration: state.duration,
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                easing: 'cubic-bezier(0.22, 0.8, 0.25, 1)',
                 fill: 'both'
               }));
             });
