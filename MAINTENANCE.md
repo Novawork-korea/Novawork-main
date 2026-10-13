@@ -69,3 +69,69 @@ The public website and portal use separate deployments: public `Novawork-main` c
   No live integration, result, delivery status, or customer metrics are implied.
 - Authentication, portal data, contact submission logic, existing business
   details, URLs and GTM are unchanged. Marketing changes deploy via Pages only.
+
+## Production-story redesign (2026-10-13 candidate)
+
+- `nw-unified.css` is the final shared stylesheet for all marketing pages. It
+  owns the neutral paper/graphite/copper palette and common control colors.
+  Customer portal `frontend/app.css` uses the same role tokens; portal auth
+  scripts and data contracts are unchanged.
+- Home loads `nw-home.css` after unified and `nw-home.js` for three larger
+  assembly previews. Their 7.8-second cycles begin on first viewport entry,
+  pause offscreen or when the document is hidden, and resume on return.
+  Completed screens are the HTML baseline when animation is unavailable.
+- About loads `nw-build-story.css` and `nw-build-story.js`. Three large native
+  scroll stages assemble a website, a program and their connection. Progress
+  follows measured chapter/pin/header geometry in both scroll directions.
+  Short landscape uses normal document flow with entrance-linked assembly.
+  Do not put overflow auto/hidden on ancestors of the sticky stages.
+- Both home and About retain all original 17 logo paths and their order. The
+  logo runs once for 2.8 seconds and holds; it is not part of scroll progress.
+- No authored motion is disabled by OS reduced-motion settings, as explicitly
+  requested. There are no new playback controls, scroll locks or dependencies.
+- Demo UI and status text are illustrative examples. They are not delivered
+  customer screens, live connections, or verified customer results.
+- Candidate checks include syntax/reference validation, original-logo
+  comparison, portal DOM regression and offline scroll-controller behavior.
+  These checks do not replace browser rendering or physical-device testing.
+  During the original 2026-10-13 preparation session, the GitHub browser
+  runtime could not resume its protected credential state, so that session
+  performed no actual browser rendering check, upload or production deployment.
+  This is historical preparation context, not the status of later review runs.
+
+
+## Candidate handoff review (2026-10-14 KST; production pending)
+
+- Reviewed against main commit `f8b80d18d6bd41b553ee4692918b5f08b95b4368`.
+  Latest source files were read through the GitHub browser UI; the attached
+  23 marketing files were applied by path, not as a repository replacement.
+- Real Chrome 154 rendering was checked in an isolated HTTPS preview with
+  CSS viewports 360x640, 390x844, 820x900, 1440x900, 1440x480 and 820x360.
+  About's website/program/connection stages were inspected before, during
+  and after assembly using the original native-scroll controller. Fast reverse
+  scrolling, intermediate refresh, menu navigation and Back restored the
+  expected state. Low landscape uses ordinary vertical scrolling.
+- Home's automatic logo start and completed 17-piece hold were observed.
+  The visible demo runs while offscreen demos pause. Additional labelled
+  WAAPI samples were used to inspect timed assembly frames; those samples
+  are not proof of natural playback or a production playback control.
+- Browser review corrected two CSS issues: the mobile About WORKSPACE label
+  now stays on one line; home's decorative website planes use explicit depth
+  separation so the copper front plane stays in front at tablet width.
+- Static checks on 15 pages passed: 420 local references, 22 fragment targets,
+  15 JSON-LD blocks, 10 SVG documents and five JavaScript syntax checks.
+  Header/footer/GTM/contact markup and the original logo paths are preserved.
+  nw-motion.js, nw-contact.js, CNAME, robots.txt and sitemap.xml are unchanged.
+- Portal changes are maintained in its separate repository. Its current-base
+  regression run passed 150 tests and built successfully. Preview login
+  layout was checked at the same six sizes with synthetic health responses.
+  No live account login, customer-data write or enquiry submission was made.
+- WebKit, physical devices and native OS reduced-motion ON were unavailable
+  in this browser environment and remain unverified. Source inspection
+  confirms the new animations have no reduced-motion opt-out gate. The
+  historical live checks above do not validate this candidate.
+- The standalone design-preview HTML and the browser QA harness, synthetic
+  APIs and preview-only routing are NOT production deployment files.
+- Review-branch commits and draft PRs do not constitute production deployment.
+  Main Pages (main/root) and the separate portal Worker require the owner's
+  final confirmation and separate release records before production rollout.

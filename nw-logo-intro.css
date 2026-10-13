@@ -8,15 +8,16 @@
   justify-content: center;
   flex-direction: column;
   isolation: isolate;
-  overflow: hidden;
-  color: var(--ink, #151615);
+  overflow: visible;
+  perspective: 1100px;
+  color: var(--ink, #181b20);
 }
 .nw-intro-orbit {
   position: absolute;
   z-index: -1;
   width: min(88%, 390px);
   aspect-ratio: 1;
-  border: 1px solid #dedfd7;
+  border: 1px solid var(--line, #dde1e6);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -25,7 +26,7 @@
   content: "";
   position: absolute;
   inset: 28px;
-  border: 1px solid #e4e4dc;
+  border: 1px solid var(--line, #dde1e6);
   border-radius: inherit;
 }
 .nw-intro-orbit::after { inset: 57px; }
@@ -39,6 +40,11 @@
   height: calc(100% - 38px);
   max-height: 335px;
   min-height: 0;
+  transform-style: preserve-3d;
+  transform-origin: 50% 60%;
+}
+.nw-logo-intro.is-assembling .nw-intro-art {
+  animation: nw-intro-depth 2.8s cubic-bezier(.22,.8,.25,1) both;
 }
 .nw-intro-svg {
   display: block;
@@ -79,7 +85,7 @@
   font-weight: 500;
   letter-spacing: .16em;
   line-height: 1.4;
-  color: #697060;
+  color: var(--muted, #646970);
 }
 .nw-intro-caption::before {
   content: "";
@@ -87,7 +93,11 @@
   height: 4px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: #f97316;
+  background: var(--accent, #d5673a);
+}
+@keyframes nw-intro-depth {
+  0% { transform: rotateX(13deg) rotateY(-14deg) scale(.93); }
+  76%, 100% { transform: rotateX(0deg) rotateY(0deg) scale(1); }
 }
 @keyframes nw-intro-piece-in {
   from { opacity: 0; transform: var(--nw-intro-from); }
@@ -102,6 +112,7 @@
   .nw-intro-orbit::after { inset: 42px; }
 }
 @media print {
+  .nw-intro-art { animation: none !important; transform: none !important; }
   .nw-intro-piece {
     opacity: 1 !important;
     transform: none !important;
