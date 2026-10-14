@@ -54,6 +54,13 @@
     'gpt-ai-chatbot': '업무 자료를 찾고 반복 질문에 답하는 과정을 정리하고 싶어요.',
     'web-crawling': '반복해서 확인하고 옮기는 일을 줄이고 싶어요.',
   };
+  // Only named public case slugs can supply optional consultation context.
+  const caseContexts = {
+    'naver-rank': '네이버 순위 확인 사례처럼 반복 확인과 기록을 줄이고 싶어요.',
+    'customer-portal': '고객 포털 사례처럼 계정별로 업무 도구를 제공하고 싶어요.',
+    'order-demo': '도면·발주 시안처럼 파일 검토와 진행 현황을 정리하고 싶어요.',
+    'inflow-demo': '유입 경로 시안처럼 채널별 이동과 결과를 확인하고 싶어요.',
+  };
   let activeRequest = null;
   let lastSentValues = '';
   let lastResult = null;
@@ -68,8 +75,10 @@
   const params = new URLSearchParams(location.search);
   const isPreviewRequest = params.get('intent') === 'preview';
   const serviceParam = params.get('service');
+  const caseParam = params.get('case');
   const selectedContext = Object.prototype.hasOwnProperty.call(serviceAliases, serviceParam)
-    ? serviceAliases[serviceParam] : '';
+    ? serviceAliases[serviceParam]
+    : Object.prototype.hasOwnProperty.call(caseContexts, caseParam) ? caseContexts[caseParam] : '';
   // Keep old incoming links meaningful without restoring the product catalogue.
   // Do not overwrite a value restored by the browser or already entered by a visitor.
   if (selectedContext && !fields.service.value.trim()) {
