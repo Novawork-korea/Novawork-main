@@ -167,3 +167,9 @@ The public website and portal use separate deployments: public `Novawork-main` c
   and exact logo path/order checks for the edited pages. Actual visual and
   deployment verification must refer to the new release record; earlier
   three-stage/browser checks above do not validate this replacement.
+
+### Native-engine fixes, 2026-10-14
+
+The homepage reserves the full native scroll section height from the initial HTML/CSS load. Scroll anchoring is disabled only inside the moving composition so reload/history restoration does not shift by the section expansion. Short desktop compositions use smaller internal example headings to keep body text clear of their button.
+
+Mobile menu keyboard focus now uses preventScroll on every Tab step, preserving the underlying page position in Chromium and WebKit while retaining focus containment and Escape.
