@@ -273,3 +273,14 @@ Remaining boundaries and follow-up:
 
 This review branch and its PR do not change production. The existing owner
 confirmation requirement for a main/Pages rollout still applies.
+## Subpage content and consultation context (2026-10-14)
+
+The approved follow-up changes `portfolio.html`, `services.html`, and `about.html` with the scoped `nw-subpages.css`. The home assembly sequence and portal application are not changed. The About logo retains all 17 original SVG paths, in order, as a static mark.
+
+- Portfolio separates the delivered PC Chrome/Google Sheets program, the in-house portal test environment, and two design studies. Illustrations are reconstructed with example data, not customer screenshots. Preserve the execution conditions and unverified integration notes.
+- Process explains preparation and five stages, with visitor actions and tangible review outcomes. Cost, schedule, revisions and support remain subject to agreed scope; do not add package/price or numeric delivery guarantees.
+- About introduces the studio's work and three design/verification/handover principles. It does not duplicate the five-stage process or add assembly animations.
+- Case consultation URLs use `contact.html?case=naver-rank|customer-portal|order-demo|inflow-demo`. `nw-contact.js` maps only those allowlisted slugs into an empty optional context field. Existing/restored input wins; an allowlisted legacy service value takes precedence over a case. `intent=preview` can coexist. The existing Apps Script action and field contract are unchanged. No customer message text is inserted and no query string is recorded in tracking fields.
+- Keep the contact/portal analytics exclusion, early CSP, strict origin/frame response checks, sandbox attributes and referrer policies added by the security review.
+
+`npm test` includes the case-context allowlist, restored-value priority and existing form field-contract checks. `npm run test:subpages` checks Chromium and WebKit at 360×640, 390×844, 820×900, 1440×900, 1440×480 and 820×360, including reduced motion at 390px, document/text overflow, normal scrolling, menus, FAQ, reload, case-link navigation/back, and local form validation. These browser checks block external form/API requests; they do not prove live enquiry delivery or email receipt. The security workflow runs both the original browser security suite and the subpage suite.
