@@ -1,6 +1,8 @@
 # NOVAWORK website
 
 Static HTML, CSS and JavaScript. GitHub Pages deploys main / root to novawork.kr.
+Node/Playwright dependencies are development-only security checks; the deployed
+site still has no install/build step or runtime package dependency.
 
 ## Active design system (2026-10-05)
 
@@ -10,7 +12,7 @@ Static HTML, CSS and JavaScript. GitHub Pages deploys main / root to novawork.kr
 - `nw-visual-*.svg`: six original, script-free interface concept images. These are illustrative examples, never evidence of customer results.
 - HTML pages load only the active files above. Old `css/` and `js/` files remain as an inactive rollback reference and must not be loaded alongside the new system.
 
-Keep marketing copy focused on services and customer benefits. Do not reintroduce package prices, revision counts, delivery windows or numeric response promises. Scope the free example preview to web systems and data automation. Preserve service URL paths, business details, CNAME and the existing GTM container.
+Keep marketing copy focused on services and customer benefits. Do not reintroduce package prices, revision counts, delivery windows or numeric response promises. Scope the free example preview to web systems and data automation. Preserve service URL paths, business details, CNAME and the existing GTM container on marketing pages. Contact and portal pages intentionally exclude analytics; see the security maintenance section.
 
 ## Verification
 
@@ -173,3 +175,101 @@ The public website and portal use separate deployments: public `Novawork-main` c
 The homepage reserves the full native scroll section height from the initial HTML/CSS load. Scroll anchoring is disabled only inside the moving composition so reload/history restoration does not shift by the section expansion. Short desktop compositions use smaller internal example headings to keep body text clear of their button.
 
 Mobile menu keyboard focus now uses preventScroll on every Tab step, preserving the underlying page position in Chromium and WebKit while retaining focus containment and Escape.
+
+## Security maintenance (2026-10-14 review branch)
+
+The source review covered all 15 HTML pages, active and inactive authored scripts,
+local assets, deployment boundaries and the 85 fetched Git commits at base
+`194eb60`. No active DOM XSS, arbitrary portal redirect, or credential-pattern
+candidate was found. The history scan used common credential patterns across
+567 text blobs; it does not prove that every possible secret is absent.
+
+The public GA4 configuration observed on 2026-10-14 enables automatic detection
+of email, phone and address data. This establishes a collection capability, not
+evidence that visitor information was transmitted. `contact.html` now excludes
+GTM entirely, and its CSP permits no analytics scripts or connections. This
+intentionally removes analytics from the inquiry page, including form/conversion
+events there. The existing GTM container and marketing click tracking remain on
+the other 13 marketing pages. `portal.html` remains analytics-free. Do not restore
+third-party analytics on the inquiry page without reviewing its data collection.
+
+All pages have an early meta Content Security Policy, before script/resource
+loads. It allows local assets, exact inline-script hashes, and the current
+marketing GA/GTM destinations where applicable. It denies unapproved inline
+scripts, event handlers, eval, plugins and base elements. Only the contact page
+may submit forms, to the existing Apps Script deployment and its Google response
+redirect host. No `unsafe-inline` or `unsafe-eval` exception is used. CSSOM style
+updates used by the existing animations remain supported. New GTM tags may need
+reviewed source permissions; do not solve a blocked tag by broadly allowing all
+HTTPS hosts or inline/eval execution.
+
+`scripts/security_policy.py` is the policy source. After changing an inline
+script, JSON-LD, or policy rules, run `npm run security:write`, review the hashes
+and allowed hosts, and run the checks below. GitHub Pages serves the checked-in
+HTML directly; it does not run this script during deployment.
+
+Contact and portal use `no-referrer`; other pages explicitly use
+`strict-origin-when-cross-origin`. Contact responses run in an iframe sandbox
+with only forms, scripts and same-origin identity enabled. Popups and top-level
+navigation are blocked while the existing origin AND current-frame-tree checks
+remain required for success. Only declared service aliases can prefill the
+optional context; prototype property names cannot populate it. Existing disabled
+no-script submission, consent validation, PII draft cleanup, duplicate protection,
+and truthful unconfirmed states are retained.
+
+Local/CI checks:
+
+```sh
+npm ci --ignore-scripts
+npm test
+npx playwright install chromium
+npm run test:browser
+```
+
+`CHROMIUM_PATH` may select an existing Chromium binary for local browser checks.
+Browser requests to outside services are intercepted and fulfilled locally or
+blocked, with a deny-only local proxy preventing unmocked traffic. Contact tests
+use synthetic data: one check verifies that Chromium permits the expected 302
+destination under CSP, then blocks that request at the proxy; separate checks
+fulfill a nested Google response locally. This split is necessary because
+Playwright does not reroute later requests in an HTTP redirect chain. It does
+not verify a live GAS redirect/receipt end to end. The workflow runs
+these checks with read-only repository permissions and commit-pinned actions.
+It does not deploy the site. Enabling a required status check is a separate
+repository administration change.
+
+Review-branch verification passed 12 static/policy tests, 11 contact state/trust
+tests and 8 Chromium browser groups (Chromium 154 / Playwright 1.64). These include
+all 15 pages, menu focus/scroll, the 17-piece logo and native scroll composition,
+FAQ, fixed portal navigation, CSP rejection probes, contact sandbox and response
+trust, preserved edits and timeouts. Cached copies of the current public GTM/GA
+scripts also ran without CSP violations while all collection requests were
+intercepted locally. `npm audit` reported zero dependency advisories at review.
+These results do not establish live delivery, physical-device behavior or a
+complete audit of external services.
+
+Remaining boundaries and follow-up:
+
+- The Apps Script server is outside this repository. Its recipient selection,
+  input/consent validation, quotas/rate limiting, spreadsheet formula handling,
+  storage access and retention still need a server-side audit. Browser controls
+  cannot stop direct HTTP clients. `recipient_email` and other hidden fields
+  must never be trusted by that server. A live end-to-end receipt is unverified.
+- Portal authentication/data controls belong to the separate portal repository
+  and were not audited as part of this main-site change.
+- Observed production Pages responses lacked CSP, HSTS, nosniff, frame protection
+  and Permissions-Policy headers. The new meta policy works in the document but
+  cannot enforce `frame-ancestors`, HSTS, nosniff or Permissions-Policy. Applying
+  those needs a hosting/proxy response-header change; a Pages `_headers` file or
+  a meta `frame-ancestors` directive would not implement it. HTTP-to-HTTPS redirect
+  was already working. No claim of clickjacking protection is made here.
+- At review time, main had no branch protection, required checks or rulesets.
+  Require the new security checks and a review before merging when configuring
+  deployment governance. No administration settings were changed in this branch.
+- Inactive `js/` rollback code has weaker response checks and inquiry draft
+  storage. It is not loaded by any page. Automated script inventory checks guard
+  this boundary; restoring it requires a new security review. Vendored GSAP and
+  ScrollTrigger are also inactive, with no current production loading path.
+
+This review branch and its PR do not change production. The existing owner
+confirmation requirement for a main/Pages rollout still applies.

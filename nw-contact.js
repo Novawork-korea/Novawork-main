@@ -67,7 +67,9 @@
 
   const params = new URLSearchParams(location.search);
   const isPreviewRequest = params.get('intent') === 'preview';
-  const selectedContext = serviceAliases[params.get('service')];
+  const serviceParam = params.get('service');
+  const selectedContext = Object.prototype.hasOwnProperty.call(serviceAliases, serviceParam)
+    ? serviceAliases[serviceParam] : '';
   // Keep old incoming links meaningful without restoring the product catalogue.
   // Do not overwrite a value restored by the browser or already entered by a visitor.
   if (selectedContext && !fields.service.value.trim()) {
@@ -188,6 +190,10 @@
     frame.name = 'novawork-contact-response-' + (++sequence);
     frame.title = '문의 전송 결과';
     frame.hidden = true;
+    // The response needs scripts and its real origin for postMessage verification,
+    // but must not open windows or navigate the visitor's top-level page.
+    frame.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin');
+    frame.referrerPolicy = 'no-referrer';
     document.body.appendChild(frame);
     form.target = frame.name;
     const request = { frame, source: frame.contentWindow, values: valuesFingerprint() };
