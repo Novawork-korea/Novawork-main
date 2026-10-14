@@ -1,0 +1,58 @@
+name: Native fullpage release QA
+on:
+  push:
+    branches: [qa/fullpage-native-20261014]
+permissions:
+  contents: read
+concurrency:
+  group: fullpage-native-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native:
+    if: github.repository == 'Novawork-korea/Novawork-main' && github.ref == 'refs/heads/qa/fullpage-native-20261014'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, webkit]
+    defaults:
+      run:
+        working-directory: qa-native
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Verify exact candidate bytes
+        run: node verify-source.cjs
+      - name: Install pinned test dependency
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install selected browser engine and Korean fonts
+        run: |
+          npx --no-install playwright install --with-deps "$QA_ENGINE"
+          sudo apt-get install -y fonts-noto-cjk
+        env:
+          QA_ENGINE: ${{ matrix.engine }}
+      - name: Run native engine and motion-preference matrix
+        run: npx --no-install playwright test
+        env:
+          CI: 'true'
+          QA_ENGINE: ${{ matrix.engine }}
+      - name: Retain actual evidence on success or failure
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: native-fullpage-${{ matrix.engine }}-${{ github.sha }}
+          path: |
+            qa-native/playwright-report/
+            qa-native/test-results/
+            qa-native/results.json
+            qa-native/verified-source.json
+            qa-native/source-manifest.json
+            qa-native/official-sources.json
+          retention-days: 7
+          if-no-files-found: error
