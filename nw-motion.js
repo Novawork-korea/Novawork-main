@@ -369,16 +369,14 @@
         if (event.key !== 'Tab') return;
         const focusables = menuFocusables();
         if (!focusables.length) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        const outside = !focusables.includes(document.activeElement);
-        if (event.shiftKey && (document.activeElement === first || outside)) {
-          event.preventDefault();
-          focusWithoutScroll(last);
-        } else if (!event.shiftKey && (document.activeElement === last || outside)) {
-          event.preventDefault();
-          focusWithoutScroll(first);
-        }
+        // Native Tab can scroll even an overflow-locked root when a sticky
+        // dropdown receives focus. Move every menu focus step without scrolling.
+        const current = focusables.indexOf(document.activeElement);
+        const next = event.shiftKey
+          ? (current <= 0 ? focusables.length - 1 : current - 1)
+          : (current < 0 || current === focusables.length - 1 ? 0 : current + 1);
+        event.preventDefault();
+        focusWithoutScroll(focusables[next]);
       });
       const onLayoutChange = () => {
         if (!mobileLayout.matches) closeMenu(false, true);
