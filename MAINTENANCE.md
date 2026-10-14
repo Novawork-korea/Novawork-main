@@ -135,3 +135,35 @@ The public website and portal use separate deployments: public `Novawork-main` c
 - Review-branch commits and draft PRs do not constitute production deployment.
   Main Pages (main/root) and the separate portal Worker require the owner's
   final confirmation and separate release records before production rollout.
+
+## Full-page home sequence (2026-10-14; supersedes the assembly locations above)
+
+- The owner corrected the scope after the cinematic release: use the whole
+  page for one main-page assembly sequence, rather than repeated framed demos.
+  `index.html`, `nw-home.css` and `nw-home.js` now own a single edge-to-edge
+  sticky viewport beneath the live header. Structure, website content, workflow
+  and connection are phases of this one continuous native-scroll composition.
+- Reference direction: the scroll-driven exploded product/inner-system/diagram
+  sequence described by Noomo at
+  `https://noomoagency.com/insights/easy-way-to-implement-3d-in-web`, and Quo's
+  fullscreen layered reveal at `https://atquo.com/work/apple-webflow`.
+  These informed the staging; no reference asset or code is copied.
+- No frame encloses the story, no timed assembly loop is used, and there is no
+  scroll interception. Current section/header geometry determines progress on
+  forward/reverse/fast scrolling, refresh and `pageshow`. Text remains in the
+  document and a complete composition is the no-script baseline.
+- Portrait mobile repositions the content vertically. During the pullback the
+  website keeps a large headline while decorative art and controls leave the
+  stage, creating room for the workflow below. Very short usable viewports
+  use ordinary document flow with a completed composition instead of pinning
+  unreadable content. The authored animation has no reduced-motion gate.
+- The original 17-piece home logo retains its one-time 2.8-second entrance.
+  About retains the same original paths as a static logo and is now an
+  editorial company/process page. It no longer loads `nw-logo-intro.js` or
+  `nw-build-story.js`. The old build controller is inactive rollback source.
+- Demo content is illustrative. Native menu behavior, enquiry logic, existing
+  metadata/GTM, business details, routes, header/footer and CNAME are retained.
+- Initial source checks passed JS syntax, local references, unique IDs, one h1
+  and exact logo path/order checks for the edited pages. Actual visual and
+  deployment verification must refer to the new release record; earlier
+  three-stage/browser checks above do not validate this replacement.
