@@ -272,3 +272,31 @@ test('PII is not persisted and tracking fields omit query strings and fragments'
   assert.equal(phone.hidden.email.value, '');
   assert.equal(phone.hidden.phone.value, '+82 10-1234-5678');
 });
+test('case context is allowlisted and preserves the existing enquiry contract', () => {
+  const cases = {
+    'naver-rank': '네이버 순위 확인 사례처럼 반복 확인과 기록을 줄이고 싶어요.',
+    'customer-portal': '고객 포털 사례처럼 계정별로 업무 도구를 제공하고 싶어요.',
+    'order-demo': '도면·발주 시안처럼 파일 검토와 진행 현황을 정리하고 싶어요.',
+    'inflow-demo': '유입 경로 시안처럼 채널별 이동과 결과를 확인하고 싶어요.',
+  };
+  for (const [slug, context] of Object.entries(cases)) {
+    const page = setup({ search: '?case=' + slug });
+    assert.equal(page.fields.service.value, context);
+    assert.equal(page.fields.message.value, 'This synthetic enquiry is never sent to any server.');
+    page.submit();
+    assert.equal(page.hidden.service.value, '기타');
+    assert.equal(page.hidden.service_other.value, context);
+  }
+  for (const slug of ['unknown', '__proto__', 'constructor', 'toString', '<svg/onload=alert(1)>']) {
+    assert.equal(setup({ search: '?case=' + encodeURIComponent(slug) }).fields.service.value, '');
+  }
+});
+
+test('case links preserve restored input and coexist with service and preview links', () => {
+  assert.equal(setup({ search: '?case=naver-rank', service: 'Restored text' }).fields.service.value, 'Restored text');
+  assert.equal(setup({ search: '?service=automation&case=naver-rank' }).fields.service.value,
+    setup({ search: '?service=automation' }).fields.service.value);
+  const page = setup({ search: '?intent=preview&case=order-demo' });
+  page.submit();
+  assert.match(page.hidden.service_other.value, /^무료 시안 요청 · 도면·발주 시안처럼/);
+});
