@@ -15,6 +15,10 @@ const server = http.createServer((req,res)=>{
 });
 const viewports=[[360,640],[390,844],[820,900],[1440,900],[1440,480],[820,360]];
 let browser,checks=0;
+const reloadCapabilities=[];
+async function settleScroll(page) {
+ await page.evaluate(()=>new Promise(resolve=>{let y=scrollY,stable=0;function tick(){const next=scrollY;stable=Math.abs(next-y)<.1?stable+1:0;y=next;if(stable>=4)resolve();else requestAnimationFrame(tick);}requestAnimationFrame(tick);}));
+}
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const origin='http://127.0.0.1:'+server.address().port;
@@ -25,6 +29,15 @@ let browser,checks=0;
     const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'reduce'});
     await ctx.route('**/*',route=>route.request().url().startsWith(origin+'/')&&route.request().method()==='GET'?route.continue():route.abort());
     const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+    // Calibrate the engine's reload behavior on a document with no application JS.
+    // Headless WebKit can discard the native saved position even on this control.
+    await page.goto(origin+'/__restore-control.html');
+    await page.mouse.wheel(0,600);await page.waitForFunction(()=>scrollY>500);await settleScroll(page);
+    const controlY=await page.evaluate(()=>scrollY);await page.reload();
+    let nativeReloadRestores=true;
+    try {await page.waitForFunction(y=>Math.abs(scrollY-y)<4,controlY,{timeout:1500});}catch(_){nativeReloadRestores=false;}
+    reloadCapabilities.push({engine,width,height,nativeReloadRestores});
+    console.log('NATIVE_RELOAD_CONTROL',engine,width,height,JSON.stringify({before:controlY,after:await page.evaluate(()=>scrollY),nativeReloadRestores}));
     await page.goto(origin+'/index.html');
     await page.waitForFunction(()=>document.querySelector('[data-nw-sequence]').dataset.sequenceReady==='true');
     const mode=await page.locator('[data-nw-sequence]').getAttribute('data-layout');
@@ -41,25 +54,25 @@ let browser,checks=0;
      assert.equal(await page.locator('.nw-sequence-intro').evaluate(el=>getComputedStyle(el).position),'relative');
      await page.evaluate(()=>{const s=document.querySelector('[data-nw-sequence]');scrollTo({top:scrollY+s.getBoundingClientRect().top+(s.offsetHeight-innerHeight)*.65,behavior:'instant'});});
      await page.waitForFunction(()=>Number(document.querySelector('[data-nw-sequence]').dataset.progress)>.5);
+     await settleScroll(page);
      const restoredY=await page.evaluate(()=>scrollY);
      const restoreBefore=await page.evaluate(()=>({y:scrollY,height:document.documentElement.scrollHeight,hero:document.querySelector('.unified-hero').getBoundingClientRect().height,intro:document.querySelector('.nw-sequence-intro').getBoundingClientRect().height,stage:document.querySelector('[data-nw-sequence]').getBoundingClientRect().height,fonts:document.fonts.status}));
      await page.reload();
-     try { await page.waitForFunction(y=>Math.abs(scrollY-y)<4,restoredY,{timeout:5000}); }
-     catch(error) {
-      console.error('RESTORE_DIAGNOSTIC',engine,width,height,JSON.stringify({before:restoreBefore,after:await page.evaluate(()=>({y:scrollY,height:document.documentElement.scrollHeight,hero:document.querySelector('.unified-hero').getBoundingClientRect().height,intro:document.querySelector('.nw-sequence-intro').getBoundingClientRect().height,stage:document.querySelector('[data-nw-sequence]').getBoundingClientRect().height,fonts:document.fonts.status,progress:document.querySelector('[data-nw-sequence]').dataset.progress,restoration:history.scrollRestoration}))}));
-      await page.goto(origin+'/__restore-control.html');
-      await page.evaluate(()=>scrollTo({top:1500,behavior:'instant'}));
-      await page.mouse.wheel(0,40);await page.waitForFunction(()=>scrollY>1530);
-      const controlBefore=await page.evaluate(()=>scrollY);await page.reload();
-      try {await page.waitForFunction(y=>Math.abs(scrollY-y)<4,controlBefore,{timeout:1500});}catch(_){}
-      console.error('STATIC_RESTORE_CONTROL',JSON.stringify({before:controlBefore,after:await page.evaluate(()=>scrollY)}));
-      throw error;
-     }
+     await page.waitForFunction(()=>document.querySelector('[data-nw-sequence]').dataset.sequenceReady==='true');
+     if(nativeReloadRestores) await page.waitForFunction(y=>Math.abs(scrollY-y)<4,restoredY,{timeout:5000});
+     assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),restoreBefore.height,'reload must retain reserved document height');
+     const reloadedY=await page.evaluate(()=>scrollY);
+     const reloadedProgress=await page.locator('[data-nw-sequence]').getAttribute('data-progress');
+     const reloadWheel=await page.evaluate(()=>Math.max(60,document.querySelector('[data-nw-sequence]').getBoundingClientRect().top-document.querySelector('.site-header').offsetHeight+60));
+     await page.mouse.wheel(0,reloadWheel);
+     await page.waitForFunction(y=>scrollY>y+40,reloadedY);
+     await page.waitForFunction(p=>document.querySelector('[data-nw-sequence]').dataset.progress!==p,reloadedProgress);
+     if(!nativeReloadRestores) console.log('LIMIT',engine,width,height,'native reload position is unsupported by the static control; reserved height and live reload response verified');
      await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
      await page.waitForFunction(()=>Number(document.querySelector('[data-nw-sequence]').dataset.progress)===0);
     }else assert.equal(await page.locator('.nw-sequence-pin').evaluate(el=>getComputedStyle(el).position),'relative');
     assert.equal(await page.locator('.nw-intro-svg path').count(),17);
-    checks++;console.log('PASS',engine,'responsive home entry / native wheel / reverse / restore',width,height,mode);
+    checks++;console.log('PASS',engine,'responsive home entry / native wheel / reverse / reload response',width,height,mode);
 
     await page.goto(origin+'/portfolio.html');
     for(const kind of ['rank','portal','order','inflow']){
@@ -89,6 +102,6 @@ let browser,checks=0;
    }
    await browser.close();browser=null;
   }
-  console.log(JSON.stringify({motionChecks:checks,engines:['chromium','webkit'],viewports,liveSubmissions:0}));
+  console.log(JSON.stringify({motionChecks:checks,engines:['chromium','webkit'],viewports,reloadCapabilities,liveSubmissions:0}));
  }finally{if(browser)await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
