@@ -8,6 +8,7 @@ const { chromium, webkit } = require('playwright');
 const root = path.resolve(__dirname, '..');
 const types = {'.html':'text/html', '.css':'text/css', '.js':'application/javascript', '.svg':'image/svg+xml', '.png':'image/png'};
 const server = http.createServer((req,res)=>{
+  if(req.url==='/__restore-control.html') {res.setHeader('Content-Type','text/html');return res.end('<!doctype html><meta charset="utf-8"><title>Native restoration control</title><div style="height:6000px">Static document without scripts</div>');}
   const file=path.resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
   if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');fs.createReadStream(file).pipe(res);
@@ -41,8 +42,19 @@ let browser,checks=0;
      await page.evaluate(()=>{const s=document.querySelector('[data-nw-sequence]');scrollTo({top:scrollY+s.getBoundingClientRect().top+(s.offsetHeight-innerHeight)*.65,behavior:'instant'});});
      await page.waitForFunction(()=>Number(document.querySelector('[data-nw-sequence]').dataset.progress)>.5);
      const restoredY=await page.evaluate(()=>scrollY);
+     const restoreBefore=await page.evaluate(()=>({y:scrollY,height:document.documentElement.scrollHeight,hero:document.querySelector('.unified-hero').getBoundingClientRect().height,intro:document.querySelector('.nw-sequence-intro').getBoundingClientRect().height,stage:document.querySelector('[data-nw-sequence]').getBoundingClientRect().height,fonts:document.fonts.status}));
      await page.reload();
-     await page.waitForFunction(y=>Math.abs(scrollY-y)<4,restoredY);
+     try { await page.waitForFunction(y=>Math.abs(scrollY-y)<4,restoredY,{timeout:5000}); }
+     catch(error) {
+      console.error('RESTORE_DIAGNOSTIC',engine,width,height,JSON.stringify({before:restoreBefore,after:await page.evaluate(()=>({y:scrollY,height:document.documentElement.scrollHeight,hero:document.querySelector('.unified-hero').getBoundingClientRect().height,intro:document.querySelector('.nw-sequence-intro').getBoundingClientRect().height,stage:document.querySelector('[data-nw-sequence]').getBoundingClientRect().height,fonts:document.fonts.status,progress:document.querySelector('[data-nw-sequence]').dataset.progress,restoration:history.scrollRestoration}))}));
+      await page.goto(origin+'/__restore-control.html');
+      await page.evaluate(()=>scrollTo({top:1500,behavior:'instant'}));
+      await page.mouse.wheel(0,40);await page.waitForFunction(()=>scrollY>1530);
+      const controlBefore=await page.evaluate(()=>scrollY);await page.reload();
+      try {await page.waitForFunction(y=>Math.abs(scrollY-y)<4,controlBefore,{timeout:1500});}catch(_){}
+      console.error('STATIC_RESTORE_CONTROL',JSON.stringify({before:controlBefore,after:await page.evaluate(()=>scrollY)}));
+      throw error;
+     }
      await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
      await page.waitForFunction(()=>Number(document.querySelector('[data-nw-sequence]').dataset.progress)===0);
     }else assert.equal(await page.locator('.nw-sequence-pin').evaluate(el=>getComputedStyle(el).position),'relative');
