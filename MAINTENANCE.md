@@ -292,3 +292,27 @@ The homepage introduction now scrolls in normal document flow. The single full-p
 `nw-page-motion.js` runs only on portfolio, services and about. Portfolio uses four labelled illustrative flows, each playing once and retaining its final state; hidden tabs pause playback, and fast scrolling past a scene completes it. Process uses an ordinary-flow five-step list with a changing desktop document illustration and inline portrait illustrations. About retains its original static 17-piece logo and uses typography and native-scroll principle emphasis. No wheel/touch interception, reduced-motion gate, new runtime dependency, live data request or form behavior is introduced.
 
 The browser suite adds actual native wheel input at the home pin entrance, on-stage part visibility, reverse scroll, illustrative final states, process reverse navigation and principle emphasis in Chromium/WebKit with reduced motion enabled. Reload position restoration is calibrated against a static document without application JavaScript: the CI WebKit build also discarded its position on that control. Where the engine supports native reload restoration, exact position is asserted; all engines check reserved document height and responsive native scrolling after reload. Logs explicitly report this limitation rather than claiming WebKit position restoration. These are desktop engines at CSS viewports, not physical-device evidence. Production verification is recorded separately after merge and Pages deployment.
+
+## Cinematic case studies and studio (2026-10-15 follow-up)
+
+`nw-cinematic.css` and `nw-cinematic.js` are loaded only by portfolio and about.
+Services continues to use the unchanged `nw-page-motion.js` and its existing layout.
+The homepage, shared navigation, contact handling and portal application are unchanged.
+
+Portfolio's four explicitly labelled illustrations move complete input/result windows
+across a large stage, then retain their result. On portrait widths, movement and final
+layout are vertical. Playback pauses outside the viewport and in hidden documents;
+fast scrolling beyond a case completes it. The static HTML/CSS baseline exposes all
+content without JavaScript. There are no live API calls or interactive fake submits.
+
+About moves the original, complete 17-path logo as one mark. Native scroll changes
+perspective, focus and handover views of one complete program illustration. The
+three editorial principles remain normal-flow content. At widths up to 900px or
+heights up to 700px, inline illustrations replace the desktop sticky stage. No
+scroll interception, assembly, reduced-motion gate or new runtime dependency is added.
+
+The browser checks now distinguish deliberately clipped animation planes from
+actual page overflow, and assert that final panels fit their stage, do not overlap,
+and do not clip text. Natural timed progression and reversible studio transforms
+are checked in Chromium/WebKit at the existing six viewports. This release's actual
+results are recorded only after the candidate workflow and production verification.

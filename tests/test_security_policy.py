@@ -178,8 +178,10 @@ class SiteSecurityTests(unittest.TestCase):
             expected = {"nw-motion.js"}
             if name == "index.html":
                 expected.update({"nw-home.js", "nw-logo-intro.js"})
-            if name in {"portfolio.html", "services.html", "about.html"}:
+            if name == "services.html":
                 expected.add("nw-page-motion.js")
+            if name in {"portfolio.html", "about.html"}:
+                expected.add("nw-cinematic.js")
             if name == "contact.html":
                 expected.add("nw-contact.js")
             with self.subTest(page=name):
