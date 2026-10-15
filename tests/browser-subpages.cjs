@@ -51,7 +51,16 @@ async function isolatedContext(options={}) {
             const d=document,w=window;
             const outside=[...d.querySelectorAll('main *')].filter(el=>{
               const r=el.getBoundingClientRect(),s=getComputedStyle(el);
-              return r.width>0&&s.display!=='none'&&(r.left< -1||r.right>d.documentElement.clientWidth+1);
+              // Moving illustrations may sit outside their clipping stage. Check the
+              // actual horizontal paint bounds, not an intentionally hidden plane.
+              let left=r.left,right=r.right;
+              for(let parent=el.parentElement;parent&&parent!==d.body;parent=parent.parentElement){
+                const ps=getComputedStyle(parent);
+                if(['hidden','clip','scroll','auto'].includes(ps.overflowX)){
+                  const pr=parent.getBoundingClientRect();left=Math.max(left,pr.left);right=Math.min(right,pr.right);
+                }
+              }
+              return r.width>0&&right>left&&s.display!=='none'&&(left< -1||right>d.documentElement.clientWidth+1);
             }).map(el=>el.tagName+'.'+el.className);
             const textClipped=[...d.querySelectorAll('main p,main h1,main h2,main h3,main dt,main dd,main a')].filter(el=>{
               const r=el.getBoundingClientRect();return r.width>0&&(el.scrollWidth>el.clientWidth+2||el.scrollHeight>el.clientHeight+2);

@@ -78,10 +78,26 @@ async function settleScroll(page) {
     for(const kind of ['rank','portal','order','inflow']){
      const scene=page.locator('[data-case-motion="'+kind+'"]');
      await scene.scrollIntoViewIfNeeded();
+     if(kind==='rank') {
+      await page.waitForFunction(()=>Number(document.querySelector('[data-case-motion="rank"]').dataset.motionProgress)>.08);
+      const early=await scene.locator('.cm-input').getAttribute('style');
+      await page.waitForFunction(()=>Number(document.querySelector('[data-case-motion="rank"]').dataset.motionProgress)>.7);
+      assert.notEqual(await scene.locator('.cm-input').getAttribute('style'),early,'the complete input window must visibly move');
+     }
      await page.waitForFunction(kind=>document.querySelector('[data-case-motion="'+kind+'"]').dataset.motionState==='complete',kind);
      assert(await scene.locator('figcaption').isVisible());
      const visible=await scene.locator('[data-case-result]').evaluateAll(els=>els.every(el=>Number(getComputedStyle(el).opacity)===1));
      assert(visible,kind+' final results');
+     const layout=await scene.evaluate(el=>{
+      const r=n=>{const b=n.getBoundingClientRect();return {left:b.left,right:b.right,top:b.top,bottom:b.bottom};};
+      return {stage:r(el.querySelector('.cm-viewport')),input:r(el.querySelector('.cm-input')),output:r(el.querySelector('.cm-output')),width:innerWidth,
+       clipped:[...el.querySelectorAll('h3,p,dt,dd,.cm-result,.cm-program')].filter(n=>n.scrollWidth>n.clientWidth+2||n.scrollHeight>n.clientHeight+2).map(n=>n.className)};
+     });
+     for(const panel of [layout.input,layout.output]) {
+      assert(panel.left>=layout.stage.left-1&&panel.right<=layout.stage.right+1&&panel.top>=layout.stage.top-1&&panel.bottom<=layout.stage.bottom+1,JSON.stringify({kind,...layout}));
+     }
+     assert(layout.width<=640?layout.input.bottom+8<=layout.output.top:layout.input.right+8<=layout.output.left,'final windows must not overlap: '+JSON.stringify({kind,...layout}));
+     assert.deepEqual(layout.clipped,[],kind+' final text clipping');
     }
     await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
     assert.equal(await page.locator('[data-case-motion="rank"]').getAttribute('data-motion-state'),'complete');
@@ -96,6 +112,14 @@ async function settleScroll(page) {
     await page.locator('[data-principle]').first().scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>document.querySelector('[data-principle]').classList.contains('is-active'));
     assert.equal(await page.locator('.sp-brand-logo path').count(),17);
+    const first=await page.locator('.cm-camera .cm-studio-screen').getAttribute('style');
+    await page.locator('[data-chapter="2"]').evaluate(el=>scrollTo({top:scrollY+el.getBoundingClientRect().top-110,behavior:'instant'}));
+    await page.waitForFunction(()=>document.querySelector('.cm-story').dataset.storyPhase==='3');
+    assert.notEqual(await page.locator('.cm-camera .cm-studio-screen').getAttribute('style'),first,'studio camera must advance');
+    await page.locator('[data-chapter="0"]').evaluate(el=>scrollTo({top:scrollY+el.getBoundingClientRect().top-110,behavior:'instant'}));
+    await page.waitForFunction(()=>document.querySelector('.cm-story').dataset.storyPhase==='1');
+    const pinned=await page.locator('.cm-story-visual').evaluate(el=>getComputedStyle(el).display!=='none');
+    assert.equal(pinned,width>900&&height>700,'short and portrait layouts must use ordinary flow');
     assert.deepEqual(errors,[]);
     checks++;console.log('PASS',engine,'process reverse and studio emphasis, reduced motion enabled',width,height);
     await ctx.close();
