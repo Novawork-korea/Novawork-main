@@ -5,7 +5,7 @@
     "test": "python3 scripts/security_policy.py --check && python3 -m unittest discover -s tests -p 'test_*.py' && node --test tests/*.test.cjs",
     "test:browser": "node tests/browser-security.cjs",
     "security:write": "python3 scripts/security_policy.py --write",
-    "test:subpages": "node tests/browser-subpages.cjs"
+    "test:subpages": "node tests/browser-subpages.cjs && node tests/browser-motion.cjs"
   },
   "devDependencies": {
     "playwright": "1.64.0"
