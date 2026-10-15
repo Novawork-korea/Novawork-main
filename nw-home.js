@@ -10,7 +10,6 @@
     sequence.dataset.sequenceReady = 'true';
     const pin = sequence.querySelector('.nw-sequence-pin');
     const header = document.querySelector('.site-header');
-    const intro = sequence.querySelector('.nw-sequence-intro');
     const heading = sequence.querySelector('.nw-sequence-heading');
     const website = sequence.querySelector('.nw-site-composition');
     const program = sequence.querySelector('.nw-program-composition');
@@ -38,9 +37,9 @@
       if (transform !== undefined) element.style.transform = transform;
     };
     const poses = {
-      guide: [.07, .20, 0, 20, -350, 58, 0],
-      nav: [.11, .25, 0, -65, 200, -25, 0],
-      type: [.16, .32, -65, 10, 300, 0, 28],
+      guide: [0, .17, 0, 12, -200, 35, 0],
+      nav: [0, .18, 0, -18, 140, -20, 0],
+      type: [.025, .28, -18, 10, 200, 0, 18],
       art: [.20, .37, 65, -12, 350, -18, -38],
       action: [.24, .39, -25, 60, 180, 45, 0],
       baseline: [.26, .41, 30, 65, -100, 0, 12],
@@ -65,13 +64,13 @@
       if (needsMeasure) measure();
       const rect = sequence.getBoundingClientRect();
       const distance = Math.max(1, rect.height - pin.getBoundingClientRect().height);
-      const p = short ? 1 : clamp((headerHeight - rect.top) / distance);
+      // Begin while the stage enters. Pinning never introduces a blank hold.
+      const entrance = Math.min(vh * .34, 300);
+      const p = short ? 1 : clamp((headerHeight + entrance - rect.top) / (distance + entrance));
       sequence.dataset.progress = p.toFixed(4);
       sequence.dataset.layout = short ? 'flow' : mobile ? 'portrait' : 'wide';
       const pullback = progress(p, .42, .61);
       const join = progress(p, .72, .87);
-      const introOut = progress(p, .08, .19);
-      set(intro, 1 - introOut, 'translate3d(0,' + (-introOut * 12) + 'vh,0) scale(' + (1 + introOut * .12) + ')');
       set(heading, progress(p, .48, .64), 'translate3d(0,' + (1 - progress(p, .48, .64)) * 45 + 'px,0)');
       const scale = 1 - pullback * (mobile ? .18 : .49);
       const x = mobile ? 0 : -24 * pullback;
@@ -84,7 +83,7 @@
         const pose = poses[key];
         const assembled = progress(p, pose[0], pose[1]);
         const remaining = 1 - assembled;
-        let opacity = key === 'guide' ? assembled * (1 - progress(p, .29, .40)) * .8 : range(p, pose[0], pose[0] + .045);
+        let opacity = key === 'guide' ? range(p, 0, .06) * (1 - progress(p, .29, .40)) * .8 : range(p, pose[0], pose[0] + .045);
         // Portrait composition keeps a large website headline above the workflow.
         // Peripheral art and controls leave the stage as the camera reveals the work.
         if (mobile && ['art', 'action', 'baseline'].includes(key)) opacity *= 1 - pullback;
